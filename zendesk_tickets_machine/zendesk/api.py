@@ -1,8 +1,9 @@
+import os
 import requests
 
 
 class Ticket(object):
     def create(self):
-        requests.post(
-            'https://pronto1445242156.zendesk.com/api/v2/tickets.json'
-        )
+        zendesk_api_url = os.environ.get('ZENDESK_API_URL', '') + \
+            '/api/v2/tickets.json'
+        requests.post(zendesk_api_url)
