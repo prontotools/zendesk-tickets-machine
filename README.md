@@ -1,2 +1,1 @@
-# zendesk-tickets-machine
-Zendesk Tickets Machine
+# Zendesk Tickets Machine
