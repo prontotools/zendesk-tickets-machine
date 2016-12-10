@@ -7,6 +7,7 @@ from .models import Ticket
 class TicketAdmin(admin.ModelAdmin):
     list_display = (
         'subject',
+        'comment',
         'requester',
         'requester_id',
         'assignee',

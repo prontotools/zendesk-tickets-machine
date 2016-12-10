@@ -12,37 +12,33 @@ class TicketAdminTest(TestCase):
         self.url = '/admin/tickets/ticket/'
 
     def test_access_agent_admin_should_have_columns(self):
-        Ticket.objects.create(
-            subject='Test Open Ticket',
-            requester='client@hisotech.com',
-            assignee='kan@prontomarketing.com',
-            ticket_type='question',
-            priority='urgent',
-            tags='internal',
-        )
+        Ticket.objects.create(subject='Test Open Ticket')
 
         response = self.client.get(self.url)
 
         expected = '<div class="text"><a href="?o=1">Subject</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=2">Requester</a></div>'
+        expected = '<div class="text"><a href="?o=2">Comment</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=3">Requester id</a></div>'
+        expected = '<div class="text"><a href="?o=3">Requester</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=4">Assignee</a></div>'
+        expected = '<div class="text"><a href="?o=4">Requester id</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=5">Assignee id</a></div>'
+        expected = '<div class="text"><a href="?o=5">Assignee</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=6">Ticket type</a></div>'
+        expected = '<div class="text"><a href="?o=6">Assignee id</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=7">Priority</a></div>'
+        expected = '<div class="text"><a href="?o=7">Ticket type</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=8">Tags</a></div>'
+        expected = '<div class="text"><a href="?o=8">Priority</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<div class="text"><a href="?o=9">Tags</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
