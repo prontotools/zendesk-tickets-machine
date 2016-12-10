@@ -9,6 +9,20 @@ class TicketViewTest(TestCase):
         response = self.client.get(reverse('tickets'))
         self.assertEqual(response.status_code, 200)
 
+    def test_ticket_view_should_have_table_header(self):
+        response = self.client.get(reverse('tickets'))
+
+        expected = '<th>Subject</th>' \
+            '<th>Comment</th>' \
+            '<th>Requester</th>' \
+            '<th>Requester ID</th>' \
+            '<th>Assignee</th>' \
+            '<th>Assignee ID</th>' \
+            '<th>Ticket Type</th>' \
+            '<th>Priority</th>' \
+            '<th>Tags</th>'
+        self.assertContains(response, expected, status_code=200)
+
     def test_ticket_view_should_render_ticket_form(self):
         response = self.client.get(reverse('tickets'))
 
