@@ -29,14 +29,20 @@ class TicketAdminTest(TestCase):
         expected = '<div class="text"><a href="?o=2">Requester</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=3">Assignee</a></div>'
+        expected = '<div class="text"><a href="?o=3">Requester id</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=4">Ticket type</a></div>'
+        expected = '<div class="text"><a href="?o=4">Assignee</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=5">Priority</a></div>'
+        expected = '<div class="text"><a href="?o=5">Assignee id</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=6">Tags</a></div>'
+        expected = '<div class="text"><a href="?o=6">Ticket type</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<div class="text"><a href="?o=7">Priority</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<div class="text"><a href="?o=8">Tags</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)

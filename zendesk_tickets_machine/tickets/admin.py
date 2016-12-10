@@ -8,7 +8,9 @@ class TicketAdmin(admin.ModelAdmin):
     list_display = (
         'subject',
         'requester',
+        'requester_id',
         'assignee',
+        'assignee_id',
         'ticket_type',
         'priority',
         'tags',
