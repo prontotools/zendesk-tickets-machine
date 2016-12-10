@@ -9,6 +9,19 @@ class TicketView(TemplateView):
 
     def get(self, request):
         form = TicketForm()
+
+        return render(
+            request,
+            self.template_name,
+            {
+                'form': form
+            }
+        )
+
+    def post(self, request):
+        form = TicketForm(request.POST)
+        form.save()
+
         return render(
             request,
             self.template_name,
