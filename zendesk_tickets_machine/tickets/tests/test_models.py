@@ -5,8 +5,13 @@ from ..models import Ticket
 
 class TicketTest(TestCase):
     def test_save_ticket(self):
+        comment = 'Thank you for signing up with us! ' \
+            'Currently we are sorting out the info and will reach ' \
+            'out again soon to continue with the setup.'
+
         ticket = Ticket()
         ticket.subject = 'Welcome to Pronto Service'
+        ticket.comment = comment
         ticket.requester = 'client@hisotech.com'
         ticket.requester_id = '1095195473'
         ticket.assignee = 'kan@prontomarketing.com'
@@ -19,6 +24,7 @@ class TicketTest(TestCase):
         ticket = Ticket.objects.last()
 
         self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
+        self.assertEqual(ticket.comment, comment)
         self.assertEqual(ticket.requester, 'client@hisotech.com')
         self.assertEqual(ticket.requester_id, '1095195473')
         self.assertEqual(ticket.assignee, 'kan@prontomarketing.com')

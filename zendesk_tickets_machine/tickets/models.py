@@ -3,6 +3,7 @@ from django.db import models
 
 class Ticket(models.Model):
     subject = models.CharField(max_length=300)
+    comment = models.CharField(max_length=500)
     requester = models.CharField(max_length=100)
     requester_id = models.CharField(max_length=50)
     assignee = models.CharField(max_length=100)
