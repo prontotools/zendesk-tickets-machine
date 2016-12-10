@@ -39,3 +39,16 @@ class TicketAPITest(TestCase):
             headers=self.headers,
             json=data
         )
+
+    @patch('zendesk.api.requests.post')
+    def test_create_ticket_on_zendesk_should_return_json(
+        self,
+        mock
+    ):
+        data = {}
+        mock.return_value.json.return_value = {'key': 'value'}
+
+        ticket = Ticket()
+        result = ticket.create(data)
+
+        self.assertEqual(result, {'key': 'value'})

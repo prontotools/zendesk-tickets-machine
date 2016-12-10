@@ -12,9 +12,10 @@ class Ticket(object):
 
     def create(self, data):
         url = self.zendesk_api_url+ '/api/v2/tickets.json'
-        requests.post(
+        response = requests.post(
             url,
             auth=(self.zendesk_api_user, self.zendesk_api_token),
             headers=self.headers,
             json=data
         )
+        return response.json()
