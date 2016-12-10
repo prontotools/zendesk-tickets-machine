@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from .forms import TicketForm
+from .models import Ticket
 
 
 class TicketView(TemplateView):
@@ -9,12 +10,14 @@ class TicketView(TemplateView):
 
     def get(self, request):
         form = TicketForm()
+        tickets = Ticket.objects.all()
 
         return render(
             request,
             self.template_name,
             {
-                'form': form
+                'form': form,
+                'tickets': tickets
             }
         )
 
@@ -22,10 +25,13 @@ class TicketView(TemplateView):
         form = TicketForm(request.POST)
         form.save()
 
+        tickets = Ticket.objects.all()
+
         return render(
             request,
             self.template_name,
             {
-                'form': form
+                'form': form,
+                'tickets': tickets
             }
         )

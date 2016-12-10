@@ -45,6 +45,19 @@
     <th>Tags</th>
   {% endspaceless %}
   </tr>
-  <tr>
-  </tr>
+  {% for each in tickets %}
+    {% spaceless %}
+    <tr>
+      <td>{{ each.subject }}</td>
+      <td>{{ each.comment }}</td>
+      <td>{{ each.requester }}</td>
+      <td>{{ each.requester_id }}</td>
+      <td>{{ each.assignee }}</td>
+      <td>{{ each.assignee_id }}</td>
+      <td>{{ each.ticket_type }}</td>
+      <td>{{ each.priority }}</td>
+      <td>{{ each.tags }}</td>
+    </tr>
+    {% endspaceless %}
+  {% endfor %}
 </table>

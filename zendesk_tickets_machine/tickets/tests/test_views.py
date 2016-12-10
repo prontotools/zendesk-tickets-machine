@@ -71,6 +71,44 @@ class TicketViewTest(TestCase):
         expected = '<input type="submit">'
         self.assertContains(response, expected, status_code=200)
 
+    def test_ticket_view_should_show_ticket_list(self):
+        Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            requester_id='1095195473',
+            assignee='kan@prontomarketing.com',
+            assignee_id='1095195243',
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome'
+        )
+        Ticket.objects.create(
+            subject='Ticket 2',
+            comment='Comment 2',
+            requester='client+another@hisotech.com',
+            requester_id='1095195474',
+            assignee='kan+another@prontomarketing.com',
+            assignee_id='1095195244',
+            ticket_type='question',
+            priority='high',
+            tags='welcome internal'
+        )
+
+        response = self.client.get(reverse('tickets'))
+
+        expected = '<tr><td>Ticket 1</td><td>Comment 1</td>' \
+            '<td>client@hisotech.com</td><td>1095195473</td>' \
+            '<td>kan@prontomarketing.com</td><td>1095195243</td>' \
+            '<td>question</td><td>urgent</td><td>welcome</td></tr>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td>Ticket 2</td><td>Comment 2</td>' \
+            '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>kan+another@prontomarketing.com</td><td>1095195244</td>' \
+            '<td>question</td><td>high</td><td>welcome internal</td></tr>'
+        self.assertContains(response, expected, status_code=200)
+
     def test_ticket_view_should_save_data_when_submit_form(self):
         data = {
             'subject': 'Welcome to Pronto Service',
@@ -102,4 +140,11 @@ class TicketViewTest(TestCase):
         self.assertEqual(ticket.tags, 'welcome')
 
         expected = '<form method="post">'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td>Welcome to Pronto Service</td>' \
+            '<td>This is a comment.</td><td>client@hisotech.com</td>' \
+            '<td>1095195473</td><td>kan@prontomarketing.com</td>' \
+            '<td>1095195243</td><td>question</td><td>urgent</td>' \
+            '<td>welcome</td></tr>'
         self.assertContains(response, expected, status_code=200)
