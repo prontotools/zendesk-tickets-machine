@@ -123,3 +123,5 @@ STATIC_URL = '/static/'
 
 
 ZENDESK_API_URL = os.environ.get('ZENDESK_API_URL', '')
+ZENDESK_API_USER = os.environ.get('ZENDESK_API_USER', '')
+ZENDESK_API_TOKEN = os.environ.get('ZENDESK_API_TOKEN', '')
