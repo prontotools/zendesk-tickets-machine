@@ -21,7 +21,7 @@ class TicketViewTest(TestCase):
             '<th>Ticket Type</th>' \
             '<th>Priority</th>' \
             '<th>Tags</th>'
-        self.assertContains(response, expected, status_code=200)
+        self.assertContains(response, expected, count=2, status_code=200)
 
     def test_ticket_view_should_render_ticket_form(self):
         response = self.client.get(reverse('tickets'))

@@ -3,30 +3,48 @@
   <table>
     <tr>
     {% spaceless %}
-        <th>Subject</th>
-        <th>Comment</th>
-        <th>Requester</th>
-        <th>Requester ID</th>
-        <th>Assignee</th>
-        <th>Assignee ID</th>
-        <th>Ticket Type</th>
-        <th>Priority</th>
-        <th>Tags</th>
+      <th>Subject</th>
+      <th>Comment</th>
+      <th>Requester</th>
+      <th>Requester ID</th>
+      <th>Assignee</th>
+      <th>Assignee ID</th>
+      <th>Ticket Type</th>
+      <th>Priority</th>
+      <th>Tags</th>
     {% endspaceless %}
     </tr>
     <tr>
-        <td>{{ form.subject }}</td>
-        <td>{{ form.comment }}</td>
-        <td>{{ form.requester }}</td>
-        <td>{{ form.requester_id }}</td>
-        <td>{{ form.assignee }}</td>
-        <td>{{ form.assignee_id }}</td>
-        <td>{{ form.ticket_type }}</td>
-        <td>{{ form.priority }}</td>
-        <td>{{ form.tags }}</td>
+      <td>{{ form.subject }}</td>
+      <td>{{ form.comment }}</td>
+      <td>{{ form.requester }}</td>
+      <td>{{ form.requester_id }}</td>
+      <td>{{ form.assignee }}</td>
+      <td>{{ form.assignee_id }}</td>
+      <td>{{ form.ticket_type }}</td>
+      <td>{{ form.priority }}</td>
+      <td>{{ form.tags }}</td>
     </tr>
     <tr>
-        <td><input type="submit"></td>
+      <td><input type="submit"></td>
     </tr>
   </table>
 </form>
+
+<table>
+  <tr>
+  {% spaceless %}
+    <th>Subject</th>
+    <th>Comment</th>
+    <th>Requester</th>
+    <th>Requester ID</th>
+    <th>Assignee</th>
+    <th>Assignee ID</th>
+    <th>Ticket Type</th>
+    <th>Priority</th>
+    <th>Tags</th>
+  {% endspaceless %}
+  </tr>
+  <tr>
+  </tr>
+</table>
