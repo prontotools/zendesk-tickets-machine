@@ -9,9 +9,15 @@
       <th>Requester ID</th>
       <th>Assignee</th>
       <th>Assignee ID</th>
+      <th>Group</th>
       <th>Ticket Type</th>
       <th>Priority</th>
       <th>Tags</th>
+      <th>Status</th>
+      <th>Private Comment</th>
+      <th>Zendesk Ticket ID</th>
+      <th>Stage</th>
+      <th>Vertical</th>
     {% endspaceless %}
     </tr>
     <tr>
@@ -21,9 +27,15 @@
       <td>{{ form.requester_id }}</td>
       <td>{{ form.assignee }}</td>
       <td>{{ form.assignee_id }}</td>
+      <td>{{ form.group }}</td>
       <td>{{ form.ticket_type }}</td>
       <td>{{ form.priority }}</td>
       <td>{{ form.tags }}</td>
+      <td>{{ form.status }}</td>
+      <td>{{ form.private_comment }}</td>
+      <td>{{ form.zendesk_ticket_id }}</td>
+      <td>{{ form.stage }}</td>
+      <td>{{ form.vertical }}</td>
     </tr>
     <tr>
       <td><input type="submit"></td>
@@ -40,9 +52,15 @@
     <th>Requester ID</th>
     <th>Assignee</th>
     <th>Assignee ID</th>
+    <th>Group</th>
     <th>Ticket Type</th>
     <th>Priority</th>
     <th>Tags</th>
+    <th>Status</th>
+    <th>Private Comment</th>
+    <th>Zendesk Ticket ID</th>
+    <th>Stage</th>
+    <th>Vertical</th>
   {% endspaceless %}
   </tr>
   {% for each in tickets %}
@@ -54,9 +72,15 @@
       <td>{{ each.requester_id }}</td>
       <td>{{ each.assignee }}</td>
       <td>{{ each.assignee_id }}</td>
+      <td>{{ each.group }}</td>
       <td>{{ each.ticket_type }}</td>
       <td>{{ each.priority }}</td>
       <td>{{ each.tags }}</td>
+      <td>{{ each.status }}</td>
+      <td>{{ each.private_comment }}</td>
+      <td>{{ each.zendesk_ticket_id }}</td>
+      <td>{{ each.stage }}</td>
+      <td>{{ each.vertical }}</td>
     </tr>
     {% endspaceless %}
   {% endfor %}

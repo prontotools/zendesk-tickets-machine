@@ -18,9 +18,15 @@ class TicketViewTest(TestCase):
             '<th>Requester ID</th>' \
             '<th>Assignee</th>' \
             '<th>Assignee ID</th>' \
+            '<th>Group</th>' \
             '<th>Ticket Type</th>' \
             '<th>Priority</th>' \
-            '<th>Tags</th>'
+            '<th>Tags</th>' \
+            '<th>Status</th>' \
+            '<th>Private Comment</th>' \
+            '<th>Zendesk Ticket ID</th>' \
+            '<th>Stage</th>' \
+            '<th>Vertical</th>'
         self.assertContains(response, expected, count=2, status_code=200)
 
     def test_ticket_view_should_render_ticket_form(self):
@@ -56,6 +62,10 @@ class TicketViewTest(TestCase):
             'name="assignee_id" type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
+        expected = '<input id="id_group" maxlength="50" ' \
+            'name="group" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
         expected = '<input id="id_ticket_type" maxlength="50" ' \
             'name="ticket_type" type="text" required />'
         self.assertContains(response, expected, status_code=200)
@@ -65,6 +75,26 @@ class TicketViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_tags" maxlength="300" name="tags" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_status" maxlength="300" name="status" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_private_comment" maxlength="500" ' \
+            'name="private_comment" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
+            'name="zendesk_ticket_id" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_stage" maxlength="10" name="stage" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_vertical" maxlength="30" name="vertical" ' \
             'type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
@@ -79,9 +109,15 @@ class TicketViewTest(TestCase):
             requester_id='1095195473',
             assignee='kan@prontomarketing.com',
             assignee_id='1095195243',
+            group='Marketing Services',
             ticket_type='question',
             priority='urgent',
-            tags='welcome'
+            tags='welcome',
+            status='open',
+            private_comment='Private comment',
+            zendesk_ticket_id='24328',
+            stage='A',
+            vertical='NASS'
         )
         Ticket.objects.create(
             subject='Ticket 2',
@@ -90,9 +126,15 @@ class TicketViewTest(TestCase):
             requester_id='1095195474',
             assignee='kan+another@prontomarketing.com',
             assignee_id='1095195244',
+            group='Marketing Services',
             ticket_type='question',
             priority='high',
-            tags='welcome internal'
+            tags='welcome internal',
+            status='open',
+            private_comment='Private comment',
+            zendesk_ticket_id='24328',
+            stage='A',
+            vertical='NASS'
         )
 
         response = self.client.get(reverse('tickets'))
@@ -100,13 +142,18 @@ class TicketViewTest(TestCase):
         expected = '<tr><td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td><td>1095195473</td>' \
             '<td>kan@prontomarketing.com</td><td>1095195243</td>' \
-            '<td>question</td><td>urgent</td><td>welcome</td></tr>'
+            '<td>Marketing Services</td><td>question</td><td>urgent</td>' \
+            '<td>welcome</td><td>open</td><td>Private comment</td>' \
+            '<td>24328</td><td>A</td><td>NASS</td></tr>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<tr><td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
             '<td>kan+another@prontomarketing.com</td><td>1095195244</td>' \
-            '<td>question</td><td>high</td><td>welcome internal</td></tr>'
+            '<td>Marketing Services</td><td>question</td><td>high</td>' \
+            '<td>welcome internal</td><td>open</td>' \
+            '<td>Private comment</td><td>24328</td><td>A</td>' \
+            '<td>NASS</td></tr>'
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_view_should_save_data_when_submit_form(self):
@@ -157,6 +204,8 @@ class TicketViewTest(TestCase):
         expected = '<tr><td>Welcome to Pronto Service</td>' \
             '<td>This is a comment.</td><td>client@hisotech.com</td>' \
             '<td>1095195473</td><td>kan@prontomarketing.com</td>' \
-            '<td>1095195243</td><td>question</td><td>urgent</td>' \
-            '<td>welcome</td></tr>'
+            '<td>1095195243</td><td>Marketing Services</td>' \
+            '<td>question</td><td>urgent</td><td>welcome</td>' \
+            '<td>open</td><td>Private comment</td><td>24328</td>' \
+            '<td>A</td><td>NASS</td></tr>'
         self.assertContains(response, expected, status_code=200)
