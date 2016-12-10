@@ -13,7 +13,13 @@ class TicketForm(forms.ModelForm):
             'requester_id',
             'assignee',
             'assignee_id',
+            'group',
             'ticket_type',
             'priority',
             'tags',
+            'status',
+            'private_comment',
+            'zendesk_ticket_id',
+            'stage',
+            'vertical',
         ]

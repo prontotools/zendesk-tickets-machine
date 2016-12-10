@@ -117,9 +117,15 @@ class TicketViewTest(TestCase):
             'requester_id': '1095195473',
             'assignee': 'kan@prontomarketing.com',
             'assignee_id': '1095195243',
+            'group': 'Marketing Services',
             'ticket_type': 'question',
             'priority': 'urgent',
-            'tags': 'welcome'
+            'tags': 'welcome',
+            'status': 'open',
+            'private_comment': 'Private comment',
+            'zendesk_ticket_id': '24328',
+            'stage': 'A',
+            'vertical': 'NASS'
         }
 
         response = self.client.post(
@@ -135,9 +141,15 @@ class TicketViewTest(TestCase):
         self.assertEqual(ticket.requester_id, '1095195473')
         self.assertEqual(ticket.assignee, 'kan@prontomarketing.com')
         self.assertEqual(ticket.assignee_id, '1095195243')
+        self.assertEqual(ticket.group, 'Marketing Services')
         self.assertEqual(ticket.ticket_type, 'question')
         self.assertEqual(ticket.priority, 'urgent')
         self.assertEqual(ticket.tags, 'welcome')
+        self.assertEqual(ticket.status, 'open')
+        self.assertEqual(ticket.private_comment, 'Private comment')
+        self.assertEqual(ticket.zendesk_ticket_id, '24328')
+        self.assertEqual(ticket.stage, 'A')
+        self.assertEqual(ticket.vertical, 'NASS')
 
         expected = '<form method="post">'
         self.assertContains(response, expected, status_code=200)
