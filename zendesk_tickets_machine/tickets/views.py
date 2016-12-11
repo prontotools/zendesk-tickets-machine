@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
@@ -41,7 +41,22 @@ class TicketView(TemplateView):
 
 class TicketNewView(View):
     def get(self, request, ticket_id):
-        zendesk_ticket = ZendeskTicket()
-        zendesk_ticket.create({})
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+            data = {
+                'ticket': {
+                    'subject': ticket.subject,
+                    'comment': {
+                        'body': ticket.comment
+                    },
+                    'requester_id': ticket.requester_id,
+                    'assignee_id': ticket.assignee_id,
+                }
+            }
+        except:
+            data = {}
 
-        return HttpResponse()
+        zendesk_ticket = ZendeskTicket()
+        result = zendesk_ticket.create(data)
+
+        return JsonResponse(result)
