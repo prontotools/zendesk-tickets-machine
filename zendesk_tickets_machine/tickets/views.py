@@ -4,6 +4,7 @@ from django.views.generic import TemplateView, View
 
 from .forms import TicketForm
 from .models import Ticket
+from zendesk.api import Ticket as ZendeskTicket
 
 
 class TicketView(TemplateView):
@@ -40,4 +41,7 @@ class TicketView(TemplateView):
 
 class TicketNewView(View):
     def get(self, request, ticket_id):
+        zendesk_ticket = ZendeskTicket()
+        zendesk_ticket.create({})
+
         return HttpResponse()

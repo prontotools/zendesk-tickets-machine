@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -5,7 +7,7 @@ from ..models import Ticket
 
 
 class TicketViewTest(TestCase):
-    def test_ticket_view_should_be_accessiable(self):
+    def test_ticket_view_should_be_accessible(self):
         response = self.client.get(reverse('tickets'))
         self.assertEqual(response.status_code, 200)
 
@@ -212,8 +214,20 @@ class TicketViewTest(TestCase):
 
 
 class TicketNewViewTest(TestCase):
-    def test_ticket_new_view_should_be_accessiable(self):
+    @patch('tickets.views.ZendeskTicket')
+    def test_ticket_new_view_should_be_accessible(self, mock):
         response = self.client.get(
             reverse('tickets_new', kwargs={'ticket_id': 1})
         )
         self.assertEqual(response.status_code, 200)
+
+    @patch('tickets.views.ZendeskTicket')
+    def test_ticket_new_view_should_send_data_to_create_zendesk_ticket(
+        self,
+        mock
+    ):
+        response = self.client.get(
+            reverse('tickets_new', kwargs={'ticket_id': 1})
+        )
+
+        mock.return_value.create.assert_called_once_with({})
