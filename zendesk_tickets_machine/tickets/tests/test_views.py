@@ -209,3 +209,11 @@ class TicketViewTest(TestCase):
             '<td>open</td><td>Private comment</td><td>24328</td>' \
             '<td>A</td><td>NASS</td></tr>'
         self.assertContains(response, expected, status_code=200)
+
+
+class TicketNewViewTest(TestCase):
+    def test_ticket_new_view_should_be_accessiable(self):
+        response = self.client.get(
+            reverse('tickets_new', kwargs={'ticket_id': 1})
+        )
+        self.assertEqual(response.status_code, 200)

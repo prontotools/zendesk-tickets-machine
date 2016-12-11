@@ -1,5 +1,6 @@
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 
 from .forms import TicketForm
 from .models import Ticket
@@ -35,3 +36,8 @@ class TicketView(TemplateView):
                 'tickets': tickets
             }
         )
+
+
+class TicketNewView(View):
+    def get(self, request, ticket_id):
+        return HttpResponse()
