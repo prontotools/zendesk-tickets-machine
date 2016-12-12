@@ -7,12 +7,12 @@ from django.test import TestCase
 from tickets.models import Ticket
 
 
-class ZendeskTicketCreateViewTest(TestCase):
+class ZendeskTicketsCreateViewTest(TestCase):
     @patch('zendesk.views.ZendeskTicket')
     def test_ticket_create_view_should_be_accessible(self, mock):
         mock.return_value.create.return_value = {}
 
-        response = self.client.get(reverse('zendesk_ticket_create'))
+        response = self.client.get(reverse('zendesk_tickets_create'))
 
         self.assertEqual(response.status_code, 200)
 
@@ -41,7 +41,7 @@ class ZendeskTicketCreateViewTest(TestCase):
             vertical='NASS'
         )
 
-        self.client.get(reverse('zendesk_ticket_create'))
+        self.client.get(reverse('zendesk_tickets_create'))
 
         data = {
             'ticket': {
@@ -97,7 +97,7 @@ class ZendeskTicketCreateViewTest(TestCase):
             vertical='NASS'
         )
 
-        self.client.get(reverse('zendesk_ticket_create'))
+        self.client.get(reverse('zendesk_tickets_create'))
 
         self.assertEqual(mock.return_value.create.call_count, 2)
 
@@ -181,7 +181,7 @@ class ZendeskTicketCreateViewTest(TestCase):
         }
         mock.return_value.create.return_value = result
 
-        response = self.client.get(reverse('zendesk_ticket_create'))
+        response = self.client.get(reverse('zendesk_tickets_create'))
 
         self.assertDictEqual(
             results,

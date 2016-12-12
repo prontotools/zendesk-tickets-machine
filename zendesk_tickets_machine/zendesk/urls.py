@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
-from .views import ZendeskTicketCreateView
+from .views import ZendeskTicketsCreateView
 
 
 urlpatterns = [
-    url(r'^tickets/$', ZendeskTicketCreateView.as_view(),
-        name='zendesk_ticket_create'),
+    url(r'^tickets/$', ZendeskTicketsCreateView.as_view(),
+        name='zendesk_tickets_create'),
 ]

@@ -5,7 +5,7 @@ from .api import Ticket as ZendeskTicket
 from tickets.models import Ticket
 
 
-class ZendeskTicketCreateView(View):
+class ZendeskTicketsCreateView(View):
     def get(self, request):
         zendesk_ticket = ZendeskTicket()
 

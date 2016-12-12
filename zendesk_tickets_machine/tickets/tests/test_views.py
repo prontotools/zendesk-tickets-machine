@@ -47,6 +47,13 @@ class TicketViewTest(TestCase):
             '<th>Vertical</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
+    def test_ticket_view_should_have_create_tickets_link(self):
+        response = self.client.get(reverse('tickets'))
+
+        expected = '<a href="%s">' \
+            'Create Tickets</a>' % reverse('zendesk_tickets_create')
+        self.assertContains(response, expected, count=1, status_code=200)
+
     def test_ticket_view_should_render_ticket_form(self):
         response = self.client.get(reverse('tickets'))
 
@@ -272,7 +279,7 @@ class TicketEditViewTest(TestCase):
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
 
-        expected = '<a href="/tickets/">Back</a>'
+        expected = '<a href="%s">Back</a>' % reverse('tickets')
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_have_table_header(self):
