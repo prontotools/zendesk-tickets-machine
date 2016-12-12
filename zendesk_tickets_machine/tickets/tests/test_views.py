@@ -270,6 +270,14 @@ class TicketEditViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_ticket_edit_view_should_have_back_link_to_ticket_list(self):
+        response = self.client.get(
+            reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
+        )
+
+        expected = '<a href="/tickets/">Back</a>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
     def test_ticket_edit_view_should_have_table_header(self):
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
