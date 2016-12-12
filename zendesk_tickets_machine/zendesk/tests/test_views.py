@@ -3,11 +3,13 @@ from unittest.mock import call, patch
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.test.utils import override_settings
 
 from tickets.models import Ticket
 
 
 class ZendeskTicketsCreateViewTest(TestCase):
+    @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
     def test_ticket_create_view_should_be_accessible(self, mock):
         mock.return_value.create.return_value = {}
@@ -16,6 +18,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
     def test_ticket_create_view_should_send_data_to_create_zendesk_ticket(
         self,
@@ -55,6 +58,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
         }
         mock.return_value.create.assert_called_once_with(data)
 
+    @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
     def test_ticket_create_view_should_create_two_tickets_if_there_are_two(
         self,
@@ -125,6 +129,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
         ]
         mock.return_value.create.assert_has_calls(calls)
 
+    @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
     def test_ticket_create_view_should_show_results_after_send_request(
         self,
