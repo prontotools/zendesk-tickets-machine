@@ -255,7 +255,7 @@ class TicketEditViewTest(TestCase):
             vertical='NASS'
         )
 
-    def test_ticket_view_should_be_accessible(self):
+    def test_ticket_edit_view_should_be_accessible(self):
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
@@ -403,6 +403,43 @@ class TicketEditViewTest(TestCase):
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
         self.assertEqual(ticket.stage, 'A')
         self.assertEqual(ticket.vertical, 'NASS')
+
+        self.assertRedirects(
+            response,
+            reverse('tickets'),
+            status_code=302,
+            target_status_code=200
+        )
+
+
+class TicketDeleteViewTest(TestCase):
+    def setUp(self):
+        self.ticket = Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            requester_id='1095195473',
+            assignee='kan@prontomarketing.com',
+            assignee_id='1095195243',
+            group='Marketing Services',
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            status='open',
+            private_comment='Private comment',
+            zendesk_ticket_id='24328',
+            stage='A',
+            vertical='NASS'
+        )
+
+    def test_ticket_delete_view_should_delete_and_redirect_to_ticket_view(
+        self
+    ):
+        response = self.client.get(
+            reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
+        )
+
+        self.assertEqual(Ticket.objects.count(), 0)
 
         self.assertRedirects(
             response,
