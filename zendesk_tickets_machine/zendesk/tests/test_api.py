@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.conf import settings
 from django.test import TestCase
 
-from ..api import Ticket
+from ..api import Ticket, User
 
 
 class TicketAPITest(TestCase):
@@ -52,3 +52,24 @@ class TicketAPITest(TestCase):
         result = ticket.create(data)
 
         self.assertEqual(result, {'key': 'value'})
+
+
+class UserAPITest(TestCase):
+    def setUp(self):
+        self.zendesk_api_url = settings.ZENDESK_API_URL
+        self.zendesk_api_user = settings.ZENDESK_API_USER
+        self.zendesk_api_token = settings.ZENDESK_API_TOKEN
+        self.headers = {'content-type': 'application/json'}
+
+    @patch('zendesk.api.requests.get')
+    def test_search_users_should_send_data_to_zendesk_correctly(self, mock):
+        url = self.zendesk_api_url + '/api/v2/users/search.json'
+
+        user = User()
+        user.search('kan@prontomarketing.com')
+
+        mock.assert_called_once_with(
+            url + '?query=kan@prontomarketing.com',
+            auth=(self.zendesk_api_user, self.zendesk_api_token),
+            headers=self.headers
+        )
