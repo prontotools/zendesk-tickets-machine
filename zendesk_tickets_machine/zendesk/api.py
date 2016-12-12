@@ -31,8 +31,9 @@ class User(object):
     def search(self, query):
         url = self.zendesk_api_url+ '/api/v2/users/search.json'
         url += '?query=' + query
-        requests.get(
+        response = requests.get(
             url,
             auth=(self.zendesk_api_user, self.zendesk_api_token),
             headers=self.headers
         )
+        return response.json()

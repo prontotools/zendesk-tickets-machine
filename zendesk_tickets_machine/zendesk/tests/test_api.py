@@ -73,3 +73,13 @@ class UserAPITest(TestCase):
             auth=(self.zendesk_api_user, self.zendesk_api_token),
             headers=self.headers
         )
+
+    @patch('zendesk.api.requests.get')
+    def test_search_users_should_return_json(self, mock):
+        url = self.zendesk_api_url + '/api/v2/users/search.json'
+        mock.return_value.json.return_value = {'key': 'value'}
+
+        user = User()
+        result = user.search('kan@prontomarketing.com')
+
+        self.assertEqual(result, {'key': 'value'})
