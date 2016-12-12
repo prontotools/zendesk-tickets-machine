@@ -43,7 +43,26 @@ class TicketEditView(TemplateView):
     template_name = 'ticket_edit.html'
 
     def get(self, request, ticket_id):
-        form = TicketForm()
+        ticket = Ticket.objects.get(id=ticket_id)
+
+        initial = {
+            'subject': ticket.subject,
+            'comment': ticket.comment,
+            'requester': ticket.requester,
+            'requester_id': ticket.requester_id,
+            'assignee': ticket.assignee,
+            'assignee_id': ticket.assignee_id,
+            'group': ticket.group,
+            'ticket_type': ticket.ticket_type,
+            'priority': ticket.priority,
+            'tags': ticket.tags,
+            'status': ticket.status,
+            'private_comment': ticket.private_comment,
+            'zendesk_ticket_id': ticket.zendesk_ticket_id,
+            'stage': ticket.stage,
+            'vertical': ticket.vertical
+        }
+        form = TicketForm(initial=initial)
 
         return render(
             request,

@@ -274,63 +274,66 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_subject" maxlength="300" name="subject" ' \
-            'type="text" required />'
+            'type="text" value="Ticket 1" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_comment" maxlength="500" name="comment" ' \
-            'type="text" required />'
+            'type="text" value="Comment 1" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_requester" maxlength="100" ' \
-            'name="requester" type="text" required />'
+            'name="requester" type="text" value="client@hisotech.com" ' \
+            'required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_requester_id" maxlength="50" ' \
-            'name="requester_id" type="text" required />'
+            'name="requester_id" type="text" value="1095195473" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_assignee" maxlength="100" ' \
-            'name="assignee" type="text" required />'
+            'name="assignee" type="text" value="kan@prontomarketing.com" ' \
+            'required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_assignee_id" maxlength="50" ' \
-            'name="assignee_id" type="text" required />'
+            'name="assignee_id" type="text" value="1095195243" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_group" maxlength="50" ' \
-            'name="group" type="text" required />'
+            'name="group" type="text" value="Marketing Services" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_ticket_type" maxlength="50" ' \
-            'name="ticket_type" type="text" required />'
+            'name="ticket_type" type="text" value="question" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_priority" maxlength="50" ' \
-            'name="priority" type="text" required />'
+            'name="priority" type="text" value="urgent" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_tags" maxlength="300" name="tags" ' \
-            'type="text" required />'
+            'type="text" value="welcome" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_status" maxlength="300" name="status" ' \
-            'type="text" required />'
+            'type="text" value="open" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_private_comment" maxlength="500" ' \
-            'name="private_comment" type="text" required />'
+            'name="private_comment" type="text" value="Private comment" ' \
+            'required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
-            'name="zendesk_ticket_id" type="text" required />'
+            'name="zendesk_ticket_id" type="text" value="24328" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_stage" maxlength="10" name="stage" ' \
-            'type="text" required />'
+            'type="text" value="A" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_vertical" maxlength="30" name="vertical" ' \
-            'type="text" required />'
+            'type="text" value="NASS" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input type="submit">'
