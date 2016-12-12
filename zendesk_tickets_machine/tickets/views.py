@@ -40,10 +40,15 @@ class TicketView(TemplateView):
 
 
 class TicketEditView(TemplateView):
-    template_name = 'tickets.html'
+    template_name = 'ticket_edit.html'
 
     def get(self, request, ticket_id):
+        form = TicketForm()
+
         return render(
             request,
-            self.template_name
+            self.template_name,
+            {
+                'form': form
+            }
         )

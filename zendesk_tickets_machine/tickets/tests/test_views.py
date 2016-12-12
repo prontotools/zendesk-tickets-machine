@@ -215,8 +215,8 @@ class TicketViewTest(TestCase):
 
 
 class TicketEditViewTest(TestCase):
-    def test_ticket_view_should_be_accessible(self):
-        ticket = Ticket.objects.create(
+    def setUp(self):
+        self.ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
@@ -234,8 +234,104 @@ class TicketEditViewTest(TestCase):
             vertical='NASS'
         )
 
+    def test_ticket_view_should_be_accessible(self):
         response = self.client.get(
-            reverse('ticket_edit', kwargs={'ticket_id': ticket.id})
+            reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_ticket_edit_view_should_have_table_header(self):
+        response = self.client.get(
+            reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
 
-        self.assertEqual(response.status_code, 200)
+        expected = '<th>Subject</th>' \
+            '<th>Comment</th>' \
+            '<th>Requester</th>' \
+            '<th>Requester ID</th>' \
+            '<th>Assignee</th>' \
+            '<th>Assignee ID</th>' \
+            '<th>Group</th>' \
+            '<th>Ticket Type</th>' \
+            '<th>Priority</th>' \
+            '<th>Tags</th>' \
+            '<th>Status</th>' \
+            '<th>Private Comment</th>' \
+            '<th>Zendesk Ticket ID</th>' \
+            '<th>Stage</th>' \
+            '<th>Vertical</th>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+    def test_ticket_edit_view_should_render_ticket_form(self):
+        response = self.client.get(
+            reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
+        )
+
+        expected = '<form method="post">'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = "<input type='hidden' name='csrfmiddlewaretoken'"
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_subject" maxlength="300" name="subject" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_comment" maxlength="500" name="comment" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_requester" maxlength="100" ' \
+            'name="requester" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_requester_id" maxlength="50" ' \
+            'name="requester_id" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_assignee" maxlength="100" ' \
+            'name="assignee" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_assignee_id" maxlength="50" ' \
+            'name="assignee_id" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_group" maxlength="50" ' \
+            'name="group" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_ticket_type" maxlength="50" ' \
+            'name="ticket_type" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_priority" maxlength="50" ' \
+            'name="priority" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_tags" maxlength="300" name="tags" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_status" maxlength="300" name="status" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_private_comment" maxlength="500" ' \
+            'name="private_comment" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
+            'name="zendesk_ticket_id" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_stage" maxlength="10" name="stage" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_vertical" maxlength="30" name="vertical" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input type="submit">'
+        self.assertContains(response, expected, status_code=200)
