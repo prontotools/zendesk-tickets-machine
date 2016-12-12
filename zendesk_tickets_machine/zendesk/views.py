@@ -2,7 +2,6 @@ import time
 
 from django.conf import settings
 from django.http import JsonResponse
-from django.test.utils import override_settings
 from django.views.generic import View
 
 from .api import Ticket as ZendeskTicket
