@@ -20,4 +20,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^tickets/', include('tickets.urls')),
+    url(r'^zendesk/', include('zendesk.urls')),
 ]
