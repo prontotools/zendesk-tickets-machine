@@ -214,113 +214,28 @@ class TicketViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
 
-class TicketNewViewTest(TestCase):
-    @patch('tickets.views.ZendeskTicket')
-    def test_ticket_new_view_should_be_accessible(self, mock):
-        mock.return_value.create.return_value = {}
+class TicketEditViewTest(TestCase):
+    def test_ticket_view_should_be_accessible(self):
+        ticket = Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            requester_id='1095195473',
+            assignee='kan@prontomarketing.com',
+            assignee_id='1095195243',
+            group='Marketing Services',
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            status='open',
+            private_comment='Private comment',
+            zendesk_ticket_id='24328',
+            stage='A',
+            vertical='NASS'
+        )
 
         response = self.client.get(
-            reverse('tickets_new', kwargs={'ticket_id': 1})
+            reverse('ticket_edit', kwargs={'ticket_id': ticket.id})
         )
 
         self.assertEqual(response.status_code, 200)
-
-    @patch('tickets.views.ZendeskTicket')
-    def test_ticket_new_view_should_send_data_to_create_zendesk_ticket(
-        self,
-        mock
-    ):
-        mock.return_value.create.return_value = {}
-
-        ticket = Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
-            group='Marketing Services',
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome',
-            status='open',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
-        )
-
-        response = self.client.get(
-            reverse('tickets_new', kwargs={'ticket_id': ticket.id})
-        )
-
-        data = {
-            'ticket': {
-                'subject': 'Ticket 1',
-                'comment': {
-                    'body': 'Comment 1'
-                },
-                'requester_id': '1095195473',
-                'assignee_id': '1095195243',
-            }
-        }
-        mock.return_value.create.assert_called_once_with(data)
-
-    @patch('tickets.views.ZendeskTicket')
-    def test_ticket_new_view_should_show_result_after_send_request(self, mock):
-        ticket = Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
-            group='Marketing Services',
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome',
-            status='open',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
-        )
-
-        ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
-            'tickets/16.json'
-        result = {
-            'ticket': {
-                'subject': 'Hello',
-                'submitter_id': 1095195473,
-                'priority': None,
-                'raw_subject': 'Hello',
-                'id': 16,
-                'url': ticket_url,
-                'group_id': 23338833,
-                'tags': [],
-                'assignee_id': 1095195243,
-                'via': {
-                    'channel': 'api',
-                    'source': {
-                        'from': {}, 'to': {}, 'rel': None
-                    }
-                },
-                'ticket_form_id': None,
-                'updated_at': '2016-12-11T13:27:12Z',
-                'created_at': '2016-12-11T13:27:12Z',
-                'description': 'yeah..',
-                'status': 'open',
-                'requester_id': 1095195473,
-                'forum_topic_id': None
-            }
-        }
-        mock.return_value.create.return_value = result
-
-        response = self.client.get(
-            reverse('tickets_new', kwargs={'ticket_id': ticket.id})
-        )
-
-        self.assertDictEqual(
-            result,
-            json.loads(response.content.decode('utf-8'))
-        )
