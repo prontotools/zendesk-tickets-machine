@@ -67,7 +67,7 @@
   {% for each in tickets %}
     {% spaceless %}
     <tr>
-      <td><a href="{% url 'ticket_edit' each.id %}">Edit</a></td>
+      <td><a href="{% url 'ticket_edit' each.id %}">Edit</a> | <a href="{% url 'ticket_delete' each.id %}">Delete</a></td>
       <td>{{ each.subject }}</td>
       <td>{{ each.comment }}</td>
       <td>{{ each.requester }}</td>

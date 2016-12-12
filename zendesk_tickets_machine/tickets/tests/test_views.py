@@ -160,23 +160,31 @@ class TicketViewTest(TestCase):
 
         response = self.client.get(reverse('tickets'))
 
-        expected = '<tr><td><a href="/tickets/%s/">Edit</a></td>' \
+        expected = '<tr><td><a href="/tickets/%s/">Edit</a> | ' \
+            '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td><td>1095195473</td>' \
             '<td>kan@prontomarketing.com</td><td>1095195243</td>' \
             '<td>Marketing Services</td><td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>open</td><td>Private comment</td>' \
-            '<td>24328</td><td>A</td><td>NASS</td></tr>' % first_ticket.id
+            '<td>24328</td><td>A</td><td>NASS</td></tr>' % (
+                first_ticket.id,
+                first_ticket.id
+            )
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<tr><td><a href="/tickets/%s/">Edit</a></td>' \
+        expected = '<tr><td><a href="/tickets/%s/">Edit</a> | ' \
+            '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
             '<td>kan+another@prontomarketing.com</td><td>1095195244</td>' \
             '<td>Marketing Services</td><td>question</td><td>high</td>' \
             '<td>welcome internal</td><td>open</td>' \
             '<td>Private comment</td><td>24328</td><td>A</td>' \
-            '<td>NASS</td></tr>' % second_ticket.id
+            '<td>NASS</td></tr>' % (
+                second_ticket.id,
+                second_ticket.id
+            )
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_view_should_save_data_when_submit_form(self):
@@ -224,14 +232,15 @@ class TicketViewTest(TestCase):
         expected = '<form method="post">'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<tr><td><a href="/tickets/%s/">Edit</a></td>' \
+        expected = '<tr><td><a href="/tickets/%s/">Edit</a> | ' \
+            '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Welcome to Pronto Service</td>' \
             '<td>This is a comment.</td><td>client@hisotech.com</td>' \
             '<td>1095195473</td><td>kan@prontomarketing.com</td>' \
             '<td>1095195243</td><td>Marketing Services</td>' \
             '<td>question</td><td>urgent</td><td>welcome</td>' \
             '<td>open</td><td>Private comment</td><td>24328</td>' \
-            '<td>A</td><td>NASS</td></tr>' % ticket.id
+            '<td>A</td><td>NASS</td></tr>' % (ticket.id, ticket.id)
         self.assertContains(response, expected, status_code=200)
 
 
