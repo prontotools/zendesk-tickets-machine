@@ -11,7 +11,7 @@ class Ticket(object):
         self.headers = {'content-type': 'application/json'}
 
     def create(self, data):
-        url = self.zendesk_api_url+ '/api/v2/tickets.json'
+        url = self.zendesk_api_url + '/api/v2/tickets.json'
         response = requests.post(
             url,
             auth=(self.zendesk_api_user, self.zendesk_api_token),
@@ -29,7 +29,7 @@ class User(object):
         self.headers = {'content-type': 'application/json'}
 
     def search(self, query):
-        url = self.zendesk_api_url+ '/api/v2/users/search.json'
+        url = self.zendesk_api_url + '/api/v2/users/search.json'
         url += '?query=' + query
         response = requests.get(
             url,

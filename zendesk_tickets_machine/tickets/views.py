@@ -5,7 +5,6 @@ from django.views.generic import TemplateView, View
 
 from .forms import TicketForm
 from .models import Ticket
-from zendesk.api import Ticket as ZendeskTicket
 
 
 class TicketView(TemplateView):
@@ -83,5 +82,5 @@ class TicketEditView(TemplateView):
 
 class TicketDeleteView(View):
     def get(self, request, ticket_id):
-        ticket = Ticket.objects.get(id=ticket_id).delete()
+        Ticket.objects.get(id=ticket_id).delete()
         return HttpResponseRedirect(reverse('tickets'))

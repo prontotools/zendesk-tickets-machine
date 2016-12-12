@@ -23,7 +23,7 @@ class ZendeskTicketCreateViewTest(TestCase):
     ):
         mock.return_value.create.return_value = {}
 
-        ticket = Ticket.objects.create(
+        Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
@@ -41,7 +41,7 @@ class ZendeskTicketCreateViewTest(TestCase):
             vertical='NASS'
         )
 
-        response = self.client.get(reverse('zendesk_ticket_create'))
+        self.client.get(reverse('zendesk_ticket_create'))
 
         data = {
             'ticket': {
@@ -97,7 +97,7 @@ class ZendeskTicketCreateViewTest(TestCase):
             vertical='NASS'
         )
 
-        response = self.client.get(reverse('zendesk_ticket_create'))
+        self.client.get(reverse('zendesk_ticket_create'))
 
         self.assertEqual(mock.return_value.create.call_count, 2)
 
@@ -130,7 +130,7 @@ class ZendeskTicketCreateViewTest(TestCase):
         self,
         mock
     ):
-        ticket = Ticket.objects.create(
+        Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
