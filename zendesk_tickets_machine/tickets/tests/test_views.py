@@ -32,6 +32,24 @@ class TicketViewTest(TestCase):
             '<th>Vertical</th>'
         self.assertContains(response, expected, count=2, status_code=200)
 
+        expected = '<th></th>' \
+            '<th>Subject</th>' \
+            '<th>Comment</th>' \
+            '<th>Requester</th>' \
+            '<th>Requester ID</th>' \
+            '<th>Assignee</th>' \
+            '<th>Assignee ID</th>' \
+            '<th>Group</th>' \
+            '<th>Ticket Type</th>' \
+            '<th>Priority</th>' \
+            '<th>Tags</th>' \
+            '<th>Status</th>' \
+            '<th>Private Comment</th>' \
+            '<th>Zendesk Ticket ID</th>' \
+            '<th>Stage</th>' \
+            '<th>Vertical</th>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
     def test_ticket_view_should_render_ticket_form(self):
         response = self.client.get(reverse('tickets'))
 
@@ -105,7 +123,7 @@ class TicketViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_view_should_show_ticket_list(self):
-        Ticket.objects.create(
+        first_ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
@@ -122,7 +140,7 @@ class TicketViewTest(TestCase):
             stage='A',
             vertical='NASS'
         )
-        Ticket.objects.create(
+        second_ticket = Ticket.objects.create(
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
@@ -142,21 +160,23 @@ class TicketViewTest(TestCase):
 
         response = self.client.get(reverse('tickets'))
 
-        expected = '<tr><td>Ticket 1</td><td>Comment 1</td>' \
+        expected = '<tr><td><a href="/tickets/%s/">Edit</a></td>' \
+            '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td><td>1095195473</td>' \
             '<td>kan@prontomarketing.com</td><td>1095195243</td>' \
             '<td>Marketing Services</td><td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>open</td><td>Private comment</td>' \
-            '<td>24328</td><td>A</td><td>NASS</td></tr>'
+            '<td>24328</td><td>A</td><td>NASS</td></tr>' % first_ticket.id
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<tr><td>Ticket 2</td><td>Comment 2</td>' \
+        expected = '<tr><td><a href="/tickets/%s/">Edit</a></td>' \
+            '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
             '<td>kan+another@prontomarketing.com</td><td>1095195244</td>' \
             '<td>Marketing Services</td><td>question</td><td>high</td>' \
             '<td>welcome internal</td><td>open</td>' \
             '<td>Private comment</td><td>24328</td><td>A</td>' \
-            '<td>NASS</td></tr>'
+            '<td>NASS</td></tr>' % second_ticket.id
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_view_should_save_data_when_submit_form(self):
@@ -204,13 +224,14 @@ class TicketViewTest(TestCase):
         expected = '<form method="post">'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<tr><td>Welcome to Pronto Service</td>' \
+        expected = '<tr><td><a href="/tickets/%s/">Edit</a></td>' \
+            '<td>Welcome to Pronto Service</td>' \
             '<td>This is a comment.</td><td>client@hisotech.com</td>' \
             '<td>1095195473</td><td>kan@prontomarketing.com</td>' \
             '<td>1095195243</td><td>Marketing Services</td>' \
             '<td>question</td><td>urgent</td><td>welcome</td>' \
             '<td>open</td><td>Private comment</td><td>24328</td>' \
-            '<td>A</td><td>NASS</td></tr>'
+            '<td>A</td><td>NASS</td></tr>' % ticket.id
         self.assertContains(response, expected, status_code=200)
 
 
