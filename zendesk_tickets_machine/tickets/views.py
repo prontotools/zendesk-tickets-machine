@@ -1,4 +1,5 @@
-from django.http import JsonResponse
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
@@ -71,3 +72,10 @@ class TicketEditView(TemplateView):
                 'form': form
             }
         )
+
+    def post(self, request, ticket_id):
+        ticket = Ticket.objects.get(id=ticket_id)
+        form = TicketForm(request.POST, instance=ticket)
+        form.save()
+
+        return HttpResponseRedirect(reverse('tickets'))

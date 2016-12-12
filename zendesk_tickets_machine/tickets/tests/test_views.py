@@ -338,3 +338,54 @@ class TicketEditViewTest(TestCase):
 
         expected = '<input type="submit">'
         self.assertContains(response, expected, status_code=200)
+
+    def test_ticket_edit_view_should_save_data_and_redirect_to_ticket_view(
+        self
+    ):
+        data = {
+            'subject': 'Welcome to Pronto Service',
+            'comment': 'This is a comment.',
+            'requester': 'client@hisotech.com',
+            'requester_id': '1095195473',
+            'assignee': 'kan@prontomarketing.com',
+            'assignee_id': '1095195243',
+            'group': 'Marketing Services',
+            'ticket_type': 'question',
+            'priority': 'urgent',
+            'tags': 'welcome',
+            'status': 'open',
+            'private_comment': 'Private comment',
+            'zendesk_ticket_id': '24328',
+            'stage': 'A',
+            'vertical': 'NASS'
+        }
+
+        response = self.client.post(
+            reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id}),
+            data=data
+        )
+
+        ticket = Ticket.objects.get(id=self.ticket.id)
+
+        self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
+        self.assertEqual(ticket.comment, 'This is a comment.')
+        self.assertEqual(ticket.requester, 'client@hisotech.com')
+        self.assertEqual(ticket.requester_id, '1095195473')
+        self.assertEqual(ticket.assignee, 'kan@prontomarketing.com')
+        self.assertEqual(ticket.assignee_id, '1095195243')
+        self.assertEqual(ticket.group, 'Marketing Services')
+        self.assertEqual(ticket.ticket_type, 'question')
+        self.assertEqual(ticket.priority, 'urgent')
+        self.assertEqual(ticket.tags, 'welcome')
+        self.assertEqual(ticket.status, 'open')
+        self.assertEqual(ticket.private_comment, 'Private comment')
+        self.assertEqual(ticket.zendesk_ticket_id, '24328')
+        self.assertEqual(ticket.stage, 'A')
+        self.assertEqual(ticket.vertical, 'NASS')
+
+        self.assertRedirects(
+            response,
+            reverse('tickets'),
+            status_code=302,
+            target_status_code=200
+        )
