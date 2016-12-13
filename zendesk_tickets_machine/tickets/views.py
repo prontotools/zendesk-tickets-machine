@@ -58,9 +58,7 @@ class TicketEditView(TemplateView):
             'tags': ticket.tags,
             'status': ticket.status,
             'private_comment': ticket.private_comment,
-            'zendesk_ticket_id': ticket.zendesk_ticket_id,
-            'stage': ticket.stage,
-            'vertical': ticket.vertical
+            'zendesk_ticket_id': ticket.zendesk_ticket_id
         }
         form = TicketForm(initial=initial)
 

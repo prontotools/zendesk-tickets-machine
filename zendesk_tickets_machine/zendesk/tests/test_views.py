@@ -39,9 +39,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             tags='welcome',
             status='open',
             private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
+            zendesk_ticket_id='24328'
         )
 
         self.client.get(reverse('zendesk_tickets_create'))
@@ -82,9 +80,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             tags='welcome',
             status='open',
             private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
+            zendesk_ticket_id='24328'
         )
         Ticket.objects.create(
             subject='Ticket 2',
@@ -99,9 +95,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             tags='welcome',
             status='open',
             private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
+            zendesk_ticket_id='24328'
         )
 
         self.client.get(reverse('zendesk_tickets_create'))
@@ -157,9 +151,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             tags='welcome',
             status='open',
             private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
+            zendesk_ticket_id='24328'
         )
 
         ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \

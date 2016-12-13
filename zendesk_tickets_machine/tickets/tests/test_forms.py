@@ -21,10 +21,8 @@ class TicketFormTest(TestCase):
             'status',
             'private_comment',
             'zendesk_ticket_id',
-            'stage',
-            'vertical',
         ]
         for each in expected_fields:
             self.assertTrue(each in form.fields)
 
-        self.assertEqual(len(form.fields), 15)
+        self.assertEqual(len(form.fields), 13)

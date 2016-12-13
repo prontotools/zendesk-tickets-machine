@@ -20,6 +20,4 @@ class TicketForm(forms.ModelForm):
             'status',
             'private_comment',
             'zendesk_ticket_id',
-            'stage',
-            'vertical',
         ]

@@ -24,9 +24,7 @@ class TicketViewTest(TestCase):
             '<th>Tags</th>' \
             '<th>Status</th>' \
             '<th>Private Comment</th>' \
-            '<th>Zendesk Ticket ID</th>' \
-            '<th>Stage</th>' \
-            '<th>Vertical</th>'
+            '<th>Zendesk Ticket ID</th>'
         self.assertContains(response, expected, count=2, status_code=200)
 
         expected = '<th></th>' \
@@ -42,9 +40,7 @@ class TicketViewTest(TestCase):
             '<th>Tags</th>' \
             '<th>Status</th>' \
             '<th>Private Comment</th>' \
-            '<th>Zendesk Ticket ID</th>' \
-            '<th>Stage</th>' \
-            '<th>Vertical</th>'
+            '<th>Zendesk Ticket ID</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_view_should_have_create_tickets_link(self):
@@ -115,14 +111,6 @@ class TicketViewTest(TestCase):
             'name="zendesk_ticket_id" type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_stage" maxlength="10" name="stage" ' \
-            'type="text" required />'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<input id="id_vertical" maxlength="30" name="vertical" ' \
-            'type="text" required />'
-        self.assertContains(response, expected, status_code=200)
-
         expected = '<input type="submit">'
         self.assertContains(response, expected, status_code=200)
 
@@ -140,9 +128,7 @@ class TicketViewTest(TestCase):
             tags='welcome',
             status='open',
             private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
+            zendesk_ticket_id='24328'
         )
         second_ticket = Ticket.objects.create(
             subject='Ticket 2',
@@ -157,9 +143,7 @@ class TicketViewTest(TestCase):
             tags='welcome internal',
             status='open',
             private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
+            zendesk_ticket_id='24328'
         )
 
         response = self.client.get(reverse('tickets'))
@@ -171,7 +155,7 @@ class TicketViewTest(TestCase):
             '<td>kan@prontomarketing.com</td><td>1095195243</td>' \
             '<td>Marketing Services</td><td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>open</td><td>Private comment</td>' \
-            '<td>24328</td><td>A</td><td>NASS</td></tr>' % (
+            '<td>24328</td></tr>' % (
                 first_ticket.id,
                 first_ticket.id
             )
@@ -184,8 +168,7 @@ class TicketViewTest(TestCase):
             '<td>kan+another@prontomarketing.com</td><td>1095195244</td>' \
             '<td>Marketing Services</td><td>question</td><td>high</td>' \
             '<td>welcome internal</td><td>open</td>' \
-            '<td>Private comment</td><td>24328</td><td>A</td>' \
-            '<td>NASS</td></tr>' % (
+            '<td>Private comment</td><td>24328</td></tr>' % (
                 second_ticket.id,
                 second_ticket.id
             )
@@ -205,9 +188,7 @@ class TicketViewTest(TestCase):
             'tags': 'welcome',
             'status': 'open',
             'private_comment': 'Private comment',
-            'zendesk_ticket_id': '24328',
-            'stage': 'A',
-            'vertical': 'NASS'
+            'zendesk_ticket_id': '24328'
         }
 
         response = self.client.post(
@@ -230,8 +211,6 @@ class TicketViewTest(TestCase):
         self.assertEqual(ticket.status, 'open')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
-        self.assertEqual(ticket.stage, 'A')
-        self.assertEqual(ticket.vertical, 'NASS')
 
         expected = '<form method="post">'
         self.assertContains(response, expected, status_code=200)
@@ -244,7 +223,7 @@ class TicketViewTest(TestCase):
             '<td>1095195243</td><td>Marketing Services</td>' \
             '<td>question</td><td>urgent</td><td>welcome</td>' \
             '<td>open</td><td>Private comment</td><td>24328</td>' \
-            '<td>A</td><td>NASS</td></tr>' % (ticket.id, ticket.id)
+            '</tr>' % (ticket.id, ticket.id)
         self.assertContains(response, expected, status_code=200)
 
 
@@ -263,9 +242,7 @@ class TicketEditViewTest(TestCase):
             tags='welcome',
             status='open',
             private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
+            zendesk_ticket_id='24328'
         )
 
     def test_ticket_edit_view_should_be_accessible(self):
@@ -299,9 +276,7 @@ class TicketEditViewTest(TestCase):
             '<th>Tags</th>' \
             '<th>Status</th>' \
             '<th>Private Comment</th>' \
-            '<th>Zendesk Ticket ID</th>' \
-            '<th>Stage</th>' \
-            '<th>Vertical</th>'
+            '<th>Zendesk Ticket ID</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_render_ticket_form(self):
@@ -370,14 +345,6 @@ class TicketEditViewTest(TestCase):
             'name="zendesk_ticket_id" type="text" value="24328" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_stage" maxlength="10" name="stage" ' \
-            'type="text" value="A" required />'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<input id="id_vertical" maxlength="30" name="vertical" ' \
-            'type="text" value="NASS" required />'
-        self.assertContains(response, expected, status_code=200)
-
         expected = '<input type="submit">'
         self.assertContains(response, expected, status_code=200)
 
@@ -397,9 +364,7 @@ class TicketEditViewTest(TestCase):
             'tags': 'welcome',
             'status': 'open',
             'private_comment': 'Private comment',
-            'zendesk_ticket_id': '24328',
-            'stage': 'A',
-            'vertical': 'NASS'
+            'zendesk_ticket_id': '24328'
         }
 
         response = self.client.post(
@@ -422,8 +387,6 @@ class TicketEditViewTest(TestCase):
         self.assertEqual(ticket.status, 'open')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
-        self.assertEqual(ticket.stage, 'A')
-        self.assertEqual(ticket.vertical, 'NASS')
 
         self.assertRedirects(
             response,
@@ -448,9 +411,7 @@ class TicketDeleteViewTest(TestCase):
             tags='welcome',
             status='open',
             private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            stage='A',
-            vertical='NASS'
+            zendesk_ticket_id='24328'
         )
 
     def test_ticket_delete_view_should_delete_and_redirect_to_ticket_view(

@@ -15,5 +15,3 @@ class Ticket(models.Model):
     status = models.CharField(max_length=300)
     private_comment = models.CharField(max_length=500)
     zendesk_ticket_id = models.CharField(max_length=50)
-    stage = models.CharField(max_length=10)
-    vertical = models.CharField(max_length=30)

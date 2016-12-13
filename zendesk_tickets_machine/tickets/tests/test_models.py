@@ -23,8 +23,6 @@ class TicketTest(TestCase):
         ticket.status = 'open'
         ticket.private_comment = 'Private comment'
         ticket.zendesk_ticket_id = '24328'
-        ticket.stage = 'A'
-        ticket.vertical = 'NASS'
         ticket.save()
 
         ticket = Ticket.objects.last()
@@ -42,5 +40,3 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.status, 'open')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
-        self.assertEqual(ticket.stage, 'A')
-        self.assertEqual(ticket.vertical, 'NASS')
