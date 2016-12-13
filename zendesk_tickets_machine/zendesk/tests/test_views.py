@@ -55,7 +55,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'requester_id': '1095195473',
                 'assignee_id': '1095195243',
                 'group_id': '12345',
-                'type': 'question'
+                'type': 'question',
+                'priority': 'urgent'
             }
         }
         mock.return_value.create.assert_called_once_with(data)
@@ -94,7 +95,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             assignee_id='1095195243',
             group='6789',
             ticket_type='question',
-            priority='urgent',
+            priority='low',
             tags='welcome',
             status='open',
             private_comment='Private comment',
@@ -117,7 +118,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     'requester_id': '1095195473',
                     'assignee_id': '1095195243',
                     'group_id': '12345',
-                    'type': 'question'
+                    'type': 'question',
+                    'priority': 'urgent'
                 }
             }),
             call({
@@ -129,7 +131,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     'requester_id': '1095195473',
                     'assignee_id': '1095195243',
                     'group_id': '6789',
-                    'type': 'question'
+                    'type': 'question',
+                    'priority': 'low'
                 }
             })
         ]

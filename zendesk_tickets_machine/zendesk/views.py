@@ -24,7 +24,8 @@ class ZendeskTicketsCreateView(View):
                     'requester_id': each.requester_id,
                     'assignee_id': each.assignee_id,
                     'group_id': each.group,
-                    'type': each.ticket_type
+                    'type': each.ticket_type,
+                    'priority': each.priority
                 }
             }
             result = zendesk_ticket.create(data)
