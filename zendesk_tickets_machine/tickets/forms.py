@@ -12,7 +12,6 @@ class TicketForm(forms.ModelForm):
             'requester',
             'requester_id',
             'assignee',
-            'assignee_id',
             'group',
             'ticket_type',
             'priority',

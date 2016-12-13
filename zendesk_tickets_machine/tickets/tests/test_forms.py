@@ -13,7 +13,6 @@ class TicketFormTest(TestCase):
             'requester',
             'requester_id',
             'assignee',
-            'assignee_id',
             'group',
             'ticket_type',
             'priority',
@@ -25,4 +24,4 @@ class TicketFormTest(TestCase):
         for each in expected_fields:
             self.assertTrue(each in form.fields)
 
-        self.assertEqual(len(form.fields), 13)
+        self.assertEqual(len(form.fields), 12)

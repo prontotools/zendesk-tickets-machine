@@ -11,7 +11,6 @@ class TicketAdmin(admin.ModelAdmin):
         'requester',
         'requester_id',
         'assignee',
-        'assignee_id',
         'ticket_type',
         'priority',
         'tags',

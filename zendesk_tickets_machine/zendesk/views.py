@@ -22,7 +22,7 @@ class ZendeskTicketsCreateView(View):
                         'body': each.comment
                     },
                     'requester_id': each.requester_id,
-                    'assignee_id': each.assignee_id,
+                    'assignee_id': each.assignee.zendesk_user_id,
                     'group_id': each.group,
                     'type': each.ticket_type,
                     'priority': each.priority,

@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
 
+from agents.models import Agent
 from tickets.models import Ticket
 
 
@@ -26,13 +27,13 @@ class ZendeskTicketsCreateViewTest(TestCase):
     ):
         mock.return_value.create.return_value = {}
 
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
+            assignee=agent,
             group='12345',
             ticket_type='question',
             priority='urgent',
@@ -51,7 +52,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     'body': 'Comment 1'
                 },
                 'requester_id': '1095195473',
-                'assignee_id': '1095195243',
+                'assignee_id': '123',
                 'group_id': '12345',
                 'type': 'question',
                 'priority': 'urgent',
@@ -68,13 +69,14 @@ class ZendeskTicketsCreateViewTest(TestCase):
     ):
         mock.return_value.create.return_value = {}
 
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
+            assignee=agent,
             group='12345',
             ticket_type='question',
             priority='urgent',
@@ -88,8 +90,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             comment='Comment 2',
             requester='client@hisotech.com',
             requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
+            assignee=agent,
             group='6789',
             ticket_type='question',
             priority='low',
@@ -111,7 +112,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                         'body': 'Comment 1'
                     },
                     'requester_id': '1095195473',
-                    'assignee_id': '1095195243',
+                    'assignee_id': '123',
                     'group_id': '12345',
                     'type': 'question',
                     'priority': 'urgent',
@@ -125,7 +126,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                         'body': 'Comment 2'
                     },
                     'requester_id': '1095195473',
-                    'assignee_id': '1095195243',
+                    'assignee_id': '123',
                     'group_id': '6789',
                     'type': 'question',
                     'priority': 'low',
@@ -141,13 +142,13 @@ class ZendeskTicketsCreateViewTest(TestCase):
         self,
         mock
     ):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
+            assignee=agent,
             group='Marketing Services',
             ticket_type='question',
             priority='urgent',

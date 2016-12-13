@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from ..models import Ticket
+from agents.models import Agent
 
 
 class TicketViewTest(TestCase):
@@ -17,7 +18,6 @@ class TicketViewTest(TestCase):
             '<th>Requester</th>' \
             '<th>Requester ID</th>' \
             '<th>Assignee</th>' \
-            '<th>Assignee ID</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
             '<th>Priority</th>' \
@@ -33,7 +33,6 @@ class TicketViewTest(TestCase):
             '<th>Requester</th>' \
             '<th>Requester ID</th>' \
             '<th>Assignee</th>' \
-            '<th>Assignee ID</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
             '<th>Priority</th>' \
@@ -51,6 +50,8 @@ class TicketViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_view_should_render_ticket_form(self):
+        Agent.objects.create(name='Kan', zendesk_user_id='123')
+
         response = self.client.get(reverse('tickets'))
 
         expected = '<form method="post">'
@@ -75,12 +76,10 @@ class TicketViewTest(TestCase):
             'name="requester_id" type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_assignee" maxlength="100" ' \
-            'name="assignee" type="text" required />'
+        expected = '<select id="id_assignee" name="assignee" required>'
         self.assertContains(response, expected, status_code=200)
-
-        expected = '<input id="id_assignee_id" maxlength="50" ' \
-            'name="assignee_id" type="text" required />'
+        expected = '<option value="1">Agent object' \
+            '</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_group" maxlength="50" ' \
@@ -115,13 +114,14 @@ class TicketViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_view_should_show_ticket_list(self):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+
         first_ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
+            assignee=agent,
             group='Marketing Services',
             ticket_type='question',
             priority='urgent',
@@ -135,8 +135,7 @@ class TicketViewTest(TestCase):
             comment='Comment 2',
             requester='client+another@hisotech.com',
             requester_id='1095195474',
-            assignee='kan+another@prontomarketing.com',
-            assignee_id='1095195244',
+            assignee=agent,
             group='Marketing Services',
             ticket_type='question',
             priority='high',
@@ -152,7 +151,7 @@ class TicketViewTest(TestCase):
             '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td><td>1095195473</td>' \
-            '<td>kan@prontomarketing.com</td><td>1095195243</td>' \
+            '<td>Agent object</td>' \
             '<td>Marketing Services</td><td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>open</td><td>Private comment</td>' \
             '<td>24328</td></tr>' % (
@@ -165,7 +164,7 @@ class TicketViewTest(TestCase):
             '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
-            '<td>kan+another@prontomarketing.com</td><td>1095195244</td>' \
+            '<td>Agent object</td>' \
             '<td>Marketing Services</td><td>question</td><td>high</td>' \
             '<td>welcome internal</td><td>open</td>' \
             '<td>Private comment</td><td>24328</td></tr>' % (
@@ -175,13 +174,14 @@ class TicketViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_view_should_save_data_when_submit_form(self):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+
         data = {
             'subject': 'Welcome to Pronto Service',
             'comment': 'This is a comment.',
             'requester': 'client@hisotech.com',
             'requester_id': '1095195473',
-            'assignee': 'kan@prontomarketing.com',
-            'assignee_id': '1095195243',
+            'assignee': agent.id,
             'group': 'Marketing Services',
             'ticket_type': 'question',
             'priority': 'urgent',
@@ -202,8 +202,7 @@ class TicketViewTest(TestCase):
         self.assertEqual(ticket.comment, 'This is a comment.')
         self.assertEqual(ticket.requester, 'client@hisotech.com')
         self.assertEqual(ticket.requester_id, '1095195473')
-        self.assertEqual(ticket.assignee, 'kan@prontomarketing.com')
-        self.assertEqual(ticket.assignee_id, '1095195243')
+        self.assertEqual(ticket.assignee.name, 'Kan')
         self.assertEqual(ticket.group, 'Marketing Services')
         self.assertEqual(ticket.ticket_type, 'question')
         self.assertEqual(ticket.priority, 'urgent')
@@ -219,8 +218,8 @@ class TicketViewTest(TestCase):
             '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Welcome to Pronto Service</td>' \
             '<td>This is a comment.</td><td>client@hisotech.com</td>' \
-            '<td>1095195473</td><td>kan@prontomarketing.com</td>' \
-            '<td>1095195243</td><td>Marketing Services</td>' \
+            '<td>1095195473</td><td>Agent object</td>' \
+            '<td>Marketing Services</td>' \
             '<td>question</td><td>urgent</td><td>welcome</td>' \
             '<td>open</td><td>Private comment</td><td>24328</td>' \
             '</tr>' % (ticket.id, ticket.id)
@@ -229,13 +228,13 @@ class TicketViewTest(TestCase):
 
 class TicketEditViewTest(TestCase):
     def setUp(self):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         self.ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
+            assignee=agent,
             group='Marketing Services',
             ticket_type='question',
             priority='urgent',
@@ -269,7 +268,6 @@ class TicketEditViewTest(TestCase):
             '<th>Requester</th>' \
             '<th>Requester ID</th>' \
             '<th>Assignee</th>' \
-            '<th>Assignee ID</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
             '<th>Priority</th>' \
@@ -307,13 +305,10 @@ class TicketEditViewTest(TestCase):
             'name="requester_id" type="text" value="1095195473" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_assignee" maxlength="100" ' \
-            'name="assignee" type="text" value="kan@prontomarketing.com" ' \
-            'required />'
+        expected = '<select id="id_assignee" name="assignee" required>'
         self.assertContains(response, expected, status_code=200)
-
-        expected = '<input id="id_assignee_id" maxlength="50" ' \
-            'name="assignee_id" type="text" value="1095195243" required />'
+        expected = '<option value="1" selected="selected">Agent object' \
+            '</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_group" maxlength="50" ' \
@@ -351,13 +346,14 @@ class TicketEditViewTest(TestCase):
     def test_ticket_edit_view_should_save_data_and_redirect_to_ticket_view(
         self
     ):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+
         data = {
             'subject': 'Welcome to Pronto Service',
             'comment': 'This is a comment.',
             'requester': 'client@hisotech.com',
             'requester_id': '1095195473',
-            'assignee': 'kan@prontomarketing.com',
-            'assignee_id': '1095195243',
+            'assignee': agent.id,
             'group': 'Marketing Services',
             'ticket_type': 'question',
             'priority': 'urgent',
@@ -378,8 +374,7 @@ class TicketEditViewTest(TestCase):
         self.assertEqual(ticket.comment, 'This is a comment.')
         self.assertEqual(ticket.requester, 'client@hisotech.com')
         self.assertEqual(ticket.requester_id, '1095195473')
-        self.assertEqual(ticket.assignee, 'kan@prontomarketing.com')
-        self.assertEqual(ticket.assignee_id, '1095195243')
+        self.assertEqual(ticket.assignee.name, 'Kan')
         self.assertEqual(ticket.group, 'Marketing Services')
         self.assertEqual(ticket.ticket_type, 'question')
         self.assertEqual(ticket.priority, 'urgent')
@@ -398,13 +393,13 @@ class TicketEditViewTest(TestCase):
 
 class TicketDeleteViewTest(TestCase):
     def setUp(self):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         self.ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             requester_id='1095195473',
-            assignee='kan@prontomarketing.com',
-            assignee_id='1095195243',
+            assignee=agent,
             group='Marketing Services',
             ticket_type='question',
             priority='urgent',
