@@ -33,7 +33,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             requester_id='1095195473',
             assignee='kan@prontomarketing.com',
             assignee_id='1095195243',
-            group='Marketing Services',
+            group='12345',
             ticket_type='question',
             priority='urgent',
             tags='welcome',
@@ -54,6 +54,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 },
                 'requester_id': '1095195473',
                 'assignee_id': '1095195243',
+                'group_id': '12345'
             }
         }
         mock.return_value.create.assert_called_once_with(data)
@@ -73,7 +74,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             requester_id='1095195473',
             assignee='kan@prontomarketing.com',
             assignee_id='1095195243',
-            group='Marketing Services',
+            group='12345',
             ticket_type='question',
             priority='urgent',
             tags='welcome',
@@ -90,7 +91,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             requester_id='1095195473',
             assignee='kan@prontomarketing.com',
             assignee_id='1095195243',
-            group='Marketing Services',
+            group='6789',
             ticket_type='question',
             priority='urgent',
             tags='welcome',
@@ -114,6 +115,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     },
                     'requester_id': '1095195473',
                     'assignee_id': '1095195243',
+                    'group_id': '12345'
                 }
             }),
             call({
@@ -124,6 +126,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     },
                     'requester_id': '1095195473',
                     'assignee_id': '1095195243',
+                    'group_id': '6789'
                 }
             })
         ]
