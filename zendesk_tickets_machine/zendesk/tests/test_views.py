@@ -36,7 +36,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             group='12345',
             ticket_type='question',
             priority='urgent',
-            tags='welcome',
+            tags='welcome pronto_marketing',
             status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
@@ -54,7 +54,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'assignee_id': '1095195243',
                 'group_id': '12345',
                 'type': 'question',
-                'priority': 'urgent'
+                'priority': 'urgent',
+                'tags': ['welcome', 'pronto_marketing']
             }
         }
         mock.return_value.create.assert_called_once_with(data)
@@ -113,7 +114,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     'assignee_id': '1095195243',
                     'group_id': '12345',
                     'type': 'question',
-                    'priority': 'urgent'
+                    'priority': 'urgent',
+                    'tags': ['welcome']
                 }
             }),
             call({
@@ -126,7 +128,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     'assignee_id': '1095195243',
                     'group_id': '6789',
                     'type': 'question',
-                    'priority': 'low'
+                    'priority': 'low',
+                    'tags': ['welcome']
                 }
             })
         ]
@@ -165,7 +168,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'id': 16,
                 'url': ticket_url,
                 'group_id': 23338833,
-                'tags': [],
+                'tags': ['welcome'],
                 'assignee_id': 1095195243,
                 'via': {
                     'channel': 'api',
