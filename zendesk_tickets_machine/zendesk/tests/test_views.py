@@ -54,7 +54,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 },
                 'requester_id': '1095195473',
                 'assignee_id': '1095195243',
-                'group_id': '12345'
+                'group_id': '12345',
+                'type': 'question'
             }
         }
         mock.return_value.create.assert_called_once_with(data)
@@ -115,7 +116,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     },
                     'requester_id': '1095195473',
                     'assignee_id': '1095195243',
-                    'group_id': '12345'
+                    'group_id': '12345',
+                    'type': 'question'
                 }
             }),
             call({
@@ -126,7 +128,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     },
                     'requester_id': '1095195473',
                     'assignee_id': '1095195243',
-                    'group_id': '6789'
+                    'group_id': '6789',
+                    'type': 'question'
                 }
             })
         ]
