@@ -67,7 +67,7 @@
       <td>{{ each.priority }}</td>
       <td>{{ each.tags }}</td>
       <td>{{ each.private_comment }}</td>
-      <td><a href="{{ zendesk_ticket_url }}{{ each.zendesk_ticket_id }}" target="_blank">{{ each.zendesk_ticket_id }}</a></td>
+      <td>{% if each.zendesk_ticket_id %}<a href="{{ zendesk_ticket_url }}{{ each.zendesk_ticket_id }}" target="_blank">{{ each.zendesk_ticket_id }}</a>{% else %}{% endif %}</td>
     </tr>
     {% endspaceless %}
   {% endfor %}

@@ -161,8 +161,7 @@ class TicketViewTest(TestCase):
             ticket_type='question',
             priority='high',
             tags='welcome internal',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328'
+            private_comment='Private comment'
         )
 
         response = self.client.get(reverse('tickets'))
@@ -189,10 +188,9 @@ class TicketViewTest(TestCase):
             '<td>question</td><td>high</td>' \
             '<td>welcome internal</td>' \
             '<td>Private comment</td>' \
-            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
+            '<td></td></tr>' % (
                 second_ticket.id,
-                second_ticket.id,
-                settings.ZENDESK_URL + '/agent/tickets/24328'
+                second_ticket.id
             )
         self.assertContains(response, expected, status_code=200)
 
