@@ -78,8 +78,7 @@ class TicketViewTest(TestCase):
 
         expected = '<select id="id_assignee" name="assignee" required>'
         self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1">Agent object' \
-            '</option>'
+        expected = '<option value="1">Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_group" maxlength="50" ' \
@@ -151,8 +150,8 @@ class TicketViewTest(TestCase):
             '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td><td>1095195473</td>' \
-            '<td>Agent object</td>' \
-            '<td>Marketing Services</td><td>question</td><td>urgent</td>' \
+            '<td>Kan</td><td>Marketing Services</td>' \
+            '<td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>open</td><td>Private comment</td>' \
             '<td>24328</td></tr>' % (
                 first_ticket.id,
@@ -164,8 +163,8 @@ class TicketViewTest(TestCase):
             '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
-            '<td>Agent object</td>' \
-            '<td>Marketing Services</td><td>question</td><td>high</td>' \
+            '<td>Kan</td><td>Marketing Services</td>' \
+            '<td>question</td><td>high</td>' \
             '<td>welcome internal</td><td>open</td>' \
             '<td>Private comment</td><td>24328</td></tr>' % (
                 second_ticket.id,
@@ -218,7 +217,7 @@ class TicketViewTest(TestCase):
             '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Welcome to Pronto Service</td>' \
             '<td>This is a comment.</td><td>client@hisotech.com</td>' \
-            '<td>1095195473</td><td>Agent object</td>' \
+            '<td>1095195473</td><td>Kan</td>' \
             '<td>Marketing Services</td>' \
             '<td>question</td><td>urgent</td><td>welcome</td>' \
             '<td>open</td><td>Private comment</td><td>24328</td>' \
@@ -307,8 +306,7 @@ class TicketEditViewTest(TestCase):
 
         expected = '<select id="id_assignee" name="assignee" required>'
         self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1" selected="selected">Agent object' \
-            '</option>'
+        expected = '<option value="1" selected="selected">Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_group" maxlength="50" ' \

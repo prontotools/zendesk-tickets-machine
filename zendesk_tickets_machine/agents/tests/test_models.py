@@ -14,3 +14,10 @@ class AgentTest(TestCase):
 
         self.assertEqual(agent.name, 'Kan Ouivirach')
         self.assertEqual(agent.zendesk_user_id, '403620641')
+
+    def test_agent_should_represent_name_by_default(self):
+        agent = Agent.objects.create(
+            name='Kan Ouivirach',
+            zendesk_user_id='403620641'
+        )
+        self.assertEquals(agent.__str__(), 'Kan Ouivirach')
