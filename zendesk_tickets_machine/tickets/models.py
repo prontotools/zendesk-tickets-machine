@@ -28,6 +28,5 @@ class Ticket(models.Model):
     ticket_type = models.CharField(max_length=50, choices=TICKET_TYPE_CHOICES)
     priority = models.CharField(max_length=50, choices=PRIORITY_TYPE_CHOICES)
     tags = models.CharField(max_length=300)
-    status = models.CharField(max_length=300)
     private_comment = models.CharField(max_length=500)
     zendesk_ticket_id = models.CharField(max_length=50)

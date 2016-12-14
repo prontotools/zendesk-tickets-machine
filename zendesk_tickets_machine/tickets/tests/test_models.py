@@ -27,7 +27,6 @@ class TicketTest(TestCase):
         ticket.ticket_type = 'question'
         ticket.priority = 'urgent'
         ticket.tags = 'welcome'
-        ticket.status = 'open'
         ticket.private_comment = 'Private comment'
         ticket.zendesk_ticket_id = '24328'
         ticket.save()
@@ -43,6 +42,5 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.ticket_type, 'question')
         self.assertEqual(ticket.priority, 'urgent')
         self.assertEqual(ticket.tags, 'welcome')
-        self.assertEqual(ticket.status, 'open')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')

@@ -12,7 +12,6 @@
       <th>Ticket Type</th>
       <th>Priority</th>
       <th>Tags</th>
-      <th>Status</th>
       <th>Private Comment</th>
       <th>Zendesk Ticket ID</th>
     {% endspaceless %}
@@ -27,7 +26,6 @@
       <td>{{ form.ticket_type }}</td>
       <td>{{ form.priority }}</td>
       <td>{{ form.tags }}</td>
-      <td>{{ form.status }}</td>
       <td>{{ form.private_comment }}</td>
       <td>{{ form.zendesk_ticket_id }}</td>
     </tr>
@@ -51,7 +49,6 @@
     <th>Ticket Type</th>
     <th>Priority</th>
     <th>Tags</th>
-    <th>Status</th>
     <th>Private Comment</th>
     <th>Zendesk Ticket ID</th>
   {% endspaceless %}
@@ -69,7 +66,6 @@
       <td>{{ each.ticket_type }}</td>
       <td>{{ each.priority }}</td>
       <td>{{ each.tags }}</td>
-      <td>{{ each.status }}</td>
       <td>{{ each.private_comment }}</td>
       <td>{{ each.zendesk_ticket_id }}</td>
     </tr>

@@ -43,7 +43,6 @@ class ZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome pronto_marketing',
-            status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
         )
@@ -90,7 +89,6 @@ class ZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome',
-            status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
         )
@@ -104,7 +102,6 @@ class ZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='low',
             tags='welcome',
-            status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
         )
@@ -166,7 +163,6 @@ class ZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome',
-            status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
         )

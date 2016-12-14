@@ -56,7 +56,6 @@ class TicketEditView(TemplateView):
             'ticket_type': ticket.ticket_type,
             'priority': ticket.priority,
             'tags': ticket.tags,
-            'status': ticket.status,
             'private_comment': ticket.private_comment,
             'zendesk_ticket_id': ticket.zendesk_ticket_id
         }

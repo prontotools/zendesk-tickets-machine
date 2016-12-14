@@ -16,7 +16,6 @@ class TicketForm(forms.ModelForm):
             'ticket_type',
             'priority',
             'tags',
-            'status',
             'private_comment',
             'zendesk_ticket_id',
         ]

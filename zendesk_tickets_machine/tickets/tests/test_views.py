@@ -23,7 +23,6 @@ class TicketViewTest(TestCase):
             '<th>Ticket Type</th>' \
             '<th>Priority</th>' \
             '<th>Tags</th>' \
-            '<th>Status</th>' \
             '<th>Private Comment</th>' \
             '<th>Zendesk Ticket ID</th>'
         self.assertContains(response, expected, count=2, status_code=200)
@@ -38,7 +37,6 @@ class TicketViewTest(TestCase):
             '<th>Ticket Type</th>' \
             '<th>Priority</th>' \
             '<th>Tags</th>' \
-            '<th>Status</th>' \
             '<th>Private Comment</th>' \
             '<th>Zendesk Ticket ID</th>'
         self.assertContains(response, expected, count=1, status_code=200)
@@ -114,10 +112,6 @@ class TicketViewTest(TestCase):
             'type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_status" maxlength="300" name="status" ' \
-            'type="text" required />'
-        self.assertContains(response, expected, status_code=200)
-
         expected = '<input id="id_private_comment" maxlength="500" ' \
             'name="private_comment" type="text" required />'
         self.assertContains(response, expected, status_code=200)
@@ -146,7 +140,6 @@ class TicketViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome',
-            status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
         )
@@ -160,7 +153,6 @@ class TicketViewTest(TestCase):
             ticket_type='question',
             priority='high',
             tags='welcome internal',
-            status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
         )
@@ -173,7 +165,7 @@ class TicketViewTest(TestCase):
             '<td>client@hisotech.com</td><td>1095195473</td>' \
             '<td>Kan</td><td>Development</td>' \
             '<td>question</td><td>urgent</td>' \
-            '<td>welcome</td><td>open</td><td>Private comment</td>' \
+            '<td>welcome</td><td>Private comment</td>' \
             '<td>24328</td></tr>' % (
                 first_ticket.id,
                 first_ticket.id
@@ -186,7 +178,7 @@ class TicketViewTest(TestCase):
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
             '<td>Kan</td><td>Development</td>' \
             '<td>question</td><td>high</td>' \
-            '<td>welcome internal</td><td>open</td>' \
+            '<td>welcome internal</td>' \
             '<td>Private comment</td><td>24328</td></tr>' % (
                 second_ticket.id,
                 second_ticket.id
@@ -210,7 +202,6 @@ class TicketViewTest(TestCase):
             'ticket_type': 'question',
             'priority': 'urgent',
             'tags': 'welcome',
-            'status': 'open',
             'private_comment': 'Private comment',
             'zendesk_ticket_id': '24328'
         }
@@ -231,7 +222,6 @@ class TicketViewTest(TestCase):
         self.assertEqual(ticket.ticket_type, 'question')
         self.assertEqual(ticket.priority, 'urgent')
         self.assertEqual(ticket.tags, 'welcome')
-        self.assertEqual(ticket.status, 'open')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
 
@@ -245,7 +235,7 @@ class TicketViewTest(TestCase):
             '<td>1095195473</td><td>Kan</td>' \
             '<td>Development</td>' \
             '<td>question</td><td>urgent</td><td>welcome</td>' \
-            '<td>open</td><td>Private comment</td><td>24328</td>' \
+            '<td>Private comment</td><td>24328</td>' \
             '</tr>' % (ticket.id, ticket.id)
         self.assertContains(response, expected, status_code=200)
 
@@ -267,7 +257,6 @@ class TicketEditViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome',
-            status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
         )
@@ -300,7 +289,6 @@ class TicketEditViewTest(TestCase):
             '<th>Ticket Type</th>' \
             '<th>Priority</th>' \
             '<th>Tags</th>' \
-            '<th>Status</th>' \
             '<th>Private Comment</th>' \
             '<th>Zendesk Ticket ID</th>'
         self.assertContains(response, expected, count=1, status_code=200)
@@ -370,10 +358,6 @@ class TicketEditViewTest(TestCase):
             'type="text" value="welcome" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_status" maxlength="300" name="status" ' \
-            'type="text" value="open" required />'
-        self.assertContains(response, expected, status_code=200)
-
         expected = '<input id="id_private_comment" maxlength="500" ' \
             'name="private_comment" type="text" value="Private comment" ' \
             'required />'
@@ -405,7 +389,6 @@ class TicketEditViewTest(TestCase):
             'ticket_type': 'question',
             'priority': 'urgent',
             'tags': 'welcome',
-            'status': 'open',
             'private_comment': 'Private comment',
             'zendesk_ticket_id': '24328'
         }
@@ -426,7 +409,6 @@ class TicketEditViewTest(TestCase):
         self.assertEqual(ticket.ticket_type, 'question')
         self.assertEqual(ticket.priority, 'urgent')
         self.assertEqual(ticket.tags, 'welcome')
-        self.assertEqual(ticket.status, 'open')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
 
@@ -455,7 +437,6 @@ class TicketDeleteViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome',
-            status='open',
             private_comment='Private comment',
             zendesk_ticket_id='24328'
         )
