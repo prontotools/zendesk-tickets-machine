@@ -109,15 +109,15 @@ class TicketViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_tags" maxlength="300" name="tags" ' \
-            'type="text" required />'
+            'type="text" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_private_comment" maxlength="500" ' \
-            'name="private_comment" type="text" required />'
+            'name="private_comment" type="text" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
-            'name="zendesk_ticket_id" type="text" required />'
+            'name="zendesk_ticket_id" type="text" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input type="submit">'
@@ -357,16 +357,15 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_tags" maxlength="300" name="tags" ' \
-            'type="text" value="welcome" required />'
+            'type="text" value="welcome" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_private_comment" maxlength="500" ' \
-            'name="private_comment" type="text" value="Private comment" ' \
-            'required />'
+            'name="private_comment" type="text" value="Private comment" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
-            'name="zendesk_ticket_id" type="text" value="24328" required />'
+            'name="zendesk_ticket_id" type="text" value="24328" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input type="submit">'
