@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from ..models import Ticket
 from agents.models import Agent
+from agent_groups.models import AgentGroup
 
 
 class TicketAdminTest(TestCase):
@@ -14,9 +15,14 @@ class TicketAdminTest(TestCase):
 
     def test_access_ticket_admin_should_have_columns(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
         Ticket.objects.create(
             subject='Test Open Ticket',
-            assignee=agent
+            assignee=agent,
+            group=agent_group
         )
 
         response = self.client.get(self.url)

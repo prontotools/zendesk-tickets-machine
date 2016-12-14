@@ -23,7 +23,7 @@ class ZendeskTicketsCreateView(View):
                     },
                     'requester_id': each.requester_id,
                     'assignee_id': each.assignee.zendesk_user_id,
-                    'group_id': each.group,
+                    'group_id': each.group.zendesk_group_id,
                     'type': each.ticket_type,
                     'priority': each.priority,
                     'tags': each.tags.split()

@@ -1,6 +1,7 @@
 from django.db import models
 
 from agents.models import Agent
+from agent_groups.models import AgentGroup
 
 
 class Ticket(models.Model):
@@ -23,7 +24,7 @@ class Ticket(models.Model):
     requester = models.CharField(max_length=100)
     requester_id = models.CharField(max_length=50)
     assignee = models.ForeignKey(Agent)
-    group = models.CharField(max_length=50)
+    group = models.ForeignKey(AgentGroup)
     ticket_type = models.CharField(max_length=50, choices=TICKET_TYPE_CHOICES)
     priority = models.CharField(max_length=50, choices=PRIORITY_TYPE_CHOICES)
     tags = models.CharField(max_length=300)

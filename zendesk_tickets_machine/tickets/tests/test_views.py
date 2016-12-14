@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from ..models import Ticket
 from agents.models import Agent
+from agent_groups.models import AgentGroup
 
 
 class TicketViewTest(TestCase):
@@ -51,6 +52,7 @@ class TicketViewTest(TestCase):
 
     def test_ticket_view_should_render_ticket_form(self):
         Agent.objects.create(name='Kan', zendesk_user_id='123')
+        AgentGroup.objects.create(name='Development', zendesk_group_id='123')
 
         response = self.client.get(reverse('tickets'))
 
@@ -81,8 +83,9 @@ class TicketViewTest(TestCase):
         expected = '<option value="1">Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_group" maxlength="50" ' \
-            'name="group" type="text" required />'
+        expected = '<select id="id_group" name="group" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="1">Development</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select id="id_ticket_type" name="ticket_type" required>'
@@ -128,6 +131,10 @@ class TicketViewTest(TestCase):
 
     def test_ticket_view_should_show_ticket_list(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
 
         first_ticket = Ticket.objects.create(
             subject='Ticket 1',
@@ -135,7 +142,7 @@ class TicketViewTest(TestCase):
             requester='client@hisotech.com',
             requester_id='1095195473',
             assignee=agent,
-            group='Marketing Services',
+            group=agent_group,
             ticket_type='question',
             priority='urgent',
             tags='welcome',
@@ -149,7 +156,7 @@ class TicketViewTest(TestCase):
             requester='client+another@hisotech.com',
             requester_id='1095195474',
             assignee=agent,
-            group='Marketing Services',
+            group=agent_group,
             ticket_type='question',
             priority='high',
             tags='welcome internal',
@@ -164,7 +171,7 @@ class TicketViewTest(TestCase):
             '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td><td>1095195473</td>' \
-            '<td>Kan</td><td>Marketing Services</td>' \
+            '<td>Kan</td><td>Development</td>' \
             '<td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>open</td><td>Private comment</td>' \
             '<td>24328</td></tr>' % (
@@ -177,7 +184,7 @@ class TicketViewTest(TestCase):
             '<a href="/tickets/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
-            '<td>Kan</td><td>Marketing Services</td>' \
+            '<td>Kan</td><td>Development</td>' \
             '<td>question</td><td>high</td>' \
             '<td>welcome internal</td><td>open</td>' \
             '<td>Private comment</td><td>24328</td></tr>' % (
@@ -188,6 +195,10 @@ class TicketViewTest(TestCase):
 
     def test_ticket_view_should_save_data_when_submit_form(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
 
         data = {
             'subject': 'Welcome to Pronto Service',
@@ -195,7 +206,7 @@ class TicketViewTest(TestCase):
             'requester': 'client@hisotech.com',
             'requester_id': '1095195473',
             'assignee': agent.id,
-            'group': 'Marketing Services',
+            'group': agent_group.id,
             'ticket_type': 'question',
             'priority': 'urgent',
             'tags': 'welcome',
@@ -216,7 +227,7 @@ class TicketViewTest(TestCase):
         self.assertEqual(ticket.requester, 'client@hisotech.com')
         self.assertEqual(ticket.requester_id, '1095195473')
         self.assertEqual(ticket.assignee.name, 'Kan')
-        self.assertEqual(ticket.group, 'Marketing Services')
+        self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')
         self.assertEqual(ticket.priority, 'urgent')
         self.assertEqual(ticket.tags, 'welcome')
@@ -232,7 +243,7 @@ class TicketViewTest(TestCase):
             '<td>Welcome to Pronto Service</td>' \
             '<td>This is a comment.</td><td>client@hisotech.com</td>' \
             '<td>1095195473</td><td>Kan</td>' \
-            '<td>Marketing Services</td>' \
+            '<td>Development</td>' \
             '<td>question</td><td>urgent</td><td>welcome</td>' \
             '<td>open</td><td>Private comment</td><td>24328</td>' \
             '</tr>' % (ticket.id, ticket.id)
@@ -242,13 +253,17 @@ class TicketViewTest(TestCase):
 class TicketEditViewTest(TestCase):
     def setUp(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
         self.ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             requester_id='1095195473',
             assignee=agent,
-            group='Marketing Services',
+            group=agent_group,
             ticket_type='question',
             priority='urgent',
             tags='welcome',
@@ -323,8 +338,9 @@ class TicketEditViewTest(TestCase):
         expected = '<option value="1" selected="selected">Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_group" maxlength="50" ' \
-            'name="group" type="text" value="Marketing Services" required />'
+        expected = '<select id="id_group" name="group" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="1" selected="selected">Development</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select id="id_ticket_type" name="ticket_type" required>'
@@ -374,6 +390,10 @@ class TicketEditViewTest(TestCase):
         self
     ):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
 
         data = {
             'subject': 'Welcome to Pronto Service',
@@ -381,7 +401,7 @@ class TicketEditViewTest(TestCase):
             'requester': 'client@hisotech.com',
             'requester_id': '1095195473',
             'assignee': agent.id,
-            'group': 'Marketing Services',
+            'group': agent_group.id,
             'ticket_type': 'question',
             'priority': 'urgent',
             'tags': 'welcome',
@@ -402,7 +422,7 @@ class TicketEditViewTest(TestCase):
         self.assertEqual(ticket.requester, 'client@hisotech.com')
         self.assertEqual(ticket.requester_id, '1095195473')
         self.assertEqual(ticket.assignee.name, 'Kan')
-        self.assertEqual(ticket.group, 'Marketing Services')
+        self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')
         self.assertEqual(ticket.priority, 'urgent')
         self.assertEqual(ticket.tags, 'welcome')
@@ -421,13 +441,17 @@ class TicketEditViewTest(TestCase):
 class TicketDeleteViewTest(TestCase):
     def setUp(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
         self.ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             requester_id='1095195473',
             assignee=agent,
-            group='Marketing Services',
+            group=agent_group,
             ticket_type='question',
             priority='urgent',
             tags='welcome',
