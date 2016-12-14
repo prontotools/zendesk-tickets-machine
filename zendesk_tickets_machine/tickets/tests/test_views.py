@@ -85,8 +85,15 @@ class TicketViewTest(TestCase):
             'name="group" type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_ticket_type" maxlength="50" ' \
-            'name="ticket_type" type="text" required />'
+        expected = '<select id="id_ticket_type" name="ticket_type" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="question">Question</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="incident">Incident</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="problem">Problem</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="task">Task</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_priority" maxlength="50" ' \
@@ -313,8 +320,16 @@ class TicketEditViewTest(TestCase):
             'name="group" type="text" value="Marketing Services" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_ticket_type" maxlength="50" ' \
-            'name="ticket_type" type="text" value="question" required />'
+        expected = '<select id="id_ticket_type" name="ticket_type" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="question" selected="selected">Question' \
+            '</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="incident">Incident</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="problem">Problem</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="task">Task</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_priority" maxlength="50" ' \

@@ -4,13 +4,20 @@ from agents.models import Agent
 
 
 class Ticket(models.Model):
+    TICKET_TYPE_CHOICES = (
+        ('question', 'Question'),
+        ('incident', 'Incident'),
+        ('problem', 'Problem'),
+        ('task', 'Task'),
+    )
+
     subject = models.CharField(max_length=300)
     comment = models.CharField(max_length=500)
     requester = models.CharField(max_length=100)
     requester_id = models.CharField(max_length=50)
     assignee = models.ForeignKey(Agent)
     group = models.CharField(max_length=50)
-    ticket_type = models.CharField(max_length=50)
+    ticket_type = models.CharField(max_length=50, choices=TICKET_TYPE_CHOICES)
     priority = models.CharField(max_length=50)
     tags = models.CharField(max_length=300)
     status = models.CharField(max_length=300)
