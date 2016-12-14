@@ -1,7 +1,8 @@
 import time
 
 from django.conf import settings
-from django.http import JsonResponse
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.views.generic import View
 
 from .api import Ticket as ZendeskTicket
@@ -35,4 +36,4 @@ class ZendeskTicketsCreateView(View):
             if not settings.DEBUG:
                 time.sleep(1)
 
-        return JsonResponse(results)
+        return HttpResponseRedirect(reverse('tickets'))

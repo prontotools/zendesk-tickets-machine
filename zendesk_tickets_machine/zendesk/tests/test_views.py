@@ -13,15 +13,6 @@ from tickets.models import Ticket
 class ZendeskTicketsCreateViewTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
-    def test_ticket_create_view_should_be_accessible(self, mock):
-        mock.return_value.create.return_value = {}
-
-        response = self.client.get(reverse('zendesk_tickets_create'))
-
-        self.assertEqual(response.status_code, 200)
-
-    @override_settings(DEBUG=True)
-    @patch('zendesk.views.ZendeskTicket')
     def test_ticket_create_view_should_send_data_to_create_zendesk_ticket(
         self,
         mock
@@ -144,10 +135,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
-    def test_ticket_create_view_should_show_results_after_send_request(
-        self,
-        mock
-    ):
+    def test_ticket_create_view_should_redirect_to_ticket_view(self, mock):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
             name='Development',
@@ -167,42 +155,11 @@ class ZendeskTicketsCreateViewTest(TestCase):
             zendesk_ticket_id='24328'
         )
 
-        ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
-            'tickets/16.json'
-        result = {
-            'ticket': {
-                'subject': 'Hello',
-                'submitter_id': 1095195473,
-                'priority': None,
-                'raw_subject': 'Hello',
-                'id': 16,
-                'url': ticket_url,
-                'group_id': 23338833,
-                'tags': ['welcome'],
-                'assignee_id': 1095195243,
-                'via': {
-                    'channel': 'api',
-                    'source': {
-                        'from': {}, 'to': {}, 'rel': None
-                    }
-                },
-                'ticket_form_id': None,
-                'updated_at': '2016-12-11T13:27:12Z',
-                'created_at': '2016-12-11T13:27:12Z',
-                'description': 'yeah..',
-                'status': 'open',
-                'requester_id': 1095195473,
-                'forum_topic_id': None
-            }
-        }
-        results = {
-            'results': [result]
-        }
-        mock.return_value.create.return_value = result
-
         response = self.client.get(reverse('zendesk_tickets_create'))
 
-        self.assertDictEqual(
-            results,
-            json.loads(response.content.decode('utf-8'))
+        self.assertRedirects(
+            response,
+            reverse('tickets'),
+            status_code=302,
+            target_status_code=200
         )
