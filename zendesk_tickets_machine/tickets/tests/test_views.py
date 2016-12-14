@@ -64,8 +64,8 @@ class TicketViewTest(TestCase):
             'type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_comment" maxlength="500" name="comment" ' \
-            'type="text" required />'
+        expected = '<textarea cols="40" id="id_comment" name="comment" ' \
+            'rows="10" required>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_requester" maxlength="100" ' \
@@ -308,8 +308,10 @@ class TicketEditViewTest(TestCase):
             'type="text" value="Ticket 1" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_comment" maxlength="500" name="comment" ' \
-            'type="text" value="Comment 1" required />'
+        expected = '<textarea cols="40" id="id_comment" name="comment" ' \
+            'rows="10" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = 'Comment 1</textarea>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_requester" maxlength="100" ' \
