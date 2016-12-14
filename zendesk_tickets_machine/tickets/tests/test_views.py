@@ -49,6 +49,13 @@ class TicketViewTest(TestCase):
             'Create Tickets</a>' % reverse('zendesk_tickets_create')
         self.assertContains(response, expected, count=1, status_code=200)
 
+    def test_ticket_view_should_have_reset_form_link(self):
+        response = self.client.get(reverse('tickets'))
+
+        expected = '<a href="%s">' \
+            'Reset Tickets</a>' % reverse('tickets_reset')
+        self.assertContains(response, expected, count=1, status_code=200)
+
     def test_ticket_view_should_render_ticket_form(self):
         Agent.objects.create(name='Kan', zendesk_user_id='123')
         AgentGroup.objects.create(name='Development', zendesk_group_id='123')

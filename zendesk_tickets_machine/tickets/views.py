@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
@@ -86,3 +86,8 @@ class TicketDeleteView(View):
     def get(self, request, ticket_id):
         Ticket.objects.get(id=ticket_id).delete()
         return HttpResponseRedirect(reverse('tickets'))
+
+
+class TicketResetView(View):
+    def get(self, request):
+        return HttpResponse()
