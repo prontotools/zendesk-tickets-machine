@@ -11,6 +11,13 @@ class Ticket(models.Model):
         ('task', 'Task'),
     )
 
+    PRIORITY_TYPE_CHOICES = (
+        ('high', 'High'),
+        ('urgent', 'Urgent'),
+        ('normal', 'Normal'),
+        ('low', 'Low'),
+    )
+
     subject = models.CharField(max_length=300)
     comment = models.CharField(max_length=500)
     requester = models.CharField(max_length=100)
@@ -18,7 +25,7 @@ class Ticket(models.Model):
     assignee = models.ForeignKey(Agent)
     group = models.CharField(max_length=50)
     ticket_type = models.CharField(max_length=50, choices=TICKET_TYPE_CHOICES)
-    priority = models.CharField(max_length=50)
+    priority = models.CharField(max_length=50, choices=PRIORITY_TYPE_CHOICES)
     tags = models.CharField(max_length=300)
     status = models.CharField(max_length=300)
     private_comment = models.CharField(max_length=500)

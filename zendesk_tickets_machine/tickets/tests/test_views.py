@@ -96,8 +96,15 @@ class TicketViewTest(TestCase):
         expected = '<option value="task">Task</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_priority" maxlength="50" ' \
-            'name="priority" type="text" required />'
+        expected = '<select id="id_priority" name="priority" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="high">High</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="urgent">Urgent</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="normal">Normal</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="low">Low</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_tags" maxlength="300" name="tags" ' \
@@ -332,8 +339,15 @@ class TicketEditViewTest(TestCase):
         expected = '<option value="task">Task</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_priority" maxlength="50" ' \
-            'name="priority" type="text" value="urgent" required />'
+        expected = '<select id="id_priority" name="priority" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="high">High</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="urgent" selected="selected">Urgent</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="normal">Normal</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="low">Low</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_tags" maxlength="300" name="tags" ' \
