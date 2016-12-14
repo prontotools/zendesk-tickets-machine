@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'agents',
     'agent_groups',
+    'requesters',
     'tickets',
 ]
 
