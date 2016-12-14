@@ -13,7 +13,7 @@ class ZendeskTicketsCreateView(View):
     def get(self, request):
         zendesk_ticket = ZendeskTicket()
 
-        tickets = Ticket.objects.all()
+        tickets = Ticket.objects.exclude(zendesk_ticket_id__isnull=False)
         for each in tickets:
             data = {
                 'ticket': {

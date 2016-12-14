@@ -38,8 +38,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome pronto_marketing',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328'
+            private_comment='Private comment'
         )
 
         self.client.get(reverse('zendesk_tickets_create'))
@@ -88,8 +87,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328'
+            private_comment='Private comment'
         )
         Ticket.objects.create(
             subject='Ticket 2',
@@ -101,8 +99,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='low',
             tags='welcome',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328'
+            private_comment='Private comment'
         )
 
         self.client.get(reverse('zendesk_tickets_create'))
@@ -238,3 +235,33 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertEqual(ticket.zendesk_ticket_id, '16')
+
+
+    @patch('zendesk.views.ZendeskTicket')
+    def test_create_view_should_not_create_if_zendesk_ticket_id_not_empty(
+        self,
+        mock
+    ):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+
+        Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            requester_id='1095195473',
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            zendesk_ticket_id='123'
+        )
+
+        response = self.client.get(reverse('zendesk_tickets_create'))
+
+        self.assertEqual(mock.return_value.create.call_count, 0)
