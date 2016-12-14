@@ -13,7 +13,6 @@ class ZendeskTicketsCreateView(View):
     def get(self, request):
         zendesk_ticket = ZendeskTicket()
 
-        results = {'results': []}
         tickets = Ticket.objects.all()
         for each in tickets:
             data = {
@@ -31,7 +30,8 @@ class ZendeskTicketsCreateView(View):
                 }
             }
             result = zendesk_ticket.create(data)
-            results['results'].append(result)
+            each.zendesk_ticket_id = result['ticket']['id']
+            each.save()
 
             if not settings.DEBUG:
                 time.sleep(1)
