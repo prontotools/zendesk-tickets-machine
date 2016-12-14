@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import AgentGroup
+
+
+@admin.register(AgentGroup)
+class AgentGroupAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'zendesk_group_id',
+    )
