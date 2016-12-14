@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -166,9 +167,10 @@ class TicketViewTest(TestCase):
             '<td>Kan</td><td>Development</td>' \
             '<td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>Private comment</td>' \
-            '<td>24328</td></tr>' % (
+            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
                 first_ticket.id,
-                first_ticket.id
+                first_ticket.id,
+                settings.ZENDESK_URL + '/agent/tickets/24328'
             )
         self.assertContains(response, expected, status_code=200)
 
@@ -179,9 +181,11 @@ class TicketViewTest(TestCase):
             '<td>Kan</td><td>Development</td>' \
             '<td>question</td><td>high</td>' \
             '<td>welcome internal</td>' \
-            '<td>Private comment</td><td>24328</td></tr>' % (
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
                 second_ticket.id,
-                second_ticket.id
+                second_ticket.id,
+                settings.ZENDESK_URL + '/agent/tickets/24328'
             )
         self.assertContains(response, expected, status_code=200)
 
@@ -235,8 +239,12 @@ class TicketViewTest(TestCase):
             '<td>1095195473</td><td>Kan</td>' \
             '<td>Development</td>' \
             '<td>question</td><td>urgent</td><td>welcome</td>' \
-            '<td>Private comment</td><td>24328</td>' \
-            '</tr>' % (ticket.id, ticket.id)
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
+                ticket.id,
+                ticket.id,
+                settings.ZENDESK_URL + '/agent/tickets/24328'
+            )
         self.assertContains(response, expected, status_code=200)
 
 

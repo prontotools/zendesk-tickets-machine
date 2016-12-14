@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
@@ -13,13 +14,15 @@ class TicketView(TemplateView):
     def get(self, request):
         form = TicketForm()
         tickets = Ticket.objects.all()
+        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
             request,
             self.template_name,
             {
                 'form': form,
-                'tickets': tickets
+                'tickets': tickets,
+                'zendesk_ticket_url': zendesk_ticket_url
             }
         )
 
@@ -28,13 +31,15 @@ class TicketView(TemplateView):
         form.save()
 
         tickets = Ticket.objects.all()
+        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
             request,
             self.template_name,
             {
                 'form': form,
-                'tickets': tickets
+                'tickets': tickets,
+                'zendesk_ticket_url': zendesk_ticket_url
             }
         )
 
