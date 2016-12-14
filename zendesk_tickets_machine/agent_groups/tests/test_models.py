@@ -14,3 +14,10 @@ class AgentGroupTest(TestCase):
 
         self.assertEqual(agent_group.name, 'Development')
         self.assertEqual(agent_group.zendesk_group_id, '25050306')
+
+    def test_agent_group_should_represent_name_by_default(self):
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='25050306'
+        )
+        self.assertEquals(agent_group.__str__(), 'Development')
