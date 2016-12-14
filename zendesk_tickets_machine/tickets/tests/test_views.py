@@ -472,3 +472,40 @@ class TicketDeleteViewTest(TestCase):
             status_code=302,
             target_status_code=200
         )
+
+
+class TicketResetViewTest(TestCase):
+    def setUp(self):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+        self.ticket = Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            requester_id='1095195473',
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            zendesk_ticket_id='24328'
+        )
+
+    def test_ticket_reset_view_should_reset_zendesk_ticket_id_on_all_tickets(
+        self
+    ):
+        response = self.client.get(reverse('tickets_reset'))
+
+        ticket = Ticket.objects.last()
+        self.assertIsNone(ticket.zendesk_ticket_id)
+
+        self.assertRedirects(
+            response,
+            reverse('tickets'),
+            status_code=302,
+            target_status_code=200
+        )

@@ -90,4 +90,5 @@ class TicketDeleteView(View):
 
 class TicketResetView(View):
     def get(self, request):
-        return HttpResponse()
+        Ticket.objects.all().update(zendesk_ticket_id=None)
+        return HttpResponseRedirect(reverse('tickets'))
