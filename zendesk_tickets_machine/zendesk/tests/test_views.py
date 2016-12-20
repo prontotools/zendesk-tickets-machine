@@ -13,14 +13,21 @@ from tickets.models import Ticket
 class ZendeskTicketsCreateViewTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
+    @patch('zendesk.views.Requester')
     def test_ticket_create_view_should_send_data_to_create_zendesk_ticket(
         self,
-        mock
+        mockRequester,
+        mockTicket
     ):
-        mock.return_value.create.return_value = {
+        mockTicket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
             }
+        }
+        mockRequester.return_value.search.return_value = {
+            'users': [{
+                'id': '2'
+            }]
         }
 
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -32,7 +39,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            requester_id='1095195473',
+            requester_id='2',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -49,7 +56,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'comment': {
                     'body': 'Comment 1'
                 },
-                'requester_id': '1095195473',
+                'requester_id': '2',
                 'assignee_id': '123',
                 'group_id': '123',
                 'type': 'question',
@@ -57,18 +64,26 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'tags': ['welcome', 'pronto_marketing']
             }
         }
-        mock.return_value.create.assert_called_once_with(data)
+        mockTicket.return_value.create.assert_called_once_with(data)
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
+    @patch('zendesk.views.Requester')
     def test_ticket_create_view_should_create_two_tickets_if_there_are_two(
         self,
-        mock
+        mockRequester,
+        mockTicket
     ):
-        mock.return_value.create.return_value = {
+        mockTicket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
             }
+        }
+
+        mockRequester.return_value.search.return_value = {
+            'users': [{
+                'id': '2'
+            }]
         }
 
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -81,7 +96,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            requester_id='1095195473',
+            requester_id='2',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -93,7 +108,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client@hisotech.com',
-            requester_id='1095195473',
+            requester_id='2',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -104,7 +119,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
         self.client.get(reverse('zendesk_tickets_create'))
 
-        self.assertEqual(mock.return_value.create.call_count, 2)
+        self.assertEqual(mockTicket.return_value.create.call_count, 2)
 
         calls = [
             call({
@@ -113,7 +128,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     'comment': {
                         'body': 'Comment 1'
                     },
-                    'requester_id': '1095195473',
+                    'requester_id': '2',
                     'assignee_id': '123',
                     'group_id': '123',
                     'type': 'question',
@@ -127,7 +142,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                     'comment': {
                         'body': 'Comment 2'
                     },
-                    'requester_id': '1095195473',
+                    'requester_id': '2',
                     'assignee_id': '123',
                     'group_id': '123',
                     'type': 'question',
@@ -136,7 +151,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 }
             })
         ]
-        mock.return_value.create.assert_has_calls(calls)
+        mockTicket.return_value.create.assert_has_calls(calls)
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
@@ -156,7 +171,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            requester_id='1095195473',
+            requester_id='2',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -177,10 +192,13 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
+    @patch('zendesk.views.Requester')
     def test_ticket_create_view_should_set_zendesk_ticket_id_to_ticket(
         self,
-        mock
+        mockRequester,
+        mockTicket
     ):
+        
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
             name='Development',
@@ -190,7 +208,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            requester_id='1095195473',
+            requester_id='2',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -229,7 +247,13 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'forum_topic_id': None
             }
         }
-        mock.return_value.create.return_value = result
+        mockTicket.return_value.create.return_value = result
+
+        mockRequester.return_value.search.return_value= {
+            'users': [{
+                'id': '2'
+            }]
+        }
 
         response = self.client.get(reverse('zendesk_tickets_create'))
 
@@ -252,7 +276,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            requester_id='1095195473',
+            requester_id='2',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
