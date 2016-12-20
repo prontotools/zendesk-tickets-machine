@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import View
 
+from .api import User as Requester
 from .api import Ticket as ZendeskTicket
 from tickets.models import Ticket
 
@@ -12,16 +13,19 @@ from tickets.models import Ticket
 class ZendeskTicketsCreateView(View):
     def get(self, request):
         zendesk_ticket = ZendeskTicket()
+        zendesk_user = Requester()
 
         tickets = Ticket.objects.exclude(zendesk_ticket_id__isnull=False)
         for each in tickets:
+            requester_result = zendesk_user.search(each.requester)
+            requester_id = requester_result['users'][0]['id']
             data = {
                 'ticket': {
                     'subject': each.subject,
                     'comment': {
                         'body': each.comment
                     },
-                    'requester_id': each.requester_id,
+                    'requester_id': requester_id,
                     'assignee_id': each.assignee.zendesk_user_id,
                     'group_id': each.group.zendesk_group_id,
                     'type': each.ticket_type,

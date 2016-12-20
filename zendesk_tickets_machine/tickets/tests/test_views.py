@@ -165,9 +165,8 @@ class TicketViewTest(TestCase):
         )
 
         response = self.client.get(reverse('tickets'))
-
-        expected = '<tr><td><a href="/tickets/%s/">Edit</a> | ' \
-            '<a href="/tickets/%s/delete/">Delete</a></td>' \
+        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
+            '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td><td>1095195473</td>' \
             '<td>Kan</td><td>Development</td>' \
@@ -178,10 +177,11 @@ class TicketViewTest(TestCase):
                 first_ticket.id,
                 settings.ZENDESK_URL + '/agent/tickets/24328'
             )
+  
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<tr><td><a href="/tickets/%s/">Edit</a> | ' \
-            '<a href="/tickets/%s/delete/">Delete</a></td>' \
+        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
+            '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
             '<td>Kan</td><td>Development</td>' \
@@ -237,8 +237,8 @@ class TicketViewTest(TestCase):
         expected = '<form method="post">'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<tr><td><a href="/tickets/%s/">Edit</a> | ' \
-            '<a href="/tickets/%s/delete/">Delete</a></td>' \
+        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
+            '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Welcome to Pronto Service</td>' \
             '<td>This is a comment.</td><td>client@hisotech.com</td>' \
             '<td>1095195473</td><td>Kan</td>' \
