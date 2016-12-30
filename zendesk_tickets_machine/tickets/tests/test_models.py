@@ -3,6 +3,7 @@ from django.test import TestCase
 from ..models import Ticket
 from agents.models import Agent
 from agent_groups.models import AgentGroup
+from sheets.models import Sheet
 
 
 class TicketTest(TestCase):
@@ -12,6 +13,7 @@ class TicketTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
+        sheet = Sheet.objects.create(name='Pre-Production', slug='pre-production')
 
         comment = 'Thank you for signing up with us! ' \
             'Currently we are sorting out the info and will reach ' \
@@ -29,6 +31,7 @@ class TicketTest(TestCase):
         ticket.tags = 'welcome'
         ticket.private_comment = 'Private comment'
         ticket.zendesk_ticket_id = '24328'
+        ticket.sheet = sheet
         ticket.save()
 
         ticket = Ticket.objects.last()
@@ -44,3 +47,4 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.tags, 'welcome')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
+        self.assertEqual(ticket.sheet.name, 'Pre-Production')
