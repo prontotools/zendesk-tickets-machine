@@ -193,7 +193,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
     @patch('zendesk.views.Requester')
-    def test_ticket_create_view_should_set_zendesk_ticket_id_to_ticket(
+    def test_ticket_create_view_should_set_zendesk_ticket_id_and_requester_id_to_ticket(
         self,
         mock_requester,
         mock_ticket
@@ -208,7 +208,6 @@ class ZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            requester_id='2',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -251,7 +250,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
         mock_requester.return_value.search.return_value= {
             'users': [{
-                'id': '2'
+                'id': '1095195473'
             }]
         }
 
@@ -259,6 +258,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertEqual(ticket.zendesk_ticket_id, '16')
+        self.assertEqual(ticket.requester_id, '1095195473')
 
 
     @patch('zendesk.views.ZendeskTicket')

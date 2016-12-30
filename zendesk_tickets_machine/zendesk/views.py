@@ -35,6 +35,7 @@ class ZendeskTicketsCreateView(View):
             }
             result = zendesk_ticket.create(data)
             each.zendesk_ticket_id = result['ticket']['id']
+            each.requester_id = requester_id
             each.save()
 
             if not settings.DEBUG:
