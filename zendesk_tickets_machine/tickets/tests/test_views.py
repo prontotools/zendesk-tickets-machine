@@ -18,7 +18,6 @@ class TicketViewTest(TestCase):
         expected = '<th>Subject</th>' \
             '<th>Comment</th>' \
             '<th>Requester</th>' \
-            '<th>Requester ID</th>' \
             '<th>Assignee</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
@@ -26,7 +25,7 @@ class TicketViewTest(TestCase):
             '<th>Tags</th>' \
             '<th>Private Comment</th>' \
             '<th>Zendesk Ticket ID</th>'
-        self.assertContains(response, expected, count=2, status_code=200)
+        self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<th></th>' \
             '<th>Subject</th>' \
@@ -78,10 +77,6 @@ class TicketViewTest(TestCase):
 
         expected = '<input id="id_requester" maxlength="100" ' \
             'name="requester" type="text" required />'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<input id="id_requester_id" maxlength="50" ' \
-            'name="requester_id" type="text" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select id="id_assignee" name="assignee" required>'
