@@ -16,3 +16,4 @@ class TicketAdmin(admin.ModelAdmin):
         'tags',
         'sheet',
     )
+    list_filter = ('sheet__name',)
