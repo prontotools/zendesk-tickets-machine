@@ -64,7 +64,18 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'tags': ['welcome', 'pronto_marketing']
             }
         }
+
+        comment = {
+            'ticket': {
+                'comment': {
+                    'author_id': '123',
+                    'body': 'Private comment', 
+                    'public': False
+                }
+            }
+        }
         mock_ticket.return_value.create.assert_called_once_with(data)
+        mock_ticket.return_value.create_comment.assert_called_once_with(comment, 1)
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
@@ -84,6 +95,16 @@ class ZendeskTicketsCreateViewTest(TestCase):
             'users': [{
                 'id': '2'
             }]
+        }
+
+        mock_ticket.return_value.create_comment.return_value = {
+            'audit': {
+                'events': [{
+                    'public': False,
+                    'body': 'Private Comment',
+                    'author_id': '2'
+                }]
+            }
         }
 
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -120,8 +141,9 @@ class ZendeskTicketsCreateViewTest(TestCase):
         self.client.get(reverse('zendesk_tickets_create'))
 
         self.assertEqual(mock_ticket.return_value.create.call_count, 2)
+        self.assertEqual(mock_ticket.return_value.create_comment.call_count, 2)
 
-        calls = [
+        ticket_calls = [
             call({
                 'ticket': {
                     'subject': 'Ticket 1',
@@ -151,7 +173,29 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 }
             })
         ]
-        mock_ticket.return_value.create.assert_has_calls(calls)
+        mock_ticket.return_value.create.assert_has_calls(ticket_calls)
+
+        comment_calls = [
+            call({
+                'ticket': {
+                    'comment': {
+                        'author_id': '123',
+                        'body': 'Private comment', 
+                        'public': False
+                    }
+                }
+            },1),
+            call({
+                'ticket': {
+                    'comment': {
+                        'author_id': '123',
+                        'body': 'Private comment', 
+                        'public': False
+                    }
+                }
+            },1)
+        ]
+        mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
@@ -212,8 +256,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             group=agent_group,
             ticket_type='question',
             priority='urgent',
-            tags='welcome',
-            private_comment='Private comment'
+            tags='welcome'
         )
 
         self.assertIsNone(ticket.zendesk_ticket_id)

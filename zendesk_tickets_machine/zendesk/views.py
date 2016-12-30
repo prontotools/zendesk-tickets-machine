@@ -38,6 +38,18 @@ class ZendeskTicketsCreateView(View):
                 each.zendesk_ticket_id = result['ticket']['id']
                 each.requester_id = requester_id
                 each.save()
+
+                data = {
+                'ticket': {
+                    'comment': {
+                        'author_id': each.assignee.zendesk_user_id,
+                        'body': each.private_comment,
+                        'public': False
+                        }
+                    }
+                }
+                result = zendesk_ticket.create_comment(data, each.zendesk_ticket_id)
+                
             except IndexError:
                 pass
 
