@@ -20,6 +20,16 @@ class Ticket(object):
         )
         return response.json()
 
+    def create_comment(self, data, ticket_id):
+        url = self.zendesk_api_url + '/api/v2/tickets/{}.json'.format(ticket_id)
+        response = requests.put(
+            url,
+            auth=(self.zendesk_api_user, self.zendesk_api_token),
+            headers=self.headers,
+            json=data
+        )
+        return response.json()
+
 
 class User(object):
     def __init__(self):

@@ -53,6 +53,45 @@ class TicketAPITest(TestCase):
 
         self.assertEqual(result, {'key': 'value'})
 
+    @patch('zendesk.api.requests.put')
+    def test_create_comment_on_zendesk_should_send_data_to_zendesk_correctly(
+        self,
+        mock
+    ):
+        url = self.zendesk_api_url + '/api/v2/tickets/1.json'
+        data = {
+            'ticket': {
+                'comment': {
+                    'author_id': '123',
+                    'body': 'Private comment', 
+                    'public': False
+                }
+            }
+        }
+
+        ticket = Ticket()
+        ticket.create_comment(data, 1)
+
+        mock.assert_called_once_with(
+            url,
+            auth=(self.zendesk_api_user, self.zendesk_api_token),
+            headers=self.headers,
+            json=data
+        )
+
+    @patch('zendesk.api.requests.put')
+    def test_create_comment_on_zendesk_should_return_json(
+        self,
+        mock
+    ):
+        data = {}
+        mock.return_value.json.return_value = {'key': 'value'}
+
+        ticket = Ticket()
+        result = ticket.create_comment(data, 1)
+
+        self.assertEqual(result, {'key': 'value'})
+
 
 class UserAPITest(TestCase):
     def setUp(self):
