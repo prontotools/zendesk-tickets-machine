@@ -16,15 +16,15 @@ class ZendeskTicketsCreateViewTest(TestCase):
     @patch('zendesk.views.Requester')
     def test_ticket_create_view_should_send_data_to_create_zendesk_ticket(
         self,
-        mockRequester,
-        mockTicket
+        mock_requester,
+        mock_ticket
     ):
-        mockTicket.return_value.create.return_value = {
+        mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
             }
         }
-        mockRequester.return_value.search.return_value = {
+        mock_requester.return_value.search.return_value = {
             'users': [{
                 'id': '2'
             }]
@@ -64,23 +64,23 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'tags': ['welcome', 'pronto_marketing']
             }
         }
-        mockTicket.return_value.create.assert_called_once_with(data)
+        mock_ticket.return_value.create.assert_called_once_with(data)
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
     @patch('zendesk.views.Requester')
     def test_ticket_create_view_should_create_two_tickets_if_there_are_two(
         self,
-        mockRequester,
-        mockTicket
+        mock_requester,
+        mock_ticket
     ):
-        mockTicket.return_value.create.return_value = {
+        mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
             }
         }
 
-        mockRequester.return_value.search.return_value = {
+        mock_requester.return_value.search.return_value = {
             'users': [{
                 'id': '2'
             }]
@@ -119,7 +119,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
         self.client.get(reverse('zendesk_tickets_create'))
 
-        self.assertEqual(mockTicket.return_value.create.call_count, 2)
+        self.assertEqual(mock_ticket.return_value.create.call_count, 2)
 
         calls = [
             call({
@@ -151,7 +151,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 }
             })
         ]
-        mockTicket.return_value.create.assert_has_calls(calls)
+        mock_ticket.return_value.create.assert_has_calls(calls)
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
@@ -195,8 +195,8 @@ class ZendeskTicketsCreateViewTest(TestCase):
     @patch('zendesk.views.Requester')
     def test_ticket_create_view_should_set_zendesk_ticket_id_to_ticket(
         self,
-        mockRequester,
-        mockTicket
+        mock_requester,
+        mock_ticket
     ):
         
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -247,9 +247,9 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'forum_topic_id': None
             }
         }
-        mockTicket.return_value.create.return_value = result
+        mock_ticket.return_value.create.return_value = result
 
-        mockRequester.return_value.search.return_value= {
+        mock_requester.return_value.search.return_value= {
             'users': [{
                 'id': '2'
             }]
