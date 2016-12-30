@@ -4,6 +4,7 @@ from django.test import TestCase
 from ..models import Ticket
 from agents.models import Agent
 from agent_groups.models import AgentGroup
+from sheets.models import Sheet
 
 
 class TicketAdminTest(TestCase):
@@ -24,6 +25,9 @@ class TicketAdminTest(TestCase):
             assignee=agent,
             group=agent_group
         )
+        Sheet.objects.create(
+            name='Pre-Production',
+            slug='pre-production')
 
         response = self.client.get(self.url)
 
@@ -49,4 +53,7 @@ class TicketAdminTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<div class="text"><a href="?o=8">Tags</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<div class="text"><a href="?o=9">Sheet</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)

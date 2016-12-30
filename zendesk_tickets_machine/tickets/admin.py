@@ -14,4 +14,5 @@ class TicketAdmin(admin.ModelAdmin):
         'ticket_type',
         'priority',
         'tags',
+        'sheet',
     )
