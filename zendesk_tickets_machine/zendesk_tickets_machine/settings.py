@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'agent_groups',
     'requesters',
     'tickets',
+    'sheets'
 ]
 
 MIDDLEWARE = [
