@@ -81,7 +81,7 @@ class TicketViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_requester_id" maxlength="50" ' \
-            'name="requester_id" type="text" required />'
+            'name="requester_id" type="text" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select id="id_assignee" name="assignee" required>'
@@ -333,7 +333,7 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_requester_id" maxlength="50" ' \
-            'name="requester_id" type="text" value="1095195473" required />'
+            'name="requester_id" type="text" value="1095195473" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select id="id_assignee" name="assignee" required>'

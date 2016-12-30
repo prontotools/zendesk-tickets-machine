@@ -18,8 +18,9 @@ class ZendeskTicketsCreateView(View):
         tickets = Ticket.objects.exclude(zendesk_ticket_id__isnull=False)
         for each in tickets:
             requester_result = zendesk_user.search(each.requester)
-            requester_id = requester_result['users'][0]['id']
-            data = {
+            try:
+                requester_id = requester_result['users'][0]['id']
+                data = {
                 'ticket': {
                     'subject': each.subject,
                     'comment': {
@@ -31,12 +32,14 @@ class ZendeskTicketsCreateView(View):
                     'type': each.ticket_type,
                     'priority': each.priority,
                     'tags': each.tags.split()
+                    }
                 }
-            }
-            result = zendesk_ticket.create(data)
-            each.zendesk_ticket_id = result['ticket']['id']
-            each.requester_id = requester_id
-            each.save()
+                result = zendesk_ticket.create(data)
+                each.zendesk_ticket_id = result['ticket']['id']
+                each.requester_id = requester_id
+                each.save()
+            except IndexError:
+                pass
 
             if not settings.DEBUG:
                 time.sleep(1)

@@ -289,3 +289,69 @@ class ZendeskTicketsCreateViewTest(TestCase):
         response = self.client.get(reverse('zendesk_tickets_create'))
 
         self.assertEqual(mock.return_value.create.call_count, 0)
+
+    @patch('zendesk.views.ZendeskTicket')
+    @patch('zendesk.views.Requester')
+    def test_create_view_should_not_create_if_requester_id_is_empty(
+        self,
+        mock_requester,
+        mock_ticket
+    ):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+        ticket = Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment'
+        )
+
+        self.assertIsNone(ticket.zendesk_ticket_id)
+
+        ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
+            'tickets/16.json'
+        result = {
+            'ticket': {
+                'subject': 'Hello',
+                'submitter_id': 1095195473,
+                'priority': None,
+                'raw_subject': 'Hello',
+                'id': 16,
+                'url': ticket_url,
+                'group_id': 23338833,
+                'tags': ['welcome'],
+                'assignee_id': 1095195243,
+                'via': {
+                    'channel': 'api',
+                    'source': {
+                        'from': {}, 'to': {}, 'rel': None
+                    }
+                },
+                'ticket_form_id': None,
+                'updated_at': '2016-12-11T13:27:12Z',
+                'created_at': '2016-12-11T13:27:12Z',
+                'description': 'yeah..',
+                'status': 'open',
+                'requester_id': '',
+                'forum_topic_id': None
+            }
+        }
+        mock_ticket.return_value.create.return_value = result
+
+        mock_requester.return_value.search.return_value= {
+            'users': []
+        }
+
+        response = self.client.get(reverse('zendesk_tickets_create'))
+
+        ticket = Ticket.objects.last()
+        self.assertIsNone(ticket.zendesk_ticket_id)
+        self.assertIsNone(ticket.requester_id)
