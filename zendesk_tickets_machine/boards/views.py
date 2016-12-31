@@ -1,15 +1,25 @@
 from django.conf import settings
-from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView, View
+from django.views.generic import TemplateView
 
+from .models import Board
 from tickets.forms import TicketForm
 from tickets.models import Ticket
 
 
-class BoardView(View):
+class BoardView(TemplateView):
+    template_name = 'boards.html'
+
     def get(self, request):
-        return HttpResponse()
+        boards = Board.objects.all()
+
+        return render(
+            request,
+            self.template_name,
+            {
+                'boards': boards
+            }
+        )
 
 
 class BoardSingleView(TemplateView):

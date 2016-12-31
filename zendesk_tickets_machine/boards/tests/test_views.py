@@ -9,9 +9,33 @@ from tickets.models import Ticket
 
 
 class BoardViewTest(TestCase):
-    def test_board_view_should_be_accessiable(self):
+    def test_board_view_should_show_board_list(self):
+        first_board = Board.objects.create(name='Pre-Production')
+        second_board = Board.objects.create(name='Monthly Newsletter')
+
         response = self.client.get(reverse('boards'))
-        self.assertEqual(response.status_code, 200)
+
+        expected = '<title>Boards</title>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<h1>Boards</h1>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<li><a href="%s">%s</a></li>' % (
+            reverse(
+                'board_single', kwargs={'slug': first_board.slug}
+            ),
+            first_board.name
+        )
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<li><a href="%s">%s</a></li>' % (
+            reverse(
+                'board_single', kwargs={'slug': second_board.slug}
+            ),
+            second_board.name
+        )
+        self.assertContains(response, expected, status_code=200)
 
 
 class BoardSingleViewTest(TestCase):
@@ -51,6 +75,7 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': board.slug})
         )
+
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
@@ -63,7 +88,6 @@ class BoardSingleViewTest(TestCase):
                 first_ticket.id,
                 settings.ZENDESK_URL + '/agent/tickets/24328'
             )
-
         self.assertContains(response, expected, status_code=200)
 
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \

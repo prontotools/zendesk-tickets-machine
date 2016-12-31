@@ -1,0 +1,11 @@
+<html>
+<head><title>Boards</title></head>
+<body>
+  <h1>Boards</h1>
+  <ul>
+  {% for each in boards %}
+    <li><a href="{% url 'board_single' each.slug %}">{{ each.name }}</a></li>
+  {% endfor %}
+  </ul>
+</body>
+</html>
