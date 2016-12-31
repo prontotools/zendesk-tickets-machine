@@ -6,7 +6,7 @@ from tickets.forms import TicketForm
 from tickets.models import Ticket
 
 
-class BoardView(TemplateView):
+class BoardSingleView(TemplateView):
     template_name = 'tickets.html'
 
     def get(self, request, slug):

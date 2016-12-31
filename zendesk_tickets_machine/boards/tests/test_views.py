@@ -8,7 +8,7 @@ from agent_groups.models import AgentGroup
 from tickets.models import Ticket
 
 
-class BoardViewTest(TestCase):
+class BoardSingleViewTest(TestCase):
     def test_ticket_view_should_show_ticket_list(self):
         agent = Agent.objects.create(name='Natty', zendesk_user_id='456')
         agent_group = AgentGroup.objects.create(
@@ -43,7 +43,7 @@ class BoardViewTest(TestCase):
             private_comment='Private comment'
         )
         response = self.client.get(
-            reverse('board_view', kwargs={'slug': board.slug})
+            reverse('board_single', kwargs={'slug': board.slug})
         )
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
