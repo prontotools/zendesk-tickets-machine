@@ -28,7 +28,10 @@ class BoardSingleView(TemplateView):
     def get(self, request, slug):
         board = Board.objects.get(slug=slug)
 
-        form = TicketForm()
+        initial = {
+            'board': board.id
+        }
+        form = TicketForm(initial=initial)
         tickets = Ticket.objects.filter(board__slug=slug)
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
@@ -41,5 +44,22 @@ class BoardSingleView(TemplateView):
                 'tickets': tickets,
                 'zendesk_ticket_url': zendesk_ticket_url
 
+            }
+        )
+
+    def post(self, request, slug):
+        form = TicketForm(request.POST)
+        form.save()
+
+        tickets = Ticket.objects.filter(board__slug=slug)
+        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
+
+        return render(
+            request,
+            self.template_name,
+            {
+                'form': form,
+                'tickets': tickets,
+                'zendesk_ticket_url': zendesk_ticket_url
             }
         )

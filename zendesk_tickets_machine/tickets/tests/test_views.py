@@ -6,52 +6,6 @@ from agents.models import Agent
 from agent_groups.models import AgentGroup
 
 
-class TicketViewTest(TestCase):
-    def test_ticket_view_should_be_accessible(self):
-        response = self.client.get(reverse('tickets'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_ticket_view_should_save_data_when_submit_form(self):
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
-        )
-
-        data = {
-            'subject': 'Welcome to Pronto Service',
-            'comment': 'This is a comment.',
-            'requester': 'client@hisotech.com',
-            'requester_id': '1095195473',
-            'assignee': agent.id,
-            'group': agent_group.id,
-            'ticket_type': 'question',
-            'priority': 'urgent',
-            'tags': 'welcome',
-            'private_comment': 'Private comment',
-            'zendesk_ticket_id': '24328'
-        }
-
-        response = self.client.post(
-            reverse('tickets'),
-            data=data
-        )
-
-        ticket = Ticket.objects.last()
-
-        self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
-        self.assertEqual(ticket.comment, 'This is a comment.')
-        self.assertEqual(ticket.requester, 'client@hisotech.com')
-        self.assertEqual(ticket.requester_id, '1095195473')
-        self.assertEqual(ticket.assignee.name, 'Kan')
-        self.assertEqual(ticket.group.name, 'Development')
-        self.assertEqual(ticket.ticket_type, 'question')
-        self.assertEqual(ticket.priority, 'urgent')
-        self.assertEqual(ticket.tags, 'welcome')
-        self.assertEqual(ticket.private_comment, 'Private comment')
-        self.assertEqual(ticket.zendesk_ticket_id, '24328')
-
-
 class TicketEditViewTest(TestCase):
     def setUp(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -84,7 +38,7 @@ class TicketEditViewTest(TestCase):
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
 
-        expected = '<a href="%s">Back</a>' % reverse('tickets')
+        expected = '<a href="">Back</a>'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_have_table_header(self):
@@ -183,9 +137,7 @@ class TicketEditViewTest(TestCase):
         expected = '<input type="submit">'
         self.assertContains(response, expected, status_code=200)
 
-    def test_ticket_edit_view_should_save_data_and_redirect_to_ticket_view(
-        self
-    ):
+    def test_ticket_edit_view_should_save_data(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
             name='Development',
@@ -225,13 +177,6 @@ class TicketEditViewTest(TestCase):
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
 
-        self.assertRedirects(
-            response,
-            reverse('tickets'),
-            status_code=302,
-            target_status_code=200
-        )
-
 
 class TicketDeleteViewTest(TestCase):
     def setUp(self):
@@ -254,21 +199,11 @@ class TicketDeleteViewTest(TestCase):
             zendesk_ticket_id='24328'
         )
 
-    def test_ticket_delete_view_should_delete_and_redirect_to_ticket_view(
-        self
-    ):
+    def test_ticket_delete_view_should_delete(self):
         response = self.client.get(
             reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
         )
-
         self.assertEqual(Ticket.objects.count(), 0)
-
-        self.assertRedirects(
-            response,
-            reverse('tickets'),
-            status_code=302,
-            target_status_code=200
-        )
 
 
 class TicketResetViewTest(TestCase):
@@ -299,10 +234,3 @@ class TicketResetViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertIsNone(ticket.zendesk_ticket_id)
-
-        self.assertRedirects(
-            response,
-            reverse('tickets'),
-            status_code=302,
-            target_status_code=200
-        )

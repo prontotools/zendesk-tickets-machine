@@ -1,32 +1,11 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
 from .forms import TicketForm
 from .models import Ticket
-
-
-class TicketView(TemplateView):
-    template_name = 'tickets.html'
-
-    def post(self, request):
-        form = TicketForm(request.POST)
-        form.save()
-
-        tickets = Ticket.objects.all()
-        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
-
-        return render(
-            request,
-            self.template_name,
-            {
-                'form': form,
-                'tickets': tickets,
-                'zendesk_ticket_url': zendesk_ticket_url
-            }
-        )
 
 
 class TicketEditView(TemplateView):
@@ -64,16 +43,16 @@ class TicketEditView(TemplateView):
         form = TicketForm(request.POST, instance=ticket)
         form.save()
 
-        return HttpResponseRedirect(reverse('tickets'))
+        return HttpResponse()
 
 
 class TicketDeleteView(View):
     def get(self, request, ticket_id):
         Ticket.objects.get(id=ticket_id).delete()
-        return HttpResponseRedirect(reverse('tickets'))
+        return HttpResponse()
 
 
 class TicketResetView(View):
     def get(self, request):
         Ticket.objects.all().update(zendesk_ticket_id=None)
-        return HttpResponseRedirect(reverse('tickets'))
+        return HttpResponse()

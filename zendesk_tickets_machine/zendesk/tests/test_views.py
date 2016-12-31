@@ -201,7 +201,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
-    def test_ticket_create_view_should_redirect_to_ticket_view(self, mock):
+    def test_ticket_create_view_should_get_http_response_200(self, mock):
         mock.return_value.create.return_value = {
             'ticket': {
                 'id': 1
@@ -229,12 +229,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
 
         response = self.client.get(reverse('zendesk_tickets_create'))
 
-        self.assertRedirects(
-            response,
-            reverse('tickets'),
-            status_code=302,
-            target_status_code=200
-        )
+        self.assertEqual(response.status_code, 200)
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')

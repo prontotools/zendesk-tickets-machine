@@ -18,4 +18,6 @@ class TicketForm(forms.ModelForm):
             'tags',
             'private_comment',
             'zendesk_ticket_id',
+            'board',
         ]
+        widgets = {'board': forms.HiddenInput()}
