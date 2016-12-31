@@ -39,14 +39,14 @@ class BoardViewTest(TestCase):
 
 
 class BoardSingleViewTest(TestCase):
-    def test_board_single_view_should_show_ticket_list(self):
+    def setUp(self):
         agent = Agent.objects.create(name='Natty', zendesk_user_id='456')
         agent_group = AgentGroup.objects.create(
             name='Development',
             zendesk_group_id='123'
         )
-        board = Board.objects.create(name='Pre-Production')
-        first_ticket = Ticket.objects.create(
+        self.board = Board.objects.create(name='Pre-Production')
+        self.first_ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
@@ -58,9 +58,9 @@ class BoardSingleViewTest(TestCase):
             tags='welcome',
             private_comment='Private comment',
             zendesk_ticket_id='24328',
-            board=board
+            board=self.board
         )
-        second_ticket = Ticket.objects.create(
+        self.second_ticket = Ticket.objects.create(
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
@@ -72,8 +72,55 @@ class BoardSingleViewTest(TestCase):
             tags='welcome internal',
             private_comment='Private comment'
         )
+
+    def test_board_single_view_should_have_table_header(self):
         response = self.client.get(
-            reverse('board_single', kwargs={'slug': board.slug})
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '<th></th>' \
+            '<th>Subject</th>' \
+            '<th>Comment</th>' \
+            '<th>Requester</th>' \
+            '<th>Requester ID</th>' \
+            '<th>Assignee</th>' \
+            '<th>Group</th>' \
+            '<th>Ticket Type</th>' \
+            '<th>Priority</th>' \
+            '<th>Tags</th>' \
+            '<th>Private Comment</th>' \
+            '<th>Zendesk Ticket ID</th>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+    def test_board_single_view_should_have_create_tickets_link(self):
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '<a href="%s">' \
+            'Create Tickets</a>' % reverse('zendesk_tickets_create')
+        self.assertContains(response, expected, count=1, status_code=200)
+
+    def test_board_single_view_should_have_reset_form_link(self):
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '<a href="%s">' \
+            'Reset Tickets</a>' % reverse('tickets_reset')
+        self.assertContains(response, expected, count=1, status_code=200)
+
+    def test_board_single_view_should_have_board_name(self):
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '<h1>%s</h1>' % self.board.name
+        self.assertContains(response, expected, status_code=200)
+
+    def test_board_single_view_should_show_ticket_list(self):
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
@@ -84,8 +131,8 @@ class BoardSingleViewTest(TestCase):
             '<td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>Private comment</td>' \
             '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
-                first_ticket.id,
-                first_ticket.id,
+                self.first_ticket.id,
+                self.first_ticket.id,
                 settings.ZENDESK_URL + '/agent/tickets/24328'
             )
         self.assertContains(response, expected, status_code=200)
@@ -99,7 +146,7 @@ class BoardSingleViewTest(TestCase):
             '<td>welcome internal</td>' \
             '<td>Private comment</td>' \
             '<td></td></tr>' % (
-                second_ticket.id,
-                second_ticket.id
+                self.second_ticket.id,
+                self.second_ticket.id
             )
         self.assertNotContains(response, expected, status_code=200)

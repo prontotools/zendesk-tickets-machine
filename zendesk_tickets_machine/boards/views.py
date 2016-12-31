@@ -23,9 +23,11 @@ class BoardView(TemplateView):
 
 
 class BoardSingleView(TemplateView):
-    template_name = 'tickets.html'
+    template_name = 'board_single.html'
 
     def get(self, request, slug):
+        board = Board.objects.get(slug=slug)
+
         form = TicketForm()
         tickets = Ticket.objects.filter(board__slug=slug)
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
@@ -34,6 +36,7 @@ class BoardSingleView(TemplateView):
             request,
             self.template_name,
             {
+                'board_name': board.name,
                 'form': form,
                 'tickets': tickets,
                 'zendesk_ticket_url': zendesk_ticket_url

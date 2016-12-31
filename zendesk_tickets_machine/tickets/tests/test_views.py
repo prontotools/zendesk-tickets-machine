@@ -12,49 +12,6 @@ class TicketViewTest(TestCase):
         response = self.client.get(reverse('tickets'))
         self.assertEqual(response.status_code, 200)
 
-    def test_ticket_view_should_have_table_header(self):
-        response = self.client.get(reverse('tickets'))
-
-        expected = '<th>Subject</th>' \
-            '<th>Comment</th>' \
-            '<th>Requester</th>' \
-            '<th>Assignee</th>' \
-            '<th>Group</th>' \
-            '<th>Ticket Type</th>' \
-            '<th>Priority</th>' \
-            '<th>Tags</th>' \
-            '<th>Private Comment</th>' \
-            '<th>Zendesk Ticket ID</th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-
-        expected = '<th></th>' \
-            '<th>Subject</th>' \
-            '<th>Comment</th>' \
-            '<th>Requester</th>' \
-            '<th>Requester ID</th>' \
-            '<th>Assignee</th>' \
-            '<th>Group</th>' \
-            '<th>Ticket Type</th>' \
-            '<th>Priority</th>' \
-            '<th>Tags</th>' \
-            '<th>Private Comment</th>' \
-            '<th>Zendesk Ticket ID</th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-
-    def test_ticket_view_should_have_create_tickets_link(self):
-        response = self.client.get(reverse('tickets'))
-
-        expected = '<a href="%s">' \
-            'Create Tickets</a>' % reverse('zendesk_tickets_create')
-        self.assertContains(response, expected, count=1, status_code=200)
-
-    def test_ticket_view_should_have_reset_form_link(self):
-        response = self.client.get(reverse('tickets'))
-
-        expected = '<a href="%s">' \
-            'Reset Tickets</a>' % reverse('tickets_reset')
-        self.assertContains(response, expected, count=1, status_code=200)
-
     def test_ticket_view_should_render_ticket_form(self):
         Agent.objects.create(name='Kan', zendesk_user_id='123')
         AgentGroup.objects.create(name='Development', zendesk_group_id='123')
@@ -126,69 +83,6 @@ class TicketViewTest(TestCase):
         expected = '<input type="submit">'
         self.assertContains(response, expected, status_code=200)
 
-    def test_ticket_view_should_show_ticket_list(self):
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
-        )
-
-        first_ticket = Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            requester_id='1095195473',
-            assignee=agent,
-            group=agent_group,
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328'
-        )
-        second_ticket = Ticket.objects.create(
-            subject='Ticket 2',
-            comment='Comment 2',
-            requester='client+another@hisotech.com',
-            requester_id='1095195474',
-            assignee=agent,
-            group=agent_group,
-            ticket_type='question',
-            priority='high',
-            tags='welcome internal',
-            private_comment='Private comment'
-        )
-
-        response = self.client.get(reverse('tickets'))
-
-        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
-            '<a href="/%s/delete/">Delete</a></td>' \
-            '<td>Ticket 1</td><td>Comment 1</td>' \
-            '<td>client@hisotech.com</td><td>1095195473</td>' \
-            '<td>Kan</td><td>Development</td>' \
-            '<td>question</td><td>urgent</td>' \
-            '<td>welcome</td><td>Private comment</td>' \
-            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
-                first_ticket.id,
-                first_ticket.id,
-                settings.ZENDESK_URL + '/agent/tickets/24328'
-            )
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
-            '<a href="/%s/delete/">Delete</a></td>' \
-            '<td>Ticket 2</td><td>Comment 2</td>' \
-            '<td>client+another@hisotech.com</td><td>1095195474</td>' \
-            '<td>Kan</td><td>Development</td>' \
-            '<td>question</td><td>high</td>' \
-            '<td>welcome internal</td>' \
-            '<td>Private comment</td>' \
-            '<td></td></tr>' % (
-                second_ticket.id,
-                second_ticket.id
-            )
-        self.assertContains(response, expected, status_code=200)
-
     def test_ticket_view_should_save_data_when_submit_form(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
@@ -230,21 +124,6 @@ class TicketViewTest(TestCase):
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
 
         expected = '<form method="post">'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
-            '<a href="/%s/delete/">Delete</a></td>' \
-            '<td>Welcome to Pronto Service</td>' \
-            '<td>This is a comment.</td><td>client@hisotech.com</td>' \
-            '<td>1095195473</td><td>Kan</td>' \
-            '<td>Development</td>' \
-            '<td>question</td><td>urgent</td><td>welcome</td>' \
-            '<td>Private comment</td>' \
-            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
-                ticket.id,
-                ticket.id,
-                settings.ZENDESK_URL + '/agent/tickets/24328'
-            )
         self.assertContains(response, expected, status_code=200)
 
 
