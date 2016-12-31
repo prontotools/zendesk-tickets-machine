@@ -58,9 +58,3 @@ class TicketDeleteView(View):
         return HttpResponseRedirect(
             reverse('board_single', kwargs={'slug': board_slug})
         )
-
-
-class TicketResetView(View):
-    def get(self, request):
-        Ticket.objects.all().update(zendesk_ticket_id=None)
-        return HttpResponse()
