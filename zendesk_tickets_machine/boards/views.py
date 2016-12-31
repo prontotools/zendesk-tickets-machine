@@ -2,7 +2,7 @@ import time
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
@@ -78,11 +78,10 @@ class BoardSingleView(TemplateView):
 
 class BoardResetView(View):
     def get(self, request, slug):
-        board = Board.objects.get(slug=slug)
         Ticket.objects.filter(board__slug=slug).update(zendesk_ticket_id=None)
 
         return HttpResponseRedirect(
-            reverse('board_single', kwargs={'slug': board.slug})
+            reverse('board_single', kwargs={'slug': slug})
         )
 
 
@@ -139,4 +138,6 @@ class BoardZendeskTicketsCreateView(View):
             if not settings.DEBUG:
                 time.sleep(1)
 
-        return HttpResponse()
+        return HttpResponseRedirect(
+            reverse('board_single', kwargs={'slug': slug})
+        )

@@ -658,7 +658,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.Requester')
-    def test_ticket_create_view_should_get_http_response_200(
+    def test_ticket_create_view_should_redirect_to_board(
         self,
         mock_requester,
         mock_ticket
@@ -678,7 +678,12 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             reverse('board_tickets_create', kwargs={'slug': self.board.slug})
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(
+            response,
+            reverse('board_single', kwargs={'slug': self.board.slug}),
+            status_code=302,
+            target_status_code=200
+        )
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
