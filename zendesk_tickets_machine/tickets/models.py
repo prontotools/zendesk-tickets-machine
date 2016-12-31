@@ -35,4 +35,4 @@ class Ticket(models.Model):
         null=True,
         blank=True
     )
-    board = models.ForeignKey(Board, null=True, blank=True)
+    board = models.ForeignKey(Board)

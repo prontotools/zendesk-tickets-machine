@@ -20,14 +20,13 @@ class TicketAdminTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
+        board = Board.objects.create(name='Pre-Production')
         Ticket.objects.create(
             subject='Test Open Ticket',
             assignee=agent,
-            group=agent_group
+            group=agent_group,
+            board=board
         )
-        Board.objects.create(
-            name='Pre-Production',
-            slug='pre-production')
 
         response = self.client.get(self.url)
 
