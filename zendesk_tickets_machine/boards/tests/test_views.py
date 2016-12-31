@@ -18,9 +18,6 @@ class BoardViewTest(TestCase):
 
         response = self.client.get(reverse('boards'))
 
-        expected = '<title>Boards</title>'
-        self.assertContains(response, expected, status_code=200)
-
         expected = '<h1>Boards</h1>'
         self.assertContains(response, expected, status_code=200)
 
