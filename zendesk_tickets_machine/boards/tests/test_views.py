@@ -123,16 +123,22 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
-            '<a href="/%s/delete/">Delete</a></td>' \
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td><td>1095195473</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>Private comment</td>' \
             '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
-                self.first_ticket.id,
-                self.first_ticket.id,
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': self.first_ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': self.first_ticket.id}
+                ),
                 settings.ZENDESK_URL + '/agent/tickets/24328'
             )
         self.assertContains(response, expected, status_code=200)
