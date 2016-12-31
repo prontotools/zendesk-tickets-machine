@@ -8,8 +8,14 @@ from agent_groups.models import AgentGroup
 from tickets.models import Ticket
 
 
+class BoardViewTest(TestCase):
+    def test_board_view_should_be_accessiable(self):
+        response = self.client.get(reverse('boards'))
+        self.assertEqual(response.status_code, 200)
+
+
 class BoardSingleViewTest(TestCase):
-    def test_ticket_view_should_show_ticket_list(self):
+    def test_board_single_view_should_show_ticket_list(self):
         agent = Agent.objects.create(name='Natty', zendesk_user_id='456')
         agent_group = AgentGroup.objects.create(
             name='Development',

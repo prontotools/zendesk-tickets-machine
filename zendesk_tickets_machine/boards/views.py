@@ -1,9 +1,15 @@
 from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 
 from tickets.forms import TicketForm
 from tickets.models import Ticket
+
+
+class BoardView(View):
+    def get(self, request):
+        return HttpResponse()
 
 
 class BoardSingleView(TemplateView):
