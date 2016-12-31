@@ -87,7 +87,7 @@ class BoardResetView(View):
 
 
 class BoardZendeskTicketsCreateView(View):
-    def get(self, request):
+    def get(self, request, slug):
         zendesk_ticket = ZendeskTicket()
         zendesk_user = Requester()
 
@@ -107,7 +107,7 @@ class BoardZendeskTicketsCreateView(View):
                         'group_id': each.group.zendesk_group_id,
                         'type': each.ticket_type,
                         'priority': each.priority,
-                        'tags': each.tags.split()
+                        'tags': [tag.strip() for tag in each.tags.split(',')]
                     }
                 }
                 result = zendesk_ticket.create(data)

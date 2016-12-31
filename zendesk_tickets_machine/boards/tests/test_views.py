@@ -187,8 +187,10 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<a href="%s">' \
-            'Create Tickets</a>' % reverse('board_tickets_create')
+        expected = '<a href="%s">Create Tickets</a>' % reverse(
+            'board_tickets_create',
+            kwargs={'slug': self.board.slug}
+        )
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_reset_form_link(self):
@@ -388,6 +390,26 @@ class BoardResetViewTest(TestCase):
 
 
 class BoardZendeskTicketsCreateViewTest(TestCase):
+    def setUp(self):
+        self.agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        self.agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+        self.board = Board.objects.create(name='Production')
+        self.ticket = Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            board=self.board
+        )
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.Requester')
@@ -396,6 +418,10 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        ticket = Ticket.objects.last()
+        ticket.tags = 'welcome, pronto_marketing'
+        ticket.save()
+
         mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
@@ -407,27 +433,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             }]
         }
 
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
         )
-        board = Board.objects.create(name='Monthly Newsletter')
-        Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            requester_id='2',
-            assignee=agent,
-            group=agent_group,
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome pronto_marketing',
-            private_comment='Private comment',
-            board=board
-        )
-
-        self.client.get(reverse('board_tickets_create'))
 
         data = {
             'ticket': {
@@ -489,40 +497,23 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             }
         }
 
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
-        )
-        board = Board.objects.create(name='Production')
-        Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            requester_id='2',
-            assignee=agent,
-            group=agent_group,
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome',
-            private_comment='Private comment',
-            board=board
-        )
         Ticket.objects.create(
             subject='Ticket 2',
             comment='Comment 2',
             requester='client@hisotech.com',
             requester_id='2',
-            assignee=agent,
-            group=agent_group,
+            assignee=self.agent,
+            group=self.agent_group,
             ticket_type='question',
             priority='low',
             tags='welcome',
             private_comment='Private comment',
-            board=board
+            board=self.board
         )
 
-        self.client.get(reverse('board_tickets_create'))
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
 
         self.assertEqual(mock_ticket.return_value.create.call_count, 2)
         self.assertEqual(mock_ticket.return_value.create_comment.call_count, 2)
@@ -583,35 +574,26 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
-    def test_ticket_create_view_should_get_http_response_200(self, mock):
-        mock.return_value.create.return_value = {
+    @patch('boards.views.Requester')
+    def test_ticket_create_view_should_get_http_response_200(
+        self,
+        mock_requester,
+        mock_ticket
+    ):
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '1095195473'
+            }]
+        }
+        mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
             }
         }
 
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
+        response = self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
         )
-        board = Board.objects.create(name='Production')
-        Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            requester_id='2',
-            assignee=agent,
-            group=agent_group,
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            board=board
-        )
-
-        response = self.client.get(reverse('board_tickets_create'))
 
         self.assertEqual(response.status_code, 200)
 
@@ -623,25 +605,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
-        )
-        board = Board.objects.create(name='Production')
-        ticket = Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            assignee=agent,
-            group=agent_group,
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome',
-            board=board
-        )
-
-        self.assertIsNone(ticket.zendesk_ticket_id)
+        self.assertIsNone(self.ticket.zendesk_ticket_id)
 
         ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
             'tickets/16.json'
@@ -679,7 +643,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             }]
         }
 
-        self.client.get(reverse('board_tickets_create'))
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
 
         ticket = Ticket.objects.last()
         self.assertEqual(ticket.zendesk_ticket_id, '16')
@@ -690,28 +656,13 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self,
         mock
     ):
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
-        )
-        board = Board.objects.create(name='Production')
-        Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            requester_id='2',
-            assignee=agent,
-            group=agent_group,
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome',
-            private_comment='Private comment',
-            zendesk_ticket_id='123',
-            board=board
-        )
+        ticket = Ticket.objects.last()
+        ticket.zendesk_ticket_id = '123'
+        ticket.save()
 
-        self.client.get(reverse('board_tickets_create'))
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
 
         self.assertEqual(mock.return_value.create.call_count, 0)
 
@@ -722,26 +673,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
-        )
-        board = Board.objects.create(name='Production')
-        ticket = Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            assignee=agent,
-            group=agent_group,
-            ticket_type='question',
-            priority='urgent',
-            tags='welcome',
-            private_comment='Private comment',
-            board=board
-        )
-
-        self.assertIsNone(ticket.zendesk_ticket_id)
+        self.assertIsNone(self.ticket.zendesk_ticket_id)
 
         ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
             'tickets/16.json'
@@ -777,7 +709,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             'users': []
         }
 
-        self.client.get(reverse('board_tickets_create'))
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
 
         ticket = Ticket.objects.last()
         self.assertIsNone(ticket.zendesk_ticket_id)

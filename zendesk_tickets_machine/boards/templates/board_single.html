@@ -34,7 +34,7 @@
   {{ form.board }}
 </form>
 
-<a href="{% url 'board_tickets_create' %}">Create Tickets</a> | <a href="{% url 'board_reset' board_slug %}">Reset Tickets</a>
+<a href="{% url 'board_tickets_create' board_slug %}">Create Tickets</a> | <a href="{% url 'board_reset' board_slug %}">Reset Tickets</a>
 <table border="1">
   <tr>
   {% spaceless %}
