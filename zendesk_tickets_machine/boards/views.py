@@ -91,7 +91,11 @@ class BoardZendeskTicketsCreateView(View):
         zendesk_ticket = ZendeskTicket()
         zendesk_user = Requester()
 
-        tickets = Ticket.objects.exclude(zendesk_ticket_id__isnull=False)
+        tickets = Ticket.objects.filter(
+            board__slug=slug
+        ).exclude(
+            zendesk_ticket_id__isnull=False
+        )
         for each in tickets:
             requester_result = zendesk_user.search(each.requester)
             try:

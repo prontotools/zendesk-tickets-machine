@@ -575,6 +575,89 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.Requester')
+    def test_ticket_create_view_should_create_only_tickets_in_their_board(
+        self,
+        mock_requester,
+        mock_ticket
+    ):
+        mock_ticket.return_value.create.return_value = {
+            'ticket': {
+                'id': 1
+            }
+        }
+
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '2'
+            }]
+        }
+
+        mock_ticket.return_value.create_comment.return_value = {
+            'audit': {
+                'events': [{
+                    'public': False,
+                    'body': 'Private Comment',
+                    'author_id': '2'
+                }]
+            }
+        }
+
+        board = Board.objects.create(name='Monthly Newsletter')
+        Ticket.objects.create(
+            subject='Ticket 2',
+            comment='Comment 2',
+            requester='client@hisotech.com',
+            requester_id='2',
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            priority='low',
+            tags='welcome',
+            private_comment='Private comment',
+            board=board
+        )
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
+
+        self.assertEqual(mock_ticket.return_value.create.call_count, 1)
+        self.assertEqual(mock_ticket.return_value.create_comment.call_count, 1)
+
+        ticket_calls = [
+            call({
+                'ticket': {
+                    'subject': 'Ticket 1',
+                    'comment': {
+                        'body': 'Comment 1'
+                    },
+                    'requester_id': '2',
+                    'assignee_id': '123',
+                    'group_id': '123',
+                    'type': 'question',
+                    'priority': 'urgent',
+                    'tags': ['welcome']
+                }
+            })
+        ]
+        mock_ticket.return_value.create.assert_has_calls(ticket_calls)
+
+        comment_calls = [
+            call({
+                'ticket': {
+                    'comment': {
+                        'author_id': '123',
+                        'body': 'Private comment',
+                        'public': False
+                    }
+                }
+            }, 1)
+        ]
+        mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
+
+    @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskTicket')
+    @patch('boards.views.Requester')
     def test_ticket_create_view_should_get_http_response_200(
         self,
         mock_requester,
