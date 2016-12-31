@@ -18,6 +18,9 @@ class BoardViewTest(TestCase):
 
         response = self.client.get(reverse('boards'))
 
+        expected = '<title>Pronto Zendesk Tickets Machine</title>'
+        self.assertContains(response, expected, status_code=200)
+
         expected = '<h1>Boards</h1>'
         self.assertContains(response, expected, status_code=200)
 
@@ -74,6 +77,14 @@ class BoardSingleViewTest(TestCase):
             private_comment='Private comment',
             board=board
         )
+
+    def test_board_single_view_should_have_title_with_board_name(self):
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+        expected = '<title>%s | Pronto Zendesk Tickets Machine' \
+            '</title>' % self.board.name
+        self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_render_ticket_form(self):
         response = self.client.get(
