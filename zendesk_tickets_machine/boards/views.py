@@ -1,6 +1,7 @@
 from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 
 from .models import Board
 from tickets.forms import TicketForm
@@ -66,3 +67,9 @@ class BoardSingleView(TemplateView):
                 'zendesk_ticket_url': zendesk_ticket_url
             }
         )
+
+
+class BoardResetView(View):
+    def get(self, request, slug):
+        Ticket.objects.filter(board__slug=slug).update(zendesk_ticket_id=None)
+        return HttpResponse()

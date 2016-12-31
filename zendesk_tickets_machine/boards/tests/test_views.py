@@ -313,3 +313,53 @@ class BoardSingleViewTest(TestCase):
                 self.second_ticket.id
             )
         self.assertNotContains(response, expected, status_code=200)
+
+
+class BoardResetViewTest(TestCase):
+    def setUp(self):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+        self.board = Board.objects.create(name='Pre-Production')
+        self.first_ticket = Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            requester_id='1095195473',
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            zendesk_ticket_id='24328',
+            board=self.board
+        )
+        self.second_ticket = Ticket.objects.create(
+            subject='Ticket 2',
+            comment='Comment 2',
+            requester='client+another@hisotech.com',
+            requester_id='1095195474',
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='high',
+            tags='welcome internal',
+            private_comment='Private comment',
+            zendesk_ticket_id='56578',
+        )
+
+    def test_reset_view_should_reset_zendesk_ticket_id_for_tickets_in_board(
+        self
+    ):
+        self.client.get(
+            reverse('board_reset', kwargs={'slug': self.board.slug})
+        )
+
+        first_ticket = Ticket.objects.get(id=self.first_ticket.id)
+        self.assertIsNone(first_ticket.zendesk_ticket_id)
+
+        second_ticket = Ticket.objects.get(id=self.second_ticket.id)
+        self.assertEqual(second_ticket.zendesk_ticket_id, '56578')
