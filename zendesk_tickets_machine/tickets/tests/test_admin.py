@@ -4,7 +4,7 @@ from django.test import TestCase
 from ..models import Ticket
 from agents.models import Agent
 from agent_groups.models import AgentGroup
-from sheets.models import Sheet
+from boards.models import Board
 
 
 class TicketAdminTest(TestCase):
@@ -25,7 +25,7 @@ class TicketAdminTest(TestCase):
             assignee=agent,
             group=agent_group
         )
-        Sheet.objects.create(
+        Board.objects.create(
             name='Pre-Production',
             slug='pre-production')
 
@@ -55,10 +55,10 @@ class TicketAdminTest(TestCase):
         expected = '<div class="text"><a href="?o=8">Tags</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=9">Sheet</a></div>'
+        expected = '<div class="text"><a href="?o=9">Board</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-    def test_access_ticket_admin_should_have_sheet_filter(self):
+    def test_access_ticket_admin_should_have_board_filter(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
             name='Development',
@@ -69,7 +69,7 @@ class TicketAdminTest(TestCase):
             assignee=agent,
             group=agent_group
         )
-        Sheet.objects.create(
+        Board.objects.create(
             name='Pre-Production',
             slug='pre-production')
 

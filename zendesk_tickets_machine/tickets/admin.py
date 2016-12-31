@@ -14,6 +14,6 @@ class TicketAdmin(admin.ModelAdmin):
         'ticket_type',
         'priority',
         'tags',
-        'sheet',
+        'board',
     )
-    list_filter = ('sheet__name',)
+    list_filter = ('board__name',)

@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Sheet
+from .models import Board
 
 
-@admin.register(Sheet)
-class SheetAdmin(admin.ModelAdmin):
+@admin.register(Board)
+class BoardAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'slug',

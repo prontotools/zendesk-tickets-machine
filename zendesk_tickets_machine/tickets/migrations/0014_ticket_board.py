@@ -9,14 +9,14 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sheets', '0001_initial'),
+        ('boards', '0001_initial'),
         ('tickets', '0013_auto_20161230_0537'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='ticket',
-            name='sheet',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='sheets.Sheet'),
+            name='board',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='boards.Board'),
         ),
     ]

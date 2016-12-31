@@ -1,18 +1,18 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from ..models import Sheet
+from ..models import Board
 
 
-class SheetAdminTest(TestCase):
+class BoardAdminTest(TestCase):
     def setUp(self):
         User.objects.create_superuser('admin', 'admin@pronto.com', 'admin')
         self.client.login(username='admin', password='admin')
 
-        self.url = '/admin/sheets/sheet/'
+        self.url = '/admin/boards/board/'
 
-    def test_access_sheet_admin_should_have_columns(self):
-        Sheet.objects.create(
+    def test_access_board_admin_should_have_columns(self):
+        Board.objects.create(
             name='Pre-Production',
             slug='pre-production'
         )

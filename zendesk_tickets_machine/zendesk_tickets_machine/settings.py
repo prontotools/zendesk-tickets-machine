@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'agents',
     'agent_groups',
+    'boards',
     'requesters',
     'tickets',
-    'sheets'
 ]
 
 MIDDLEWARE = [

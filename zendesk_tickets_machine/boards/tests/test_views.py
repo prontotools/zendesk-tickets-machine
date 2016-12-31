@@ -2,20 +2,20 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from ..models import Sheet
+from ..models import Board
 from agents.models import Agent
 from agent_groups.models import AgentGroup
 from tickets.models import Ticket
 
 
-class SheetViewTest(TestCase):
+class BoardViewTest(TestCase):
     def test_ticket_view_should_show_ticket_list(self):
         agent = Agent.objects.create(name='Natty', zendesk_user_id='456')
         agent_group = AgentGroup.objects.create(
             name='Development',
             zendesk_group_id='123'
         )
-        sheet = Sheet.objects.create(name='Pre-Production')
+        board = Board.objects.create(name='Pre-Production')
         first_ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -28,7 +28,7 @@ class SheetViewTest(TestCase):
             tags='welcome',
             private_comment='Private comment',
             zendesk_ticket_id='24328',
-            sheet=sheet
+            board=board
         )
         second_ticket = Ticket.objects.create(
             subject='Ticket 2',
@@ -43,7 +43,7 @@ class SheetViewTest(TestCase):
             private_comment='Private comment'
         )
         response = self.client.get(
-            reverse('sheet_view', kwargs={'slug': sheet.slug})
+            reverse('board_view', kwargs={'slug': board.slug})
         )
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \

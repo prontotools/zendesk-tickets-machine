@@ -2,7 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 
-class Sheet(models.Model):
+class Board(models.Model):
     name = models.CharField(max_length=300)
     slug = models.SlugField(
         max_length=300,
@@ -17,4 +17,4 @@ class Sheet(models.Model):
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        super(Sheet, self).save(*args, **kwargs)
+        super(Board, self).save(*args, **kwargs)

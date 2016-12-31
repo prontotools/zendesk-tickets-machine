@@ -1,11 +1,11 @@
 from django.conf.urls import url
 
 from .views import (
-    SheetView,
+    BoardView,
 )
 
 
 urlpatterns = [
     url(r'^(?P<slug>[\w-]+)/$',
-        SheetView.as_view(), name='sheet_view'),
+        BoardView.as_view(), name='board_view'),
 ]

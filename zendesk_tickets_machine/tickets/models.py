@@ -2,7 +2,7 @@ from django.db import models
 
 from agents.models import Agent
 from agent_groups.models import AgentGroup
-from sheets.models import Sheet
+from boards.models import Board
 
 
 class Ticket(models.Model):
@@ -35,4 +35,4 @@ class Ticket(models.Model):
         null=True,
         blank=True
     )
-    sheet = models.ForeignKey(Sheet, null=True, blank=True)
+    board = models.ForeignKey(Board, null=True, blank=True)
