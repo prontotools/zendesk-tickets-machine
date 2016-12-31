@@ -206,6 +206,7 @@ class TicketDeleteViewTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
+        self.board = Board.objects.create(name='Pre-Production')
         self.ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -217,14 +218,22 @@ class TicketDeleteViewTest(TestCase):
             priority='urgent',
             tags='welcome',
             private_comment='Private comment',
-            zendesk_ticket_id='24328'
+            zendesk_ticket_id='24328',
+            board=self.board
         )
 
-    def test_ticket_delete_view_should_delete(self):
-        self.client.get(
+    def test_ticket_delete_view_should_delete_then_redirect_to_its_board(self):
+        response = self.client.get(
             reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
         )
         self.assertEqual(Ticket.objects.count(), 0)
+
+        self.assertRedirects(
+            response,
+            reverse('board_single', kwargs={'slug': self.ticket.board.slug}),
+            status_code=302,
+            target_status_code=200
+        )
 
 
 class TicketResetViewTest(TestCase):

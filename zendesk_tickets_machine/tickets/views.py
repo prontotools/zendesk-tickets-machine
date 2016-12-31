@@ -51,8 +51,13 @@ class TicketEditView(TemplateView):
 
 class TicketDeleteView(View):
     def get(self, request, ticket_id):
-        Ticket.objects.get(id=ticket_id).delete()
-        return HttpResponse()
+        ticket = Ticket.objects.get(id=ticket_id)
+        board_slug = ticket.board.slug
+        ticket.delete()
+
+        return HttpResponseRedirect(
+            reverse('board_single', kwargs={'slug': board_slug})
+        )
 
 
 class TicketResetView(View):
