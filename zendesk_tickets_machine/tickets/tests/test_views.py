@@ -160,7 +160,7 @@ class TicketEditViewTest(TestCase):
             'zendesk_ticket_id': '24328'
         }
 
-        response = self.client.post(
+        self.client.post(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id}),
             data=data
         )
@@ -202,7 +202,7 @@ class TicketDeleteViewTest(TestCase):
         )
 
     def test_ticket_delete_view_should_delete(self):
-        response = self.client.get(
+        self.client.get(
             reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
         )
         self.assertEqual(Ticket.objects.count(), 0)
@@ -232,7 +232,7 @@ class TicketResetViewTest(TestCase):
     def test_ticket_reset_view_should_reset_zendesk_ticket_id_on_all_tickets(
         self
     ):
-        response = self.client.get(reverse('tickets_reset'))
+        self.client.get(reverse('tickets_reset'))
 
         ticket = Ticket.objects.last()
         self.assertIsNone(ticket.zendesk_ticket_id)
