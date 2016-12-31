@@ -126,8 +126,10 @@ class TicketEditViewTest(TestCase):
             'type="text" value="welcome" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_private_comment" maxlength="500" ' \
-            'name="private_comment" type="text" value="Private comment" />'
+        expected = '<textarea cols="40" id="id_private_comment" ' \
+            'name="private_comment" rows="10" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = 'Private comment</textarea>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \

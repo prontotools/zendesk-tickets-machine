@@ -132,8 +132,8 @@ class BoardSingleViewTest(TestCase):
             'type="text" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_private_comment" maxlength="500" ' \
-            'name="private_comment" type="text" />'
+        expected = '<textarea cols="40" id="id_private_comment" ' \
+            'name="private_comment" rows="10" required>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
