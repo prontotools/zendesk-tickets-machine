@@ -73,6 +73,76 @@ class BoardSingleViewTest(TestCase):
             private_comment='Private comment'
         )
 
+    def test_board_single_view_should_render_ticket_form(self):
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '<form method="post">'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = "<input type='hidden' name='csrfmiddlewaretoken'"
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_subject" maxlength="300" name="subject" ' \
+            'type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<textarea cols="40" id="id_comment" name="comment" ' \
+            'rows="10" required>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_requester" maxlength="100" ' \
+            'name="requester" type="text" required />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select id="id_assignee" name="assignee" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="1">Natty</option>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select id="id_group" name="group" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="1">Development</option>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select id="id_ticket_type" name="ticket_type" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="question">Question</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="incident">Incident</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="problem">Problem</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="task">Task</option>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select id="id_priority" name="priority" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="high">High</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="urgent">Urgent</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="normal">Normal</option>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="low">Low</option>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_tags" maxlength="300" name="tags" ' \
+            'type="text" />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_private_comment" maxlength="500" ' \
+            'name="private_comment" type="text" />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
+            'name="zendesk_ticket_id" type="text" />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<input type="submit">'
+        self.assertContains(response, expected, status_code=200)
+
     def test_board_single_view_should_have_table_header(self):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})

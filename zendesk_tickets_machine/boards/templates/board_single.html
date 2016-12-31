@@ -1,5 +1,40 @@
 <h1>{{ board_name }}</h1>
 
+<form method="post">
+  {% csrf_token %}
+  <table>
+    <tr>
+    {% spaceless %}
+      <th>Subject</th>
+      <th>Comment</th>
+      <th>Requester</th>
+      <th>Assignee</th>
+      <th>Group</th>
+      <th>Ticket Type</th>
+      <th>Priority</th>
+      <th>Tags</th>
+      <th>Private Comment</th>
+      <th>Zendesk Ticket ID</th>
+    {% endspaceless %}
+    </tr>
+    <tr>
+      <td>{{ form.subject }}</td>
+      <td>{{ form.comment }}</td>
+      <td>{{ form.requester }}</td>
+      <td>{{ form.assignee }}</td>
+      <td>{{ form.group }}</td>
+      <td>{{ form.ticket_type }}</td>
+      <td>{{ form.priority }}</td>
+      <td>{{ form.tags }}</td>
+      <td>{{ form.private_comment }}</td>
+      <td>{{ form.zendesk_ticket_id }}</td>
+    </tr>
+    <tr>
+      <td><input type="submit"></td>
+    </tr>
+  </table>
+</form>
+
 <a href="{% url 'zendesk_tickets_create' %}">Create Tickets</a> | <a href="{% url 'tickets_reset' %}">Reset Tickets</a>
 <table border="1">
   <tr>

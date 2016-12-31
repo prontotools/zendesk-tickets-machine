@@ -11,21 +11,6 @@ from .models import Ticket
 class TicketView(TemplateView):
     template_name = 'tickets.html'
 
-    def get(self, request):
-        form = TicketForm()
-        tickets = Ticket.objects.all()
-        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
-
-        return render(
-            request,
-            self.template_name,
-            {
-                'form': form,
-                'tickets': tickets,
-                'zendesk_ticket_url': zendesk_ticket_url
-            }
-        )
-
     def post(self, request):
         form = TicketForm(request.POST)
         form.save()
