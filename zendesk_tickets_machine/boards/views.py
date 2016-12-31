@@ -42,6 +42,7 @@ class BoardSingleView(TemplateView):
             self.template_name,
             {
                 'board_name': board.name,
+                'board_slug': board.slug,
                 'form': form,
                 'tickets': tickets,
                 'zendesk_ticket_url': zendesk_ticket_url
@@ -63,6 +64,7 @@ class BoardSingleView(TemplateView):
             self.template_name,
             {
                 'board_name': board.name,
+                'board_slug': board.slug,
                 'form': form,
                 'tickets': tickets,
                 'zendesk_ticket_url': zendesk_ticket_url

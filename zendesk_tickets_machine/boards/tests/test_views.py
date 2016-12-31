@@ -192,7 +192,10 @@ class BoardSingleViewTest(TestCase):
         )
 
         expected = '<a href="%s">' \
-            'Reset Tickets</a>' % reverse('tickets_reset')
+            'Reset Tickets</a>' % reverse(
+                'board_reset',
+                kwargs={'slug': self.board.slug}
+            )
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_board_name(self):
