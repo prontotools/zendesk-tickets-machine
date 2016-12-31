@@ -4,6 +4,7 @@ from django.test import TestCase
 from ..models import Ticket
 from agents.models import Agent
 from agent_groups.models import AgentGroup
+from boards.models import Board
 
 
 class TicketEditViewTest(TestCase):
@@ -13,6 +14,7 @@ class TicketEditViewTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
+        self.board = Board.objects.create(name='Pre-Production')
         self.ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -24,7 +26,8 @@ class TicketEditViewTest(TestCase):
             priority='urgent',
             tags='welcome',
             private_comment='Private comment',
-            zendesk_ticket_id='24328'
+            zendesk_ticket_id='24328',
+            board=self.board
         )
 
     def test_ticket_edit_view_should_be_accessible(self):
@@ -38,7 +41,10 @@ class TicketEditViewTest(TestCase):
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
 
-        expected = '<a href="">Back</a>'
+        expected = '<a href="%s">Back</a>' % reverse(
+            'board_single',
+            kwargs={'slug': self.ticket.board.slug}
+        )
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_have_table_header(self):

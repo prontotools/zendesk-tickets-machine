@@ -32,6 +32,7 @@ class TicketEditView(TemplateView):
             request,
             self.template_name,
             {
+                'board_slug': ticket.board.slug,
                 'form': form
             }
         )
