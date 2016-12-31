@@ -1,38 +1,41 @@
-<a href="{% url 'board_single' board_slug %}">Back</a>
-<form method="post">
-  {% csrf_token %}
-  <table>
-    <tr>
-    {% spaceless %}
-      <th>Subject</th>
-      <th>Comment</th>
-      <th>Requester</th>
-      <th>Requester ID</th>
-      <th>Assignee</th>
-      <th>Group</th>
-      <th>Ticket Type</th>
-      <th>Priority</th>
-      <th>Tags</th>
-      <th>Private Comment</th>
-      <th>Zendesk Ticket ID</th>
-    {% endspaceless %}
-    </tr>
-    <tr>
-      <td>{{ form.subject }}</td>
-      <td>{{ form.comment }}</td>
-      <td>{{ form.requester }}</td>
-      <td>{{ form.requester_id }}</td>
-      <td>{{ form.assignee }}</td>
-      <td>{{ form.group }}</td>
-      <td>{{ form.ticket_type }}</td>
-      <td>{{ form.priority }}</td>
-      <td>{{ form.tags }}</td>
-      <td>{{ form.private_comment }}</td>
-      <td>{{ form.zendesk_ticket_id }}</td>
-    </tr>
-    <tr>
-      <td><input type="submit"></td>
-    </tr>
-  </table>
-  {{ form.board }}
-</form>
+{% extends "base.html" %}
+{% block body %}
+  <a href="{% url 'board_single' board_slug %}">Back</a>
+  <form method="post">
+    {% csrf_token %}
+    <table>
+      <tr>
+      {% spaceless %}
+        <th>Subject</th>
+        <th>Comment</th>
+        <th>Requester</th>
+        <th>Requester ID</th>
+        <th>Assignee</th>
+        <th>Group</th>
+        <th>Ticket Type</th>
+        <th>Priority</th>
+        <th>Tags</th>
+        <th>Private Comment</th>
+        <th>Zendesk Ticket ID</th>
+      {% endspaceless %}
+      </tr>
+      <tr>
+        <td>{{ form.subject }}</td>
+        <td>{{ form.comment }}</td>
+        <td>{{ form.requester }}</td>
+        <td>{{ form.requester_id }}</td>
+        <td>{{ form.assignee }}</td>
+        <td>{{ form.group }}</td>
+        <td>{{ form.ticket_type }}</td>
+        <td>{{ form.priority }}</td>
+        <td>{{ form.tags }}</td>
+        <td>{{ form.private_comment }}</td>
+        <td>{{ form.zendesk_ticket_id }}</td>
+      </tr>
+      <tr>
+        <td><input type="submit"></td>
+      </tr>
+    </table>
+    {{ form.board }}
+  </form>
+{% endblock %}
