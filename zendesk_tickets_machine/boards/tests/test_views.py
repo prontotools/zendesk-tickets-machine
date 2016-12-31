@@ -363,3 +363,15 @@ class BoardResetViewTest(TestCase):
 
         second_ticket = Ticket.objects.get(id=self.second_ticket.id)
         self.assertEqual(second_ticket.zendesk_ticket_id, '56578')
+
+    def test_reset_view_should_redirect_to_board(self):
+        response = self.client.get(
+            reverse('board_reset', kwargs={'slug': self.board.slug})
+        )
+
+        self.assertRedirects(
+            response,
+            reverse('board_single', kwargs={'slug': self.board.slug}),
+            status_code=302,
+            target_status_code=200
+        )
