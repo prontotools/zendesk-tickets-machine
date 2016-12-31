@@ -160,6 +160,7 @@ class TicketViewTest(TestCase):
         )
 
         response = self.client.get(reverse('tickets'))
+
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
@@ -172,7 +173,6 @@ class TicketViewTest(TestCase):
                 first_ticket.id,
                 settings.ZENDESK_URL + '/agent/tickets/24328'
             )
-  
         self.assertContains(response, expected, status_code=200)
 
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \

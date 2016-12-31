@@ -2,10 +2,11 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from tickets.models import Ticket
 from ..models import Sheet
 from agents.models import Agent
 from agent_groups.models import AgentGroup
+from tickets.models import Ticket
+
 
 class SheetViewTest(TestCase):
     def test_ticket_view_should_show_ticket_list(self):
@@ -41,7 +42,9 @@ class SheetViewTest(TestCase):
             tags='welcome internal',
             private_comment='Private comment'
         )
-        response = self.client.get(reverse('sheet_view', kwargs={'slug': sheet.slug}))
+        response = self.client.get(
+            reverse('sheet_view', kwargs={'slug': sheet.slug})
+        )
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
@@ -54,7 +57,7 @@ class SheetViewTest(TestCase):
                 first_ticket.id,
                 settings.ZENDESK_URL + '/agent/tickets/24328'
             )
-  
+
         self.assertContains(response, expected, status_code=200)
 
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \

@@ -13,7 +13,10 @@ class TicketTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
-        sheet = Sheet.objects.create(name='Pre-Production', slug='pre-production')
+        sheet = Sheet.objects.create(
+            name='Pre-Production',
+            slug='pre-production'
+        )
 
         comment = 'Thank you for signing up with us! ' \
             'Currently we are sorting out the info and will reach ' \

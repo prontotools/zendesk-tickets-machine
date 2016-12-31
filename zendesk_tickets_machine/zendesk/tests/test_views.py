@@ -1,4 +1,3 @@
-import json
 from unittest.mock import call, patch
 
 from django.core.urlresolvers import reverse
@@ -69,13 +68,16 @@ class ZendeskTicketsCreateViewTest(TestCase):
             'ticket': {
                 'comment': {
                     'author_id': '123',
-                    'body': 'Private comment', 
+                    'body': 'Private comment',
                     'public': False
                 }
             }
         }
         mock_ticket.return_value.create.assert_called_once_with(data)
-        mock_ticket.return_value.create_comment.assert_called_once_with(comment, 1)
+        mock_ticket.return_value.create_comment.assert_called_once_with(
+            comment,
+            1
+        )
 
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
@@ -180,20 +182,20 @@ class ZendeskTicketsCreateViewTest(TestCase):
                 'ticket': {
                     'comment': {
                         'author_id': '123',
-                        'body': 'Private comment', 
+                        'body': 'Private comment',
                         'public': False
                     }
                 }
-            },1),
+            }, 1),
             call({
                 'ticket': {
                     'comment': {
                         'author_id': '123',
-                        'body': 'Private comment', 
+                        'body': 'Private comment',
                         'public': False
                     }
                 }
-            },1)
+            }, 1)
         ]
         mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
 
@@ -237,12 +239,11 @@ class ZendeskTicketsCreateViewTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('zendesk.views.ZendeskTicket')
     @patch('zendesk.views.Requester')
-    def test_ticket_create_view_should_set_zendesk_ticket_id_and_requester_id_to_ticket(
+    def test_it_should_set_zendesk_ticket_id_and_requester_id_to_ticket(
         self,
         mock_requester,
         mock_ticket
     ):
-        
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
             name='Development',
@@ -291,18 +292,17 @@ class ZendeskTicketsCreateViewTest(TestCase):
         }
         mock_ticket.return_value.create.return_value = result
 
-        mock_requester.return_value.search.return_value= {
+        mock_requester.return_value.search.return_value = {
             'users': [{
                 'id': '1095195473'
             }]
         }
 
-        response = self.client.get(reverse('zendesk_tickets_create'))
+        self.client.get(reverse('zendesk_tickets_create'))
 
         ticket = Ticket.objects.last()
         self.assertEqual(ticket.zendesk_ticket_id, '16')
         self.assertEqual(ticket.requester_id, '1095195473')
-
 
     @patch('zendesk.views.ZendeskTicket')
     def test_create_view_should_not_create_if_zendesk_ticket_id_not_empty(
@@ -329,7 +329,7 @@ class ZendeskTicketsCreateViewTest(TestCase):
             zendesk_ticket_id='123'
         )
 
-        response = self.client.get(reverse('zendesk_tickets_create'))
+        self.client.get(reverse('zendesk_tickets_create'))
 
         self.assertEqual(mock.return_value.create.call_count, 0)
 
@@ -389,11 +389,11 @@ class ZendeskTicketsCreateViewTest(TestCase):
         }
         mock_ticket.return_value.create.return_value = result
 
-        mock_requester.return_value.search.return_value= {
+        mock_requester.return_value.search.return_value = {
             'users': []
         }
 
-        response = self.client.get(reverse('zendesk_tickets_create'))
+        self.client.get(reverse('zendesk_tickets_create'))
 
         ticket = Ticket.objects.last()
         self.assertIsNone(ticket.zendesk_ticket_id)

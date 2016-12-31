@@ -63,7 +63,7 @@ class TicketAPITest(TestCase):
             'ticket': {
                 'comment': {
                     'author_id': '123',
-                    'body': 'Private comment', 
+                    'body': 'Private comment',
                     'public': False
                 }
             }

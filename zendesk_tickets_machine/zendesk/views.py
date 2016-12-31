@@ -21,17 +21,17 @@ class ZendeskTicketsCreateView(View):
             try:
                 requester_id = requester_result['users'][0]['id']
                 data = {
-                'ticket': {
-                    'subject': each.subject,
-                    'comment': {
-                        'body': each.comment
-                    },
-                    'requester_id': requester_id,
-                    'assignee_id': each.assignee.zendesk_user_id,
-                    'group_id': each.group.zendesk_group_id,
-                    'type': each.ticket_type,
-                    'priority': each.priority,
-                    'tags': each.tags.split()
+                    'ticket': {
+                        'subject': each.subject,
+                        'comment': {
+                            'body': each.comment
+                        },
+                        'requester_id': requester_id,
+                        'assignee_id': each.assignee.zendesk_user_id,
+                        'group_id': each.group.zendesk_group_id,
+                        'type': each.ticket_type,
+                        'priority': each.priority,
+                        'tags': each.tags.split()
                     }
                 }
                 result = zendesk_ticket.create(data)
@@ -40,16 +40,19 @@ class ZendeskTicketsCreateView(View):
                 each.save()
 
                 data = {
-                'ticket': {
-                    'comment': {
-                        'author_id': each.assignee.zendesk_user_id,
-                        'body': each.private_comment,
-                        'public': False
+                    'ticket': {
+                        'comment': {
+                            'author_id': each.assignee.zendesk_user_id,
+                            'body': each.private_comment,
+                            'public': False
                         }
                     }
                 }
-                result = zendesk_ticket.create_comment(data, each.zendesk_ticket_id)
-                
+                result = zendesk_ticket.create_comment(
+                    data,
+                    each.zendesk_ticket_id
+                )
+
             except IndexError:
                 pass
 

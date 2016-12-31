@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from ..models import Sheet
 
+
 class SheetAdminTest(TestCase):
     def setUp(self):
         User.objects.create_superuser('admin', 'admin@pronto.com', 'admin')
