@@ -138,7 +138,7 @@ class BoardSingleViewTest(TestCase):
 
         expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
             'name="zendesk_ticket_id" type="text" />'
-        self.assertContains(response, expected, status_code=200)
+        self.assertNotContains(response, expected, status_code=200)
 
         expected = '<input id="id_board" name="board" type="hidden" ' \
             'value="%s" />' % self.board.id
@@ -151,6 +151,17 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
+
+        expected = '<th>Subject</th>' \
+            '<th>Comment</th>' \
+            '<th>Requester</th>' \
+            '<th>Assignee</th>' \
+            '<th>Group</th>' \
+            '<th>Ticket Type</th>' \
+            '<th>Priority</th>' \
+            '<th>Tags</th>' \
+            '<th>Private Comment</th>'
+        self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<th></th>' \
             '<th>Subject</th>' \
