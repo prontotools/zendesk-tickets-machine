@@ -63,6 +63,7 @@ class BoardSingleViewTest(TestCase):
             zendesk_ticket_id='24328',
             board=self.board
         )
+        board = Board.objects.create(name='Production')
         self.second_ticket = Ticket.objects.create(
             subject='Ticket 2',
             comment='Comment 2',
@@ -73,7 +74,8 @@ class BoardSingleViewTest(TestCase):
             ticket_type='question',
             priority='high',
             tags='welcome internal',
-            private_comment='Private comment'
+            private_comment='Private comment',
+            board=board
         )
 
     def test_board_single_view_should_render_ticket_form(self):
@@ -343,6 +345,7 @@ class BoardResetViewTest(TestCase):
             zendesk_ticket_id='24328',
             board=self.board
         )
+        board = Board.objects.create(name='Another Pre-Production')
         self.second_ticket = Ticket.objects.create(
             subject='Ticket 2',
             comment='Comment 2',
@@ -355,6 +358,7 @@ class BoardResetViewTest(TestCase):
             tags='welcome internal',
             private_comment='Private comment',
             zendesk_ticket_id='56578',
+            board=board
         )
 
     def test_reset_view_should_reset_zendesk_ticket_id_for_tickets_in_board(
@@ -408,6 +412,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
+        board = Board.objects.create(name='Monthly Newsletter')
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -418,7 +423,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome pronto_marketing',
-            private_comment='Private comment'
+            private_comment='Private comment',
+            board=board
         )
 
         self.client.get(reverse('board_tickets_create'))
@@ -488,7 +494,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
-
+        board = Board.objects.create(name='Production')
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -499,7 +505,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome',
-            private_comment='Private comment'
+            private_comment='Private comment',
+            board=board
         )
         Ticket.objects.create(
             subject='Ticket 2',
@@ -511,7 +518,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='low',
             tags='welcome',
-            private_comment='Private comment'
+            private_comment='Private comment',
+            board=board
         )
 
         self.client.get(reverse('board_tickets_create'))
@@ -587,6 +595,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
+        board = Board.objects.create(name='Production')
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -598,7 +607,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             priority='urgent',
             tags='welcome',
             private_comment='Private comment',
-            zendesk_ticket_id='24328'
+            zendesk_ticket_id='24328',
+            board=board
         )
 
         response = self.client.get(reverse('board_tickets_create'))
@@ -618,6 +628,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
+        board = Board.objects.create(name='Production')
         ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -626,7 +637,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             group=agent_group,
             ticket_type='question',
             priority='urgent',
-            tags='welcome'
+            tags='welcome',
+            board=board
         )
 
         self.assertIsNone(ticket.zendesk_ticket_id)
@@ -683,7 +695,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
-
+        board = Board.objects.create(name='Production')
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -695,7 +707,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             priority='urgent',
             tags='welcome',
             private_comment='Private comment',
-            zendesk_ticket_id='123'
+            zendesk_ticket_id='123',
+            board=board
         )
 
         self.client.get(reverse('board_tickets_create'))
@@ -714,6 +727,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             name='Development',
             zendesk_group_id='123'
         )
+        board = Board.objects.create(name='Production')
         ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -723,7 +737,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             ticket_type='question',
             priority='urgent',
             tags='welcome',
-            private_comment='Private comment'
+            private_comment='Private comment',
+            board=board
         )
 
         self.assertIsNone(ticket.zendesk_ticket_id)
