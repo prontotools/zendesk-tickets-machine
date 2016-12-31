@@ -48,6 +48,8 @@ class BoardSingleView(TemplateView):
         )
 
     def post(self, request, slug):
+        board = Board.objects.get(slug=slug)
+
         form = TicketForm(request.POST)
         form.save()
 
@@ -58,6 +60,7 @@ class BoardSingleView(TemplateView):
             request,
             self.template_name,
             {
+                'board_name': board.name,
                 'form': form,
                 'tickets': tickets,
                 'zendesk_ticket_url': zendesk_ticket_url

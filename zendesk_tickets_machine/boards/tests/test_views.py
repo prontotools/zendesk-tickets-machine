@@ -266,6 +266,9 @@ class BoardSingleViewTest(TestCase):
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
 
+        expected = '<h1>%s</h1>' % self.board.name
+        self.assertContains(response, expected, status_code=200)
+
         expected = '<tr><td><a href="%s">Edit</a> | ' \
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
