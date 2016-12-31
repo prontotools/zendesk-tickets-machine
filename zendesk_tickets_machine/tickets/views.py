@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
@@ -24,7 +25,8 @@ class TicketEditView(TemplateView):
             'priority': ticket.priority,
             'tags': ticket.tags,
             'private_comment': ticket.private_comment,
-            'zendesk_ticket_id': ticket.zendesk_ticket_id
+            'zendesk_ticket_id': ticket.zendesk_ticket_id,
+            'board': ticket.board.id
         }
         form = TicketForm(initial=initial)
 
@@ -42,7 +44,9 @@ class TicketEditView(TemplateView):
         form = TicketForm(request.POST, instance=ticket)
         form.save()
 
-        return HttpResponse()
+        return HttpResponseRedirect(
+            reverse('board_single', kwargs={'slug': ticket.board.slug})
+        )
 
 
 class TicketDeleteView(View):

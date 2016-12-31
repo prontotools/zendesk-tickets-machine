@@ -142,10 +142,14 @@ class TicketEditViewTest(TestCase):
             'name="zendesk_ticket_id" type="text" value="24328" />'
         self.assertContains(response, expected, status_code=200)
 
+        expected = '<input id="id_board" name="board" type="hidden" ' \
+            'value="%s" />' % self.board.id
+        self.assertContains(response, expected, status_code=200)
+
         expected = '<input type="submit">'
         self.assertContains(response, expected, status_code=200)
 
-    def test_ticket_edit_view_should_save_data(self):
+    def test_ticket_edit_view_should_save_data_and_redirect_to_its_board(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
             name='Development',
@@ -163,10 +167,11 @@ class TicketEditViewTest(TestCase):
             'priority': 'urgent',
             'tags': 'welcome',
             'private_comment': 'Private comment',
-            'zendesk_ticket_id': '24328'
+            'zendesk_ticket_id': '24328',
+            'board': self.board.id
         }
 
-        self.client.post(
+        response = self.client.post(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id}),
             data=data
         )
@@ -184,6 +189,14 @@ class TicketEditViewTest(TestCase):
         self.assertEqual(ticket.tags, 'welcome')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
+        self.assertEqual(ticket.board.id, self.board.id)
+
+        self.assertRedirects(
+            response,
+            reverse('board_single', kwargs={'slug': ticket.board.slug}),
+            status_code=302,
+            target_status_code=200
+        )
 
 
 class TicketDeleteViewTest(TestCase):
