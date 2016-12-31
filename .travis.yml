@@ -4,8 +4,8 @@ python:
   - 3.5
 
 install:
-  - pip install -r requirements.txt
+  - pip install -r requirements/local.txt
 
 script:
-  - cd zendesk_tickets_machine
-  - python manage.py test
+  - flake8
+  - cd zendesk_tickets_machine && python manage.py test
