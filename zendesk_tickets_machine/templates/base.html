@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,7 @@
   <meta name="robots" content="noindex, nofollow" />
 </head>
 <body>
-{% block body %}{% endblock %}
+  <a href="/"><img src="{% static 'img/pronto-logo-header.png' %}" width="150px"></a>
+  {% block body %}{% endblock %}
 </body>
 </html>

@@ -124,6 +124,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
 
 ZENDESK_URL = os.environ.get('ZENDESK_URL', '')
 ZENDESK_API_URL = os.environ.get('ZENDESK_API_URL', '')
