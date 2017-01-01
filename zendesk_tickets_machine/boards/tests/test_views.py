@@ -766,6 +766,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         self.assertEqual(mock.return_value.create.call_count, 0)
 
+    @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.Requester')
     def test_create_view_should_not_create_if_requester_id_is_empty(
