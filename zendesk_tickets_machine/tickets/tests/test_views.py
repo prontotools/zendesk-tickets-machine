@@ -76,36 +76,40 @@ class TicketEditViewTest(TestCase):
         expected = "<input type='hidden' name='csrfmiddlewaretoken'"
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_subject" maxlength="300" name="subject" ' \
+        expected = '<input class="form-control" id="id_subject" ' \
+            'maxlength="300" name="subject" placeholder="Subject" ' \
             'type="text" value="Ticket 1" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<textarea cols="40" id="id_comment" name="comment" ' \
-            'rows="10" required>'
+        expected = 'textarea class="form-control" cols="40" id="id_comment" ' \
+            'name="comment" placeholder="Comment" rows="6" required>'
         self.assertContains(response, expected, status_code=200)
         expected = 'Comment 1</textarea>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_requester" maxlength="100" ' \
-            'name="requester" type="text" value="client@hisotech.com" ' \
-            'required />'
+        expected = '<input class="form-control" id="id_requester" ' \
+            'maxlength="100" name="requester" placeholder="Requester" ' \
+            'type="text" value="client@hisotech.com" required />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_requester_id" maxlength="50" ' \
             'name="requester_id" type="text" value="1095195473" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select id="id_assignee" name="assignee" required>'
+        expected = '<select class="form-control" id="id_assignee" ' \
+            'name="assignee" required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1" selected="selected">Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select id="id_group" name="group" required>'
+        expected = '<select class="form-control" id="id_group" ' \
+            'name="group" required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1" selected="selected">Development</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select id="id_ticket_type" name="ticket_type" required>'
+        expected = '<select class="form-control" id="id_ticket_type" ' \
+            'name="ticket_type" required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="question" selected="selected">Question' \
             '</option>'
@@ -117,7 +121,8 @@ class TicketEditViewTest(TestCase):
         expected = '<option value="task">Task</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select id="id_priority" name="priority" required>'
+        expected = '<select class="form-control" id="id_priority" ' \
+            'name="priority" required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="high">High</option>'
         self.assertContains(response, expected, status_code=200)
@@ -128,12 +133,14 @@ class TicketEditViewTest(TestCase):
         expected = '<option value="low">Low</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_tags" maxlength="300" name="tags" ' \
-            'type="text" value="welcome" />'
+        expected = '<input class="form-control" id="id_tags" ' \
+            'maxlength="300" name="tags" placeholder="Tags" type="text" ' \
+            'value="welcome" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<textarea cols="40" id="id_private_comment" ' \
-            'name="private_comment" rows="10" required>'
+        expected = '<textarea class="form-control" cols="40" ' \
+            'id="id_private_comment" name="private_comment" ' \
+            'placeholder="Private Comment" rows="13" required>'
         self.assertContains(response, expected, status_code=200)
         expected = 'Private comment</textarea>'
         self.assertContains(response, expected, status_code=200)

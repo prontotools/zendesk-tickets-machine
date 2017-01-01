@@ -97,29 +97,39 @@ class BoardSingleViewTest(TestCase):
         expected = "<input type='hidden' name='csrfmiddlewaretoken'"
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_subject" maxlength="300" name="subject" ' \
+        expected = '<input class="form-control" id="id_subject" ' \
+            'maxlength="300" name="subject" placeholder="Subject" ' \
             'type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<textarea cols="40" id="id_comment" name="comment" ' \
-            'rows="10" required>'
+        expected = '<input class="form-control" id="id_requester" ' \
+            'maxlength="100" name="requester" placeholder="Requester" ' \
+            'type="text" required />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_requester" maxlength="100" ' \
-            'name="requester" type="text" required />'
+        expected = '<textarea class="form-control" cols="40" ' \
+            'id="id_comment" name="comment" placeholder="Comment" rows="6" ' \
+            'required>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select id="id_assignee" name="assignee" required>'
+        expected = '<input class="form-control" id="id_tags" ' \
+            'maxlength="300" name="tags" placeholder="Tags" type="text" />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select class="form-control" id="id_assignee" ' \
+            'name="assignee" required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1">Natty</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select id="id_group" name="group" required>'
+        expected = '<select class="form-control" id="id_group" name="group" ' \
+            'required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1">Development</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select id="id_ticket_type" name="ticket_type" required>'
+        expected = '<select class="form-control" id="id_ticket_type" ' \
+            'name="ticket_type" required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="question">Question</option>'
         self.assertContains(response, expected, status_code=200)
@@ -130,7 +140,8 @@ class BoardSingleViewTest(TestCase):
         expected = '<option value="task">Task</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select id="id_priority" name="priority" required>'
+        expected = '<select class="form-control" id="id_priority" ' \
+            'name="priority" required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="high">High</option>'
         self.assertContains(response, expected, status_code=200)
@@ -141,40 +152,23 @@ class BoardSingleViewTest(TestCase):
         expected = '<option value="low">Low</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_tags" maxlength="300" name="tags" ' \
-            'type="text" />'
+        expected = '<textarea class="form-control" cols="40" ' \
+            'id="id_private_comment" name="private_comment" ' \
+            'placeholder="Private Comment" rows="13" required>'
         self.assertContains(response, expected, status_code=200)
-
-        expected = '<textarea cols="40" id="id_private_comment" ' \
-            'name="private_comment" rows="10" required>'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
-            'name="zendesk_ticket_id" type="text" />'
-        self.assertNotContains(response, expected, status_code=200)
 
         expected = '<input id="id_board" name="board" type="hidden" ' \
             'value="%s" />' % self.board.id
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input type="submit">'
+        expected = '<button type="submit" class="btn btn-default">' \
+            'Add New Ticket</button>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_table_header(self):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-
-        expected = '<th>Subject</th>' \
-            '<th>Comment</th>' \
-            '<th>Requester</th>' \
-            '<th>Assignee</th>' \
-            '<th>Group</th>' \
-            '<th>Ticket Type</th>' \
-            '<th>Priority</th>' \
-            '<th>Tags</th>' \
-            '<th>Private Comment</th>'
-        self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<table class="table table-bordered table-condensed ' \
             'table-hover">'
