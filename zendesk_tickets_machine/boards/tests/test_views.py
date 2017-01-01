@@ -176,7 +176,11 @@ class BoardSingleViewTest(TestCase):
             '<th>Private Comment</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<th></th>' \
+        expected = '<table class="table table-bordered table-condensed ' \
+            'table-hover">'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<th width="7%"></th>' \
             '<th>Subject</th>' \
             '<th>Comment</th>' \
             '<th>Requester</th>' \

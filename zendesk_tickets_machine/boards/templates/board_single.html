@@ -2,7 +2,6 @@
 {% block title %}{{ board_name }} | {% endblock %}
 {% block body %}
   <h1>{{ board_name }}</h1>
-
   <form method="post">
     {% csrf_token %}
     <table>
@@ -38,10 +37,10 @@
   </form>
 
   <a href="{% url 'board_tickets_create' board_slug %}">Create Tickets</a> | <a href="{% url 'board_reset' board_slug %}">Reset Tickets</a>
-  <table border="1">
-    <tr>
+  <table class="table table-bordered table-condensed table-hover">
+    <tr class="active">
     {% spaceless %}
-      <th></th>
+      <th width="7%"></th>
       <th>Subject</th>
       <th>Comment</th>
       <th>Requester</th>
