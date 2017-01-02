@@ -15,7 +15,7 @@ DATABASES = {
         'NAME': 'ztm',
         'USER': 'ztm',
         'PASSWORD': os.environ.get('ZTM_DATABASE_PASSWORD', ''),
-        'HOST': os.environ.get('ZTM_DATABASE_HOST', ''),
+        'HOST': 'db',
         'PORT': '5432',
     }
 }

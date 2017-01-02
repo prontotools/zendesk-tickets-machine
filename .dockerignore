@@ -1,0 +1,8 @@
+.git*
+.dockerignore
+*.md
+Dockerfile*
+*.swp
+**/*.sqlite3
+**/*/__pycache__
+**/*.pyc

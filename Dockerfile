@@ -1,6 +1,7 @@
 FROM python:3.5.2
 
 RUN pip install Django==1.10.4 \
+                psycopg2==2.6.2 \
                 requests==2.12.3 \
                 uWSGI==2.0.14
 
