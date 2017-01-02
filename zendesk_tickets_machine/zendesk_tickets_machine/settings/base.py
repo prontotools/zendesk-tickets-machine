@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+SITE_ROOT = os.path.dirname(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'zendesk_tickets_machine.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR + '/templates/'],
+        'DIRS': [SITE_ROOT+ '/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'zendesk_tickets_machine.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(SITE_ROOT, 'db.sqlite3'),
     }
 }
 
@@ -126,7 +126,7 @@ STATIC_ROOT = '/static/'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(SITE_ROOT, 'static'),
 )
 
 
