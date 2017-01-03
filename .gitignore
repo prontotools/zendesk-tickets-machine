@@ -91,3 +91,5 @@ ENV/
 *.swp
 *.sqlite3
 *.DS_Store
+postgres-data
+static
