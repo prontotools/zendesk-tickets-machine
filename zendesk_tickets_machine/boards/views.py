@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
-from .models import Board
+from .models import Board, BoardGroup
 from tickets.forms import TicketForm
 from tickets.models import Ticket
 from zendesk.api import User as Requester
@@ -17,7 +17,13 @@ class BoardView(TemplateView):
     template_name = 'boards.html'
 
     def get(self, request):
-        boards = Board.objects.all()
+        boards = [
+            [
+                board_group,
+                list(Board.objects.filter(board_group=board_group))
+            ]
+            for board_group in list(BoardGroup.objects.all())
+        ]
 
         return render(
             request,

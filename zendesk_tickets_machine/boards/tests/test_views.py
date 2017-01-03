@@ -5,16 +5,23 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from ..models import Board
+from ..models import Board, BoardGroup
 from agents.models import Agent
 from agent_groups.models import AgentGroup
 from tickets.models import Ticket
 
 
 class BoardViewTest(TestCase):
-    def test_board_view_should_show_board_list(self):
-        first_board = Board.objects.create(name='Pre-Production')
-        second_board = Board.objects.create(name='Monthly Newsletter')
+    def test_board_view_should_show_board_list_in_board_group(self):
+        board_group = BoardGroup.objects.create(name='CP Production')
+        first_board = Board.objects.create(
+            name='Pre-Production',
+            board_group=board_group
+        )
+        second_board = Board.objects.create(
+            name='Monthly Newsletter',
+            board_group=board_group
+        )
 
         response = self.client.get(reverse('boards'))
 
@@ -22,6 +29,9 @@ class BoardViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<h1>Boards</h1>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<li>CP Production</li>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<li><a href="%s">%s</a></li>' % (
