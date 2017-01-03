@@ -24,6 +24,9 @@ class BoardAdminTest(TestCase):
         expected = '<div class="text"><a href="?o=2">Slug</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
+        expected = '<div class="text"><a href="?o=3">Board group</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
 
 class BoardGroupAdminTest(TestCase):
     def setUp(self):

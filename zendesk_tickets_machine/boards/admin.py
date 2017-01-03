@@ -8,6 +8,7 @@ class BoardAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'slug',
+        'board_group',
     )
 
 
