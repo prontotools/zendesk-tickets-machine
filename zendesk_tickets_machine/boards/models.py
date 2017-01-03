@@ -1,6 +1,8 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 
+from board_groups.models import BoardGroup
+
 
 class Board(models.Model):
     name = models.CharField(max_length=300)
@@ -11,6 +13,7 @@ class Board(models.Model):
         editable=False,
         unique=True
     )
+    board_group = models.ForeignKey(BoardGroup, null=True, blank=True)
 
     def __str__(self):
         return self.name
