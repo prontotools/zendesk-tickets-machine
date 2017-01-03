@@ -1,7 +1,12 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 
-from board_groups.models import BoardGroup
+
+class BoardGroup(models.Model):
+    name = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.name
 
 
 class Board(models.Model):

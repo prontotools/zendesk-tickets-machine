@@ -1,7 +1,6 @@
 from django.test import TestCase
 
-from ..models import Board
-from board_groups.models import BoardGroup
+from ..models import Board, BoardGroup
 
 
 class BoardTest(TestCase):
@@ -38,3 +37,20 @@ class BoardTest(TestCase):
         board = Board.objects.last()
 
         self.assertEquals(board.board_group.name, 'CP Production')
+
+
+class BoardGroupTest(TestCase):
+    def test_save_board_group(self):
+        board_group = BoardGroup()
+        board_group.name = 'CP Production'
+        board_group.save()
+
+        board_group = BoardGroup.objects.last()
+
+        self.assertEqual(board_group.name, 'CP Production')
+
+    def test_board_group_should_represent_name_by_default(self):
+        board_group = BoardGroup.objects.create(
+            name='CP Production'
+        )
+        self.assertEquals(board_group.__str__(), 'CP Production')
