@@ -2,13 +2,19 @@
 {% block body %}
   <h1>Boards</h1>
   <ul>
-  {% for board_group, boards_in_group in boards %}
-    <li>{{ board_group.name }}</li>
-    <ul>
-    {% for board in boards_in_group %}
-      <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
+    {% for board_group, boards_in_group in boards %}
+      <li>{{ board_group.name }}</li>
+      <ul>
+      {% for board in boards_in_group %}
+        <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
+      {% endfor %}
+      </ul>
     {% endfor %}
+    <li>Undefined Group</li>
+    <ul>
+      {% for board in ungrouped_boards %}
+        <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
+      {% endfor %}
     </ul>
-  {% endfor %}
   </ul>
 {% endblock %}

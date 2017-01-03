@@ -20,16 +20,18 @@ class BoardView(TemplateView):
         boards = [
             [
                 board_group,
-                list(Board.objects.filter(board_group=board_group))
+                Board.objects.filter(board_group=board_group)
             ]
-            for board_group in list(BoardGroup.objects.all())
+            for board_group in BoardGroup.objects.all()
         ]
+        ungrouped_boards = Board.objects.filter(board_group__isnull=True)
 
         return render(
             request,
             self.template_name,
             {
-                'boards': boards
+                'boards': boards,
+                'ungrouped_boards': ungrouped_boards,
             }
         )
 

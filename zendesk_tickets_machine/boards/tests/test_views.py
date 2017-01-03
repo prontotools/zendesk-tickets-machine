@@ -12,7 +12,13 @@ from tickets.models import Ticket
 
 
 class BoardViewTest(TestCase):
-    def test_board_view_should_show_board_list_in_board_group(self):
+    def test_board_view_should_have_title(self):
+        response = self.client.get(reverse('boards'))
+
+        expected = '<title>Pronto Zendesk Tickets Machine</title>'
+        self.assertContains(response, expected, status_code=200)
+
+    def test_board_view_should_show_boards_in_board_group(self):
         board_group = BoardGroup.objects.create(name='CP Production')
         first_board = Board.objects.create(
             name='Pre-Production',
@@ -24,9 +30,6 @@ class BoardViewTest(TestCase):
         )
 
         response = self.client.get(reverse('boards'))
-
-        expected = '<title>Pronto Zendesk Tickets Machine</title>'
-        self.assertContains(response, expected, status_code=200)
 
         expected = '<h1>Boards</h1>'
         self.assertContains(response, expected, status_code=200)
@@ -47,6 +50,25 @@ class BoardViewTest(TestCase):
                 'board_single', kwargs={'slug': second_board.slug}
             ),
             second_board.name
+        )
+        self.assertContains(response, expected, status_code=200)
+
+    def test_board_view_should_show_ungrouped_boards(self):
+        board = Board.objects.create(name='Pre-Production')
+
+        response = self.client.get(reverse('boards'))
+
+        expected = '<h1>Boards</h1>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<li>Undefined Group</li>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<li><a href="%s">%s</a></li>' % (
+            reverse(
+                'board_single', kwargs={'slug': board.slug}
+            ),
+            board.name
         )
         self.assertContains(response, expected, status_code=200)
 
