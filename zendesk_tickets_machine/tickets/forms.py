@@ -75,3 +75,14 @@ class TicketForm(forms.ModelForm):
             ),
             'board': forms.HiddenInput()
         }
+
+    def save(self, commit=True):
+        ticket = super(TicketForm, self).save(commit=False)
+
+        if not ticket.zendesk_ticket_id:
+            ticket.zendesk_ticket_id = None
+
+        if commit:
+            ticket.save()
+
+        return ticket
