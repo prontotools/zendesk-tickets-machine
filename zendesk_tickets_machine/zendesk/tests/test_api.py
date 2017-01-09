@@ -100,24 +100,28 @@ class UserAPITest(TestCase):
         self.zendesk_api_token = settings.ZENDESK_API_TOKEN
         self.headers = {'content-type': 'application/json'}
 
+        self.user = User()
+
     @patch('zendesk.api.requests.get')
     def test_search_users_should_send_data_to_zendesk_correctly(self, mock):
         url = self.zendesk_api_url + '/api/v2/users/search.json'
+        payload = {
+            'query': 'kan@prontomarketing.com'
+        }
 
-        user = User()
-        user.search('kan@prontomarketing.com')
+        self.user.search('kan@prontomarketing.com')
 
         mock.assert_called_once_with(
-            url + '?query=kan@prontomarketing.com',
+            url,
             auth=(self.zendesk_api_user, self.zendesk_api_token),
-            headers=self.headers
+            headers=self.headers,
+            params=payload
         )
 
     @patch('zendesk.api.requests.get')
     def test_search_users_should_return_json(self, mock):
         mock.return_value.json.return_value = {'key': 'value'}
 
-        user = User()
-        result = user.search('kan@prontomarketing.com')
+        result = self.user.search('kan@prontomarketing.com')
 
         self.assertEqual(result, {'key': 'value'})
