@@ -186,7 +186,7 @@ class BoardSingleViewTest(TestCase):
 
         expected = '<textarea class="form-control" cols="40" ' \
             'id="id_private_comment" name="private_comment" ' \
-            'placeholder="Private Comment" rows="13" required>'
+            'placeholder="Private Comment" rows="13">'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_board" name="board" type="hidden" ' \
