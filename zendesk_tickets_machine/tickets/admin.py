@@ -9,7 +9,6 @@ class TicketAdmin(admin.ModelAdmin):
         'subject',
         'comment',
         'requester',
-        'requester_id',
         'assignee',
         'ticket_type',
         'priority',

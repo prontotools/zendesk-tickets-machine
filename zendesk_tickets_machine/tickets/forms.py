@@ -10,7 +10,6 @@ class TicketForm(forms.ModelForm):
             'subject',
             'comment',
             'requester',
-            'requester_id',
             'assignee',
             'group',
             'ticket_type',

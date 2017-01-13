@@ -23,7 +23,6 @@ class Ticket(models.Model):
     subject = models.CharField(max_length=300)
     comment = models.TextField()
     requester = models.CharField(max_length=100)
-    requester_id = models.CharField(max_length=50, null=True, blank=True)
     assignee = models.ForeignKey(Agent)
     group = models.ForeignKey(AgentGroup)
     ticket_type = models.CharField(max_length=50, choices=TICKET_TYPE_CHOICES)

@@ -7,9 +7,10 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
 from .models import Board, BoardGroup
+from requesters.models import Requester
 from tickets.forms import TicketForm
 from tickets.models import Ticket
-from zendesk.api import User as Requester
+from zendesk.api import User as ZendeskRequester
 from zendesk.api import Ticket as ZendeskTicket
 
 
@@ -96,7 +97,7 @@ class BoardResetView(View):
 class BoardZendeskTicketsCreateView(View):
     def get(self, request, slug):
         zendesk_ticket = ZendeskTicket()
-        zendesk_user = Requester()
+        zendesk_user = ZendeskRequester()
 
         tickets = Ticket.objects.filter(
             board__slug=slug
@@ -123,8 +124,11 @@ class BoardZendeskTicketsCreateView(View):
                 }
                 result = zendesk_ticket.create(data)
                 each.zendesk_ticket_id = result['ticket']['id']
-                each.requester_id = requester_id
                 each.save()
+
+                Requester.objects.get_or_create(
+                    email=each.requester,
+                    zendesk_user_id=each.assignee.zendesk_user_id)
 
                 data = {
                     'ticket': {
