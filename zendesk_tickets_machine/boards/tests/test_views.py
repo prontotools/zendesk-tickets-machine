@@ -8,6 +8,7 @@ from django.test.utils import override_settings
 from ..models import Board, BoardGroup
 from agents.models import Agent
 from agent_groups.models import AgentGroup
+from requesters.models import Requester
 from tickets.models import Ticket
 
 
@@ -499,6 +500,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             1
         )
 
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '2')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
@@ -603,6 +607,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         ]
         mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
 
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '2')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
@@ -685,6 +692,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         ]
         mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
 
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '2')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
@@ -714,6 +724,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             status_code=302,
             target_status_code=200
         )
+
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '1095195473')
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
@@ -767,6 +780,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertEqual(ticket.zendesk_ticket_id, '16')
+
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '1095195473')
 
     @patch('boards.views.ZendeskTicket')
     def test_create_view_should_not_create_if_zendesk_ticket_id_not_empty(

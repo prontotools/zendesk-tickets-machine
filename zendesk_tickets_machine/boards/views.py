@@ -128,7 +128,7 @@ class BoardZendeskTicketsCreateView(View):
 
                 Requester.objects.get_or_create(
                     email=each.requester,
-                    zendesk_user_id=each.assignee.zendesk_user_id)
+                    zendesk_user_id=requester_id)
 
                 data = {
                     'ticket': {
