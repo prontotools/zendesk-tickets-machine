@@ -8,6 +8,11 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
