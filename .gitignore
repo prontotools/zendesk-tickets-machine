@@ -93,3 +93,4 @@ ENV/
 *.DS_Store
 postgres-data
 static/*
+**/staticfiles
