@@ -8,6 +8,7 @@ from django.test.utils import override_settings
 from ..models import Board, BoardGroup
 from agents.models import Agent
 from agent_groups.models import AgentGroup
+from requesters.models import Requester
 from tickets.models import Ticket
 
 
@@ -85,7 +86,6 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            requester_id='1095195473',
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -100,7 +100,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
-            requester_id='1095195474',
+
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -186,7 +186,7 @@ class BoardSingleViewTest(TestCase):
 
         expected = '<textarea class="form-control" cols="40" ' \
             'id="id_private_comment" name="private_comment" ' \
-            'placeholder="Private Comment" rows="13" required>'
+            'placeholder="Private Comment" rows="13">'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input id="id_board" name="board" type="hidden" ' \
@@ -210,7 +210,6 @@ class BoardSingleViewTest(TestCase):
             '<th>Subject</th>' \
             '<th>Comment</th>' \
             '<th>Requester</th>' \
-            '<th>Requester ID</th>' \
             '<th>Assignee</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
@@ -259,7 +258,7 @@ class BoardSingleViewTest(TestCase):
         expected = '<tr><td><a href="%s">Edit</a> | ' \
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
-            '<td>client@hisotech.com</td><td>1095195473</td>' \
+            '<td>client@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>Private comment</td>' \
@@ -295,7 +294,6 @@ class BoardSingleViewTest(TestCase):
             'subject': 'Welcome to Pronto Service',
             'comment': 'This is a comment.',
             'requester': 'client@hisotech.com',
-            'requester_id': '1095195473',
             'assignee': self.agent.id,
             'group': self.agent_group.id,
             'ticket_type': 'question',
@@ -316,7 +314,6 @@ class BoardSingleViewTest(TestCase):
         self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
         self.assertEqual(ticket.comment, 'This is a comment.')
         self.assertEqual(ticket.requester, 'client@hisotech.com')
-        self.assertEqual(ticket.requester_id, '1095195473')
         self.assertEqual(ticket.assignee.name, 'Natty')
         self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')
@@ -331,7 +328,7 @@ class BoardSingleViewTest(TestCase):
         expected = '<tr><td><a href="%s">Edit</a> | ' \
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
-            '<td>client@hisotech.com</td><td>1095195473</td>' \
+            '<td>client@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>urgent</td>' \
             '<td>welcome</td><td>Private comment</td>' \
@@ -351,7 +348,7 @@ class BoardSingleViewTest(TestCase):
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
-            '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>client+another@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>high</td>' \
             '<td>welcome internal</td>' \
@@ -375,7 +372,6 @@ class BoardResetViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            requester_id='1095195473',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -390,7 +386,6 @@ class BoardResetViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
-            requester_id='1095195474',
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -450,7 +445,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
-    @patch('boards.views.Requester')
+    @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_send_data_to_create_zendesk_ticket(
         self,
         mock_requester,
@@ -505,9 +500,12 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             1
         )
 
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '2')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
-    @patch('boards.views.Requester')
+    @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_create_two_tickets_if_there_are_two(
         self,
         mock_requester,
@@ -539,7 +537,6 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client@hisotech.com',
-            requester_id='2',
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -610,9 +607,12 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         ]
         mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
 
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '2')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
-    @patch('boards.views.Requester')
+    @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_create_only_tickets_in_their_board(
         self,
         mock_requester,
@@ -645,7 +645,6 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client@hisotech.com',
-            requester_id='2',
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -693,9 +692,12 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         ]
         mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
 
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '2')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
-    @patch('boards.views.Requester')
+    @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_redirect_to_board(
         self,
         mock_requester,
@@ -723,9 +725,12 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             target_status_code=200
         )
 
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '1095195473')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
-    @patch('boards.views.Requester')
+    @patch('boards.views.ZendeskRequester')
     def test_it_should_set_zendesk_ticket_id_and_requester_id_to_ticket(
         self,
         mock_requester,
@@ -775,7 +780,9 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertEqual(ticket.zendesk_ticket_id, '16')
-        self.assertEqual(ticket.requester_id, '1095195473')
+
+        requester = Requester.objects.last()
+        self.assertEqual(requester.zendesk_user_id, '1095195473')
 
     @patch('boards.views.ZendeskTicket')
     def test_create_view_should_not_create_if_zendesk_ticket_id_not_empty(
@@ -794,7 +801,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
-    @patch('boards.views.Requester')
+    @patch('boards.views.ZendeskRequester')
     def test_create_view_should_not_create_if_requester_id_is_empty(
         self,
         mock_requester,
@@ -842,4 +849,3 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertIsNone(ticket.zendesk_ticket_id)
-        self.assertIsNone(ticket.requester_id)

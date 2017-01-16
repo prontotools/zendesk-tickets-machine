@@ -1,11 +1,15 @@
 language: python
 
 python:
-  - 3.5
+- 3.5
 
 install:
-  - pip install -r requirements/local.txt
+- pip install -r requirements/local.txt
 
 script:
-  - flake8
-  - cd zendesk_tickets_machine && python manage.py test
+- flake8
+- cd zendesk_tickets_machine && python manage.py test
+
+notifications:
+  slack:
+    secure: ZMn6tSimeQ9Co8VAFpKk96wgJCOCZMlg60WHDG+yIHczFVbqAiBSERnVhTeSsSq6X2jFF8jcp+3R9fnIdfs47j47JDGB7LWiK2uO1Ekxr2sp7ryovolpOnG4Eqq15SR5UBBEhksZrOVu8aYgONgLSZa8L5Mv7DILpKbUTILVaVWlMhezgdnEkdrAHmJwF8PSIGav5TM+Sz1x5E83BO13PSuf/pDa0jzuVHzs/QA6lRj3DuUoDkBfBSEs2FJLkLtU0S2fRaH4hwlUQBdr/Qe9HF5UfM27qKgSqGTK+zxJrBOc0SHLWG4jW+/t3UTajyKCm8zL7EDVUn/XBbe7ykAxOjCf647Y59jFMKtojW1vFItbuQHaRc+ItYuRKs/GA3ljscL8Mw3f7deN8aJd0dV5hyk88jNZpwRGBGGgtb13kIpIilFaAinQXNFbd3Qvp9Lql4VmlhQ5ppt8QfO3RY5XTpMD8ujBGzTj7VPsFG0kKzlY3gwpBM0RpQ3sef79PCYx582W9gxzM+Pi8HKnx3rEhz2VOUkwYhWqZtAIfd5DS0wxlf2oNrw0CcNPQM4ruBCuTjRJPXnnWVl/KM5oLR10kyQnIR2DvG3OY71wM+uG/ifZ5isyGkZy31VtLbzBJWAeAHevPf6KMLCGp69cfwMANEyIDQd+RmEyUsFM7gdYGWk=

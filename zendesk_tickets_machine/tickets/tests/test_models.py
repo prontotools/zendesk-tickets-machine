@@ -26,7 +26,6 @@ class TicketTest(TestCase):
         ticket.subject = 'Welcome to Pronto Service'
         ticket.comment = comment
         ticket.requester = 'client@hisotech.com'
-        ticket.requester_id = '1095195473'
         ticket.assignee = agent
         ticket.group = agent_group
         ticket.ticket_type = 'question'
@@ -42,7 +41,6 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
         self.assertEqual(ticket.comment, comment)
         self.assertEqual(ticket.requester, 'client@hisotech.com')
-        self.assertEqual(ticket.requester_id, '1095195473')
         self.assertEqual(ticket.assignee.name, 'Kan')
         self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')

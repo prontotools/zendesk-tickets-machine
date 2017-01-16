@@ -23,13 +23,12 @@ class Ticket(models.Model):
     subject = models.CharField(max_length=300)
     comment = models.TextField()
     requester = models.CharField(max_length=100)
-    requester_id = models.CharField(max_length=50, null=True, blank=True)
     assignee = models.ForeignKey(Agent)
     group = models.ForeignKey(AgentGroup)
     ticket_type = models.CharField(max_length=50, choices=TICKET_TYPE_CHOICES)
     priority = models.CharField(max_length=50, choices=PRIORITY_TYPE_CHOICES)
     tags = models.CharField(max_length=300, null=True, blank=True)
-    private_comment = models.TextField()
+    private_comment = models.TextField(null=True, blank=True)
     zendesk_ticket_id = models.CharField(
         max_length=50,
         null=True,

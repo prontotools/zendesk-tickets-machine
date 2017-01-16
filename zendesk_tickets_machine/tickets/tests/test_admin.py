@@ -39,22 +39,19 @@ class TicketAdminTest(TestCase):
         expected = '<div class="text"><a href="?o=3">Requester</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=4">Requester id</a></div>'
+        expected = '<div class="text"><a href="?o=4">Assignee</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=5">Assignee</a></div>'
+        expected = '<div class="text"><a href="?o=5">Ticket type</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=6">Ticket type</a></div>'
+        expected = '<div class="text"><a href="?o=6">Priority</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=7">Priority</a></div>'
+        expected = '<div class="text"><a href="?o=7">Tags</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=8">Tags</a></div>'
-        self.assertContains(response, expected, count=1, status_code=200)
-
-        expected = '<div class="text"><a href="?o=9">Board</a></div>'
+        expected = '<div class="text"><a href="?o=8">Board</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_access_ticket_admin_should_have_board_filter(self):
