@@ -13,6 +13,7 @@ class TicketForm(forms.ModelForm):
             'assignee',
             'group',
             'ticket_type',
+            'due_at',
             'priority',
             'tags',
             'private_comment',
@@ -53,6 +54,11 @@ class TicketForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'onChange': 'check_ticket_type()'
+                }
+            ),
+            'due_at': forms.SelectDateWidget(
+                attrs={
+                    'class': 'form-control'
                 }
             ),
             'priority': forms.Select(
