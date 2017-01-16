@@ -51,7 +51,8 @@ class TicketForm(forms.ModelForm):
             ),
             'ticket_type': forms.Select(
                 attrs={
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'onChange': 'check_ticket_type()'
                 }
             ),
             'priority': forms.Select(
