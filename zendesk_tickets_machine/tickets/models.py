@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from agents.models import Agent
 from agent_groups.models import AgentGroup
@@ -36,16 +38,20 @@ class Ticket(models.Model):
     )
     board = models.ForeignKey(Board)
 
-    def save(self, *args, **kwargs):
-        super(Ticket, self).save(*args, **kwargs)
 
-        if self.zendesk_ticket_id:
+@receiver(pre_save, sender=Ticket)
+def create_zendesk_api_usage(sender, instance, **kwargs):
+    try:
+        current_ticket = Ticket.objects.get(id=instance.id)
+        if not current_ticket.zendesk_ticket_id and instance.zendesk_ticket_id:
             TicketZendeskAPIUsage.objects.create(
-                ticket_type=self.ticket_type,
-                priority=self.priority,
-                assignee=self.assignee,
-                board=self.board
+                ticket_type=instance.ticket_type,
+                priority=instance.priority,
+                assignee=instance.assignee,
+                board=instance.board
             )
+    except:
+        pass
 
 
 class TicketZendeskAPIUsage(models.Model):

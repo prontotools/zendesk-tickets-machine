@@ -53,7 +53,7 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
         self.assertEqual(ticket.board.name, 'Pre-Production')
 
-    def test_after_save_it_should_store_usage_if_get_zendesk_ticket_id(
+    def test_after_save_it_stores_usage_if_get_zendesk_ticket_id_first_time(
         self
     ):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -70,7 +70,7 @@ class TicketTest(TestCase):
             'Currently we are sorting out the info and will reach ' \
             'out again soon to continue with the setup.'
 
-        Ticket.objects.create(
+        ticket = Ticket.objects.create(
             subject='Welcome to Pronto Service',
             comment=comment,
             requester='client@hisotech.com',
@@ -78,9 +78,10 @@ class TicketTest(TestCase):
             group=agent_group,
             ticket_type='question',
             priority='urgent',
-            zendesk_ticket_id='24328',
             board=board
         )
+        ticket.zendesk_ticket_id = '1234'
+        ticket.save()
 
         usage = TicketZendeskAPIUsage.objects.last()
 
