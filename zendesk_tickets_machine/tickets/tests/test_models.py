@@ -53,6 +53,73 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
         self.assertEqual(ticket.board.name, 'Pre-Production')
 
+    def test_after_save_it_should_store_usage_if_get_zendesk_ticket_id(
+        self
+    ):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+        board = Board.objects.create(
+            name='Pre-Production',
+            slug='pre-production'
+        )
+
+        comment = 'Thank you for signing up with us! ' \
+            'Currently we are sorting out the info and will reach ' \
+            'out again soon to continue with the setup.'
+
+        Ticket.objects.create(
+            subject='Welcome to Pronto Service',
+            comment=comment,
+            requester='client@hisotech.com',
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='urgent',
+            zendesk_ticket_id='24328',
+            board=board
+        )
+
+        usage = TicketZendeskAPIUsage.objects.last()
+
+        self.assertEqual(usage.ticket_type, 'question')
+        self.assertEqual(usage.priority, 'urgent')
+        self.assertEqual(usage.assignee.name, 'Kan')
+        self.assertEqual(usage.board.name, 'Pre-Production')
+        self.assertTrue(usage.created)
+
+    def test_after_save_it_should_not_store_usage_if_no_zendesk_ticket_id(
+        self
+    ):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+        board = Board.objects.create(
+            name='Pre-Production',
+            slug='pre-production'
+        )
+
+        comment = 'Thank you for signing up with us! ' \
+            'Currently we are sorting out the info and will reach ' \
+            'out again soon to continue with the setup.'
+
+        Ticket.objects.create(
+            subject='Welcome to Pronto Service',
+            comment=comment,
+            requester='client@hisotech.com',
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='urgent',
+            board=board
+        )
+
+        self.assertEqual(TicketZendeskAPIUsage.objects.count(), 0)
+
 
 class TicketZendeskAPIUsageTest(TestCase):
     def test_save_ticket_zendesk_api_usage(self):

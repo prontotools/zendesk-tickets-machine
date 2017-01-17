@@ -36,6 +36,17 @@ class Ticket(models.Model):
     )
     board = models.ForeignKey(Board)
 
+    def save(self, *args, **kwargs):
+        super(Ticket, self).save(*args, **kwargs)
+
+        if self.zendesk_ticket_id:
+            TicketZendeskAPIUsage.objects.create(
+                ticket_type=self.ticket_type,
+                priority=self.priority,
+                assignee=self.assignee,
+                board=self.board
+            )
+
 
 class TicketZendeskAPIUsage(models.Model):
     ticket_type = models.CharField(max_length=50)
