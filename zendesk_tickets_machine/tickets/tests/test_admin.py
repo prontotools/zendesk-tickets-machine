@@ -87,10 +87,6 @@ class TicketZendeskAPIUsageAdminTest(TestCase):
 
     def test_access_ticket_api_usage_admin_should_have_columns(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
-            name='Development',
-            zendesk_group_id='123'
-        )
         board = Board.objects.create(name='Pre-Production')
         TicketZendeskAPIUsage.objects.create(
             assignee=agent,
