@@ -35,3 +35,11 @@ class Ticket(models.Model):
         blank=True
     )
     board = models.ForeignKey(Board)
+
+
+class TicketZendeskAPIUsage(models.Model):
+    ticket_type = models.CharField(max_length=50)
+    priority = models.CharField(max_length=50)
+    assignee = models.ForeignKey(Agent)
+    board = models.ForeignKey(Board)
+    created = models.DateTimeField(auto_now_add=True)
