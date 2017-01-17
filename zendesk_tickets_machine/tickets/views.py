@@ -21,6 +21,7 @@ class TicketEditView(TemplateView):
             'assignee_id': ticket.assignee_id,
             'group': ticket.group,
             'ticket_type': ticket.ticket_type,
+            'due_at': ticket.due_at,
             'priority': ticket.priority,
             'tags': ticket.tags,
             'private_comment': ticket.private_comment,

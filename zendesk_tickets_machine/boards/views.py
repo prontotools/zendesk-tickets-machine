@@ -106,6 +106,10 @@ class BoardZendeskTicketsCreateView(View):
         )
         for each in tickets:
             requester_result = zendesk_user.search(each.requester)
+            if each.due_at is not None:
+                due_at = each.due_at.isoformat()
+            else:
+                due_at = ''
             try:
                 requester_id = requester_result['users'][0]['id']
                 data = {
@@ -118,6 +122,7 @@ class BoardZendeskTicketsCreateView(View):
                         'assignee_id': each.assignee.zendesk_user_id,
                         'group_id': each.group.zendesk_group_id,
                         'type': each.ticket_type,
+                        'due_at': due_at,
                         'priority': each.priority,
                         'tags': [tag.strip() for tag in each.tags.split(',')]
                     }

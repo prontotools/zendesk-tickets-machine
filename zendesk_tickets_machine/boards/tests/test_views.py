@@ -213,6 +213,7 @@ class BoardSingleViewTest(TestCase):
             '<th>Assignee</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
+            '<th>Due Date</th>' \
             '<th>Priority</th>' \
             '<th>Tags</th>' \
             '<th>Private Comment</th>' \
@@ -260,8 +261,9 @@ class BoardSingleViewTest(TestCase):
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>urgent</td>' \
-            '<td>welcome</td><td>Private comment</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
             '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
                 reverse(
                     'ticket_edit',
@@ -280,8 +282,8 @@ class BoardSingleViewTest(TestCase):
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
             '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>high</td>' \
-            '<td>welcome internal</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome internal</td>' \
             '<td>Private comment</td>' \
             '<td></td></tr>' % (
                 self.second_ticket.id,
@@ -330,8 +332,9 @@ class BoardSingleViewTest(TestCase):
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>urgent</td>' \
-            '<td>welcome</td><td>Private comment</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
             '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
                 reverse(
                     'ticket_edit',
@@ -350,8 +353,8 @@ class BoardSingleViewTest(TestCase):
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>high</td>' \
-            '<td>welcome internal</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome internal</td>' \
             '<td>Private comment</td>' \
             '<td></td></tr>' % (
                 self.second_ticket.id,
@@ -480,6 +483,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'assignee_id': '123',
                 'group_id': '123',
                 'type': 'question',
+                'due_at': '',
                 'priority': 'urgent',
                 'tags': ['welcome', 'pronto_marketing']
             }
@@ -564,6 +568,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                     'assignee_id': '123',
                     'group_id': '123',
                     'type': 'question',
+                    'due_at': '',
                     'priority': 'urgent',
                     'tags': ['welcome']
                 }
@@ -578,6 +583,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                     'assignee_id': '123',
                     'group_id': '123',
                     'type': 'question',
+                    'due_at': '',
                     'priority': 'low',
                     'tags': ['welcome']
                 }
@@ -672,6 +678,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                     'assignee_id': '123',
                     'group_id': '123',
                     'type': 'question',
+                    'due_at': '',
                     'priority': 'urgent',
                     'tags': ['welcome']
                 }
