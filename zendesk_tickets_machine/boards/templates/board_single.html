@@ -90,7 +90,7 @@
         <td>{{ each.assignee }}</td>
         <td>{{ each.group }}</td>
         <td>{{ each.ticket_type }}</td>
-        <td>{{ each.due_at }}</td>
+        <td>{{ each.due_at|date:"M d, Y" }}</td>
         <td>{{ each.priority }}</td>
         <td>{{ each.tags }}</td>
         <td>{{ each.private_comment }}</td>
