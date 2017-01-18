@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tickets', '0018_remove_ticket_requester_id'),
+        ('tickets', '0019_ticketzendeskapiusage'),
     ]
 
     operations = [
