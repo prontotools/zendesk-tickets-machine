@@ -1,7 +1,7 @@
-import json
 import requests
 
 from django.conf import settings
+
 
 class Ticket(object):
     def __init__(self):

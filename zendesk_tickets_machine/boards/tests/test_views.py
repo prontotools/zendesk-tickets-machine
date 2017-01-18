@@ -294,14 +294,14 @@ class BoardSingleViewTest(TestCase):
         self.assertNotContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_date_format(self):
-        ticket = Ticket.objects.create(
+        Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
-            due_at=datetime.date(2017,1,1),
+            due_at=datetime.date(2017, 1, 1),
             priority='urgent',
             tags='welcome',
             private_comment='Private comment',
