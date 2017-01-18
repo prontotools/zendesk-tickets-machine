@@ -47,6 +47,7 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.assignee.name, 'Kan')
         self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')
+        self.assertEqual(ticket.due_at, None)
         self.assertEqual(ticket.priority, 'urgent')
         self.assertEqual(ticket.tags, 'welcome')
         self.assertEqual(ticket.private_comment, 'Private comment')

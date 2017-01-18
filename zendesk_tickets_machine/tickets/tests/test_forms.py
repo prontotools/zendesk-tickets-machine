@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TestCase
 
 from ..forms import TicketForm
@@ -45,6 +47,7 @@ class TicketFormTest(TestCase):
             'assignee': agent.id,
             'group': agent_group.id,
             'ticket_type': 'task',
+            'due_at': datetime.datetime.now(),
             'priority': 'urgent',
             'tags': 'welcome',
             'private_comment': 'Private comment',

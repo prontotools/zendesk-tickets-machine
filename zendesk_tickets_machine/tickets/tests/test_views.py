@@ -57,6 +57,7 @@ class TicketEditViewTest(TestCase):
             '<th>Assignee</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
+            '<th>Due Date</th>' \
             '<th>Priority</th>' \
             '<th>Tags</th>' \
             '<th>Private Comment</th>' \
@@ -104,6 +105,15 @@ class TicketEditViewTest(TestCase):
 
         expected = '<select class="form-control" id="id_ticket_type" ' \
             'name="ticket_type" onChange="check_ticket_type()" required>'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<select class="form-control" id="id_due_at_month" '\
+            'name="due_at_month">'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<select class="form-control" id="id_due_at_day" '\
+            'name="due_at_day">'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<select class="form-control" id="id_due_at_year" '\
+            'name="due_at_year">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="question" selected="selected">Question' \
             '</option>'
