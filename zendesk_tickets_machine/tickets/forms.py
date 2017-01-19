@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.admin import widgets
 
 from .models import Ticket
 
@@ -56,9 +57,10 @@ class TicketForm(forms.ModelForm):
                     'onChange': 'check_ticket_type()'
                 }
             ),
-            'due_at': forms.SelectDateWidget(
+            'due_at': widgets.AdminDateWidget(
                 attrs={
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'id': 'datepicker'
                 }
             ),
             'priority': forms.Select(

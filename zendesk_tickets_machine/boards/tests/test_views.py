@@ -174,6 +174,12 @@ class BoardSingleViewTest(TestCase):
         expected = '<option value="task">Task</option>'
         self.assertContains(response, expected, status_code=200)
 
+        expected = '<div class="form-group" id="due_at" style="display:none">'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<input class="form-control" id="datepicker" ' \
+            'name="due_at" size="10" type="text" />'
+        self.assertContains(response, expected, status_code=200)
+
         expected = '<select class="form-control" id="id_priority" ' \
             'name="priority" required>'
         self.assertContains(response, expected, status_code=200)
@@ -301,7 +307,7 @@ class BoardSingleViewTest(TestCase):
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
-            due_at=datetime.date(2017, 1, 1),
+            due_at=datetime.datetime(2017, 1, 1, 12, 30, 59, 0),
             priority='urgent',
             tags='welcome',
             private_comment='Private comment',

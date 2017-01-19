@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load staticfiles %}
 {% block title %}{{ board_name }} | {% endblock %}
 {% block body %}
   <h1>{{ board_name }}</h1>
@@ -99,7 +98,4 @@
       {% endspaceless %}
     {% endfor %}
   </table>
-{% endblock %}
-{% block script %}
-<script src="{% static 'js/app.js' %}" type="text/javascript"></script>
 {% endblock %}

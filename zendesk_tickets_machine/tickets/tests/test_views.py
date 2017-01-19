@@ -48,10 +48,15 @@ class TicketEditViewTest(TestCase):
 
     def test_ticket_edit_view_should_have_table_header(self):
         response = self.client.get(
-            reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
+            reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<th>Subject</th>' \
+        expected = '<table class="table table-bordered table-condensed ' \
+            'table-hover">'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<th width="7%"></th>' \
+            '<th>Subject</th>' \
             '<th>Comment</th>' \
             '<th>Requester</th>' \
             '<th>Assignee</th>' \
@@ -106,14 +111,9 @@ class TicketEditViewTest(TestCase):
         expected = '<select class="form-control" id="id_ticket_type" ' \
             'name="ticket_type" onChange="check_ticket_type()" required>'
         self.assertContains(response, expected, status_code=200)
-        expected = '<select class="form-control" id="id_due_at_month" '\
-            'name="due_at_month">'
+        expected = '<input class="form-control" id="datepicker" ' \
+            'name="due_at" size="10" type="text" />'
         self.assertContains(response, expected, status_code=200)
-        expected = '<select class="form-control" id="id_due_at_day" '\
-            'name="due_at_day">'
-        self.assertContains(response, expected, status_code=200)
-        expected = '<select class="form-control" id="id_due_at_year" '\
-            'name="due_at_year">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="question" selected="selected">Question' \
             '</option>'
@@ -157,7 +157,7 @@ class TicketEditViewTest(TestCase):
             'value="%s" />' % self.board.id
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input type="submit">'
+        expected = '<input type="submit" class="btn btn-default" />'
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_edit_view_should_save_data_and_redirect_to_its_board(self):

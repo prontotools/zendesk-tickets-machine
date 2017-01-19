@@ -47,7 +47,7 @@ class TicketFormTest(TestCase):
             'assignee': agent.id,
             'group': agent_group.id,
             'ticket_type': 'task',
-            'due_at': datetime.datetime.now(),
+            'due_at': datetime.datetime(2017, 1, 1, 12, 30, 59, 0),
             'priority': 'urgent',
             'tags': 'welcome',
             'private_comment': 'Private comment',
