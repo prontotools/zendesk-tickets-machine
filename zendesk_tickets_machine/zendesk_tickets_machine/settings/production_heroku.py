@@ -23,7 +23,6 @@ INSTALLED_APPS = INSTALLED_APPS + [
 import dj_database_url
 DATABASES['default'] =  dj_database_url.config()
 
-import raven
 RAVEN_CONFIG = {
-    'dsn': 'https://ac3ce45cbefe4db88cbb2afea2f5fc49:e76db4d607b54ba3bd238a9f7e171dd8@sentry.io/130625',
+    'dsn': os.environ.get('SENTRY_DSN')
 }
