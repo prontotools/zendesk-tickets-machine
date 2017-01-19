@@ -1,3 +1,5 @@
+import datetime
+
 from unittest.mock import call, patch
 
 from django.conf import settings
@@ -161,7 +163,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select class="form-control" id="id_ticket_type" ' \
-            'name="ticket_type" required>'
+            'name="ticket_type" onChange="check_ticket_type()" required>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="question">Question</option>'
         self.assertContains(response, expected, status_code=200)
@@ -170,6 +172,12 @@ class BoardSingleViewTest(TestCase):
         expected = '<option value="problem">Problem</option>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="task">Task</option>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<div class="form-group" id="due_at" style="display:none">'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<input class="form-control" id="datepicker" ' \
+            'name="due_at" size="10" type="text" />'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select class="form-control" id="id_priority" ' \
@@ -213,6 +221,7 @@ class BoardSingleViewTest(TestCase):
             '<th>Assignee</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
+            '<th>Due Date</th>' \
             '<th>Priority</th>' \
             '<th>Tags</th>' \
             '<th>Private Comment</th>' \
@@ -260,8 +269,9 @@ class BoardSingleViewTest(TestCase):
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>urgent</td>' \
-            '<td>welcome</td><td>Private comment</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
             '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
                 reverse(
                     'ticket_edit',
@@ -280,14 +290,35 @@ class BoardSingleViewTest(TestCase):
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
             '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>high</td>' \
-            '<td>welcome internal</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome internal</td>' \
             '<td>Private comment</td>' \
             '<td></td></tr>' % (
                 self.second_ticket.id,
                 self.second_ticket.id
             )
         self.assertNotContains(response, expected, status_code=200)
+
+    def test_board_single_view_should_have_date_format(self):
+        Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            due_at=datetime.datetime(2017, 1, 1, 12, 30, 59, 0),
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            zendesk_ticket_id='24328',
+            board=self.board
+        )
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+        expected = '<td>Jan 01, 2017</td>'
+        self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_save_data_when_submit_ticket_form(self):
         data = {
@@ -330,8 +361,9 @@ class BoardSingleViewTest(TestCase):
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>urgent</td>' \
-            '<td>welcome</td><td>Private comment</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
             '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
                 reverse(
                     'ticket_edit',
@@ -350,8 +382,8 @@ class BoardSingleViewTest(TestCase):
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>high</td>' \
-            '<td>welcome internal</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome internal</td>' \
             '<td>Private comment</td>' \
             '<td></td></tr>' % (
                 self.second_ticket.id,
@@ -480,6 +512,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'assignee_id': '123',
                 'group_id': '123',
                 'type': 'question',
+                'due_at': '',
                 'priority': 'urgent',
                 'tags': ['welcome', 'pronto_marketing']
             }
@@ -564,6 +597,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                     'assignee_id': '123',
                     'group_id': '123',
                     'type': 'question',
+                    'due_at': '',
                     'priority': 'urgent',
                     'tags': ['welcome']
                 }
@@ -578,6 +612,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                     'assignee_id': '123',
                     'group_id': '123',
                     'type': 'question',
+                    'due_at': '',
                     'priority': 'low',
                     'tags': ['welcome']
                 }
@@ -672,6 +707,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                     'assignee_id': '123',
                     'group_id': '123',
                     'type': 'question',
+                    'due_at': '',
                     'priority': 'urgent',
                     'tags': ['welcome']
                 }

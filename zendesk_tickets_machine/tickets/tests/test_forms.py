@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TestCase
 
 from ..forms import TicketForm
@@ -18,6 +20,7 @@ class TicketFormTest(TestCase):
             'assignee',
             'group',
             'ticket_type',
+            'due_at',
             'priority',
             'tags',
             'private_comment',
@@ -27,7 +30,7 @@ class TicketFormTest(TestCase):
         for each in expected_fields:
             self.assertTrue(each in form.fields)
 
-        self.assertEqual(len(form.fields), 11)
+        self.assertEqual(len(form.fields), 12)
 
     def test_ticket_form_should_save_zendesk_ticket_id_as_null(self):
         agent = Agent.objects.create(
@@ -44,6 +47,7 @@ class TicketFormTest(TestCase):
             'assignee': agent.id,
             'group': agent_group.id,
             'ticket_type': 'task',
+            'due_at': datetime.datetime(2017, 1, 1, 12, 30, 59, 0),
             'priority': 'urgent',
             'tags': 'welcome',
             'private_comment': 'Private comment',

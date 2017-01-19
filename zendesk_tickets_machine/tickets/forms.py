@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.admin import widgets
 
 from .models import Ticket
 
@@ -13,6 +14,7 @@ class TicketForm(forms.ModelForm):
             'assignee',
             'group',
             'ticket_type',
+            'due_at',
             'priority',
             'tags',
             'private_comment',
@@ -51,7 +53,14 @@ class TicketForm(forms.ModelForm):
             ),
             'ticket_type': forms.Select(
                 attrs={
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'onChange': 'check_ticket_type()'
+                }
+            ),
+            'due_at': widgets.AdminDateWidget(
+                attrs={
+                    'class': 'form-control',
+                    'id': 'datepicker'
                 }
             ),
             'priority': forms.Select(

@@ -28,6 +28,7 @@ class Ticket(models.Model):
     assignee = models.ForeignKey(Agent)
     group = models.ForeignKey(AgentGroup)
     ticket_type = models.CharField(max_length=50, choices=TICKET_TYPE_CHOICES)
+    due_at = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=50, choices=PRIORITY_TYPE_CHOICES)
     tags = models.CharField(max_length=300, null=True, blank=True)
     private_comment = models.TextField(null=True, blank=True)
