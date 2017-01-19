@@ -8,6 +8,10 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+INSTALLED_APPS = INSTALLED_APPS + [
+    'raven.contrib.django.raven_compat',
+]
+
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 
