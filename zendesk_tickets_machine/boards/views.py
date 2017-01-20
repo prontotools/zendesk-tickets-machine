@@ -105,6 +105,9 @@ class BoardZendeskTicketsCreateView(View):
             zendesk_ticket_id__isnull=False
         )
         for each in tickets:
+            if each.assignee is None:
+                continue
+
             requester_result = zendesk_user.search(each.requester)
             if each.due_at is not None:
                 due_at = each.due_at.isoformat()

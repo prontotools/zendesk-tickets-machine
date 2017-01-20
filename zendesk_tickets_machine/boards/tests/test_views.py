@@ -151,7 +151,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select class="form-control" id="id_assignee" ' \
-            'name="assignee" required>'
+            'name="assignee">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1">Natty</option>'
         self.assertContains(response, expected, status_code=200)
@@ -336,6 +336,51 @@ class BoardSingleViewTest(TestCase):
             '<td>client@hisotech.com</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>---</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': self.first_ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': self.first_ticket.id}
+                ),
+                settings.ZENDESK_URL + '/agent/tickets/24328'
+            )
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
+            '<a href="/%s/delete/">Delete</a></td>' \
+            '<td>Ticket 2</td><td>Comment 2</td>' \
+            '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome internal</td>' \
+            '<td>Private comment</td>' \
+            '<td></td></tr>' % (
+                self.second_ticket.id,
+                self.second_ticket.id
+            )
+        self.assertNotContains(response, expected, status_code=200)
+
+    def test_board_single_view_should_show_assignee_as_dashes_if_no_value(
+        self
+    ):
+        self.first_ticket.assignee = None
+        self.first_ticket.save()
+
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
+            '<td>Ticket 1</td><td>Comment 1</td>' \
+            '<td>client@hisotech.com</td>' \
+            '<td>---</td><td>Development</td>' \
+            '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
             '<td>Private comment</td>' \
             '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
@@ -930,3 +975,15 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertIsNone(ticket.zendesk_ticket_id)
+
+    @patch('boards.views.ZendeskRequester')
+    def test_create_view_should_not_create_ticket_if_no_assignee(self, mock):
+        self.ticket.assignee = None
+        self.ticket.save()
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
+
+        self.assertEqual(mock.return_value.search.call_count, 0)
+        self.assertIsNone(self.ticket.zendesk_ticket_id)

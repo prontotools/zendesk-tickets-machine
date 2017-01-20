@@ -86,7 +86,7 @@
         <td>{{ each.subject }}</td>
         <td>{{ each.comment }}</td>
         <td>{{ each.requester }}</td>
-        <td>{{ each.assignee }}</td>
+        <td>{% if each.assignee %}{{ each.assignee }}{% else %}---{% endif %}</td>
         <td>{{ each.group }}</td>
         <td>{% if each.ticket_type %}{{ each.ticket_type }}{% else %}---{% endif %}</td>
         <td>{{ each.due_at|date:"M d, Y" }}</td>
