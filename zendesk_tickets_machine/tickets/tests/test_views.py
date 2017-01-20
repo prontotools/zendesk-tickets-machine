@@ -109,7 +109,7 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select class="form-control" id="id_ticket_type" ' \
-            'name="ticket_type" onChange="check_ticket_type()" required>'
+            'name="ticket_type" onChange="check_ticket_type()">'
         self.assertContains(response, expected, status_code=200)
         expected = '<input class="form-control" id="datepicker" ' \
             'name="due_at" size="10" type="text" />'
