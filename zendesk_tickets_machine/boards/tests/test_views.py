@@ -151,7 +151,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select class="form-control" id="id_assignee" ' \
-            'name="assignee" required>'
+            'name="assignee">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1">Natty</option>'
         self.assertContains(response, expected, status_code=200)
