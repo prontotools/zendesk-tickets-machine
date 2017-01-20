@@ -27,7 +27,12 @@ class Ticket(models.Model):
     requester = models.CharField(max_length=100)
     assignee = models.ForeignKey(Agent)
     group = models.ForeignKey(AgentGroup)
-    ticket_type = models.CharField(max_length=50, choices=TICKET_TYPE_CHOICES)
+    ticket_type = models.CharField(
+        max_length=50,
+        choices=TICKET_TYPE_CHOICES,
+        null=True,
+        blank=True
+    )
     due_at = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=50, choices=PRIORITY_TYPE_CHOICES)
     tags = models.CharField(max_length=300, null=True, blank=True)
