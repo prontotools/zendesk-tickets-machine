@@ -975,3 +975,15 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertIsNone(ticket.zendesk_ticket_id)
+
+    @patch('boards.views.ZendeskRequester')
+    def test_create_view_should_not_create_ticket_if_no_assignee(self, mock):
+        self.ticket.assignee = None
+        self.ticket.save()
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
+
+        self.assertEqual(mock.return_value.search.call_count, 0)
+        self.assertIsNone(self.ticket.zendesk_ticket_id)
