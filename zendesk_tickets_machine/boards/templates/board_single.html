@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% block title %}{{ board_name }} | {% endblock %}
 {% block body %}
+  <a href="{% url 'logout' %}">logout</a>
   <h1>{{ board_name }}</h1>
   <form method="post">
     {% csrf_token %}

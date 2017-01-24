@@ -29,6 +29,8 @@ class TicketEditViewTest(TestCase):
             zendesk_ticket_id='24328',
             board=self.board
         )
+        User.objects.create_superuser('natty', 'natty@test.com', 'pass')
+        self.client.login(username='natty', password='pass')
 
     def test_ticket_edit_view_should_be_accessible(self):
         response = self.client.get(

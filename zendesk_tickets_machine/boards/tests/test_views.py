@@ -3,6 +3,7 @@ import datetime
 from unittest.mock import call, patch
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -15,6 +16,10 @@ from tickets.models import Ticket
 
 
 class BoardViewTest(TestCase):
+    def setUp(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
+
     def test_board_view_should_have_title(self):
         response = self.client.get(reverse('boards'))
 
@@ -111,6 +116,8 @@ class BoardSingleViewTest(TestCase):
             private_comment='Private comment',
             board=board
         )
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
 
     def test_board_single_view_should_have_title_with_board_name(self):
         response = self.client.get(
@@ -516,6 +523,8 @@ class BoardResetViewTest(TestCase):
             zendesk_ticket_id='56578',
             board=board
         )
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
 
     def test_reset_view_should_reset_zendesk_ticket_id_for_tickets_in_board(
         self
@@ -563,6 +572,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             private_comment='Private comment',
             board=self.board
         )
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
@@ -986,3 +997,29 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         self.assertEqual(mock.return_value.search.call_count, 0)
         self.assertIsNone(self.ticket.zendesk_ticket_id)
+
+
+class TestLogin(TestCase):
+    def test_need_login(self):
+        with self.settings(LOGIN_URL='/login/'):
+            response = self.client.get('/')
+            self.assertRedirects(response, '/login/?next=/')
+
+    def test_login_pass(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        response = self.client.post('/login/', {
+            'username': 'natty', 'password': 'pass'})
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_fail(self):
+        response = self.client.post('/login/', {
+            'username': 'john', 'password': 'smith'})
+        self.assertEqual(response.status_code, 200)
+
+    def test_logout(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.post('/login/', {'username': 'natty', 'password': 'pass'})
+        self.client.post('/logout/')
+        with self.settings(LOGIN_URL='/login/'):
+            response = self.client.get('/')
+            self.assertRedirects(response, '/login/?next=/')

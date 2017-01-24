@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 
 from .views import (
     BoardView,
@@ -9,11 +10,12 @@ from .views import (
 
 
 urlpatterns = [
-    url(r'^$', BoardView.as_view(), name='boards'),
+    url(r'^$', login_required(BoardView.as_view()), name='boards'),
     url(r'^(?P<slug>[\w-]+)/$',
-        BoardSingleView.as_view(), name='board_single'),
+        login_required(BoardSingleView.as_view()), name='board_single'),
     url(r'^(?P<slug>[\w-]+)/reset/$',
-        BoardResetView.as_view(), name='board_reset'),
+        login_required(BoardResetView.as_view()), name='board_reset'),
     url(r'^(?P<slug>[\w-]+)/tickets/$',
-        BoardZendeskTicketsCreateView.as_view(), name='board_tickets_create'),
+        login_required(BoardZendeskTicketsCreateView.as_view()),
+        name='board_tickets_create'),
 ]
