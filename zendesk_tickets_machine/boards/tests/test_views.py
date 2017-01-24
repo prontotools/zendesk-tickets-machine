@@ -131,39 +131,38 @@ class BoardSingleViewTest(TestCase):
         expected = "<input type='hidden' name='csrfmiddlewaretoken'"
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_subject" ' \
-            'maxlength="300" name="subject" placeholder="Subject" ' \
-            'type="text" required />'
+        expected = '<input type="text" name="subject" placeholder="Subject" ' \
+            'class="form-control" maxlength="300" required id="id_subject" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_requester" ' \
-            'maxlength="100" name="requester" placeholder="Requester" ' \
-            'type="text" required />'
+        expected = '<input type="text" name="requester" ' \
+            'placeholder="Requester" class="form-control" maxlength="100" ' \
+            'required id="id_requester" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<textarea class="form-control" cols="40" ' \
-            'id="id_comment" name="comment" placeholder="Comment" rows="6" ' \
-            'required>'
+        expected = '<textarea name="comment" cols="40" rows="6" ' \
+            'placeholder="Comment" class="form-control" required ' \
+            'id="id_comment">\n</textarea>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_tags" ' \
-            'maxlength="300" name="tags" placeholder="Tags" type="text" />'
+        expected = '<input type="text" name="tags" placeholder="Tags" ' \
+            'class="form-control" maxlength="300" id="id_tags" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_assignee" ' \
-            'name="assignee">'
+        expected = '<select name="assignee" class="form-control" ' \
+            'id="id_assignee">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1">Natty</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_group" name="group" ' \
-            'required>'
+        expected = '<select name="group" class="form-control" ' \
+            'required id="id_group">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1">Development</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_ticket_type" ' \
-            'name="ticket_type" onChange="check_ticket_type()">'
+        expected = '<select name="ticket_type" class="form-control" ' \
+            'onChange="check_ticket_type()" id="id_ticket_type">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="question">Question</option>'
         self.assertContains(response, expected, status_code=200)
@@ -176,12 +175,12 @@ class BoardSingleViewTest(TestCase):
 
         expected = '<div class="form-group" id="due_at" style="display:none">'
         self.assertContains(response, expected, status_code=200)
-        expected = '<input class="form-control" id="datepicker" ' \
-            'name="due_at" size="10" type="text" />'
+        expected = '<input type="text" name="due_at" class="form-control" ' \
+            'size="10" id="datepicker" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_priority" ' \
-            'name="priority" required>'
+        expected = '<select name="priority" class="form-control" ' \
+            'required id="id_priority">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="high">High</option>'
         self.assertContains(response, expected, status_code=200)
@@ -192,13 +191,13 @@ class BoardSingleViewTest(TestCase):
         expected = '<option value="low">Low</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<textarea class="form-control" cols="40" ' \
-            'id="id_private_comment" name="private_comment" ' \
-            'placeholder="Private Comment" rows="13">'
+        expected = '<textarea name="private_comment" cols="40" rows="13" ' \
+            'placeholder="Private Comment" class="form-control" ' \
+            'id="id_private_comment">'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_board" name="board" type="hidden" ' \
-            'value="%s" />' % self.board.id
+        expected = '<input type="hidden" name="board" value="%s" ' \
+            'id="id_board" />' % self.board.id
         self.assertContains(response, expected, status_code=200)
 
         expected = '<button type="submit" class="btn btn-default">' \
