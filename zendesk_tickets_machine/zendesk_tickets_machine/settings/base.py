@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'tickets',
 ]
 
-LOGIN_URL='/login/'
+LOGIN_URL = '/login/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
