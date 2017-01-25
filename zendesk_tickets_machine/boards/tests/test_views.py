@@ -487,6 +487,13 @@ class BoardSingleViewTest(TestCase):
             )
         self.assertNotContains(response, expected, status_code=200)
 
+    def test_board_single_should_have_logout(self):
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+        expected = '<a href="/logout/">logout</a>'
+        self.assertContains(response, expected, status_code=200)
+
 
 class BoardResetViewTest(TestCase):
     def setUp(self):
