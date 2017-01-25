@@ -80,6 +80,14 @@ class BoardViewTest(TestCase):
         )
         self.assertContains(response, expected, status_code=200)
 
+    def test_board_view_should_have_logout(self):
+        Board.objects.create(name='Pre-Production')
+
+        response = self.client.get(reverse('boards'))
+
+        expected = '<a href="/logout/">logout</a>'
+        self.assertContains(response, expected, status_code=200)
+
 
 class BoardSingleViewTest(TestCase):
     def setUp(self):
