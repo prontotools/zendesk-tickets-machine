@@ -1014,7 +1014,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.assertIsNone(self.ticket.zendesk_ticket_id)
 
 
-class TestLogin(TestCase):
+class LoginViewTest(TestCase):
     def test_need_login(self):
         with self.settings(LOGIN_URL='/login/'):
             response = self.client.get('/')
