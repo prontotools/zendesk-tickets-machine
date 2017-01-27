@@ -16,17 +16,20 @@ from tickets.models import Ticket
 
 
 class BoardViewTest(TestCase):
-    def setUp(self):
+
+    def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
 
     def test_board_view_should_have_title(self):
+        self.login()
         response = self.client.get(reverse('boards'))
 
         expected = '<title>Pronto Zendesk Tickets Machine</title>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_boards_in_board_group(self):
+        self.login()
         board_group = BoardGroup.objects.create(name='CP Production')
         first_board = Board.objects.create(
             name='Pre-Production',
@@ -62,6 +65,7 @@ class BoardViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_ungrouped_boards(self):
+        self.login()
         board = Board.objects.create(name='Pre-Production')
 
         response = self.client.get(reverse('boards'))
@@ -81,6 +85,7 @@ class BoardViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_have_logout(self):
+        self.login()
         Board.objects.create(name='Pre-Production')
 
         response = self.client.get(reverse('boards'))
@@ -124,10 +129,13 @@ class BoardSingleViewTest(TestCase):
             private_comment='Private comment',
             board=board
         )
+
+    def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
 
     def test_board_single_view_should_have_title_with_board_name(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -136,6 +144,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_render_ticket_form(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -220,6 +229,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_table_header(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -243,6 +253,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_create_tickets_link(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -254,6 +265,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_reset_form_link(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -266,6 +278,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_board_name(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -274,6 +287,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_show_ticket_list(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -314,6 +328,7 @@ class BoardSingleViewTest(TestCase):
         self.assertNotContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_date_format(self):
+        self.login()
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -337,6 +352,7 @@ class BoardSingleViewTest(TestCase):
     def test_board_single_view_should_show_ticket_type_as_dashes_if_no_value(
         self
     ):
+        self.login()
         self.first_ticket.ticket_type = None
         self.first_ticket.save()
 
@@ -382,6 +398,7 @@ class BoardSingleViewTest(TestCase):
     def test_board_single_view_should_show_assignee_as_dashes_if_no_value(
         self
     ):
+        self.login()
         self.first_ticket.assignee = None
         self.first_ticket.save()
 
@@ -425,6 +442,7 @@ class BoardSingleViewTest(TestCase):
         self.assertNotContains(response, expected, status_code=200)
 
     def test_board_single_view_should_save_data_when_submit_ticket_form(self):
+        self.login()
         data = {
             'subject': 'Welcome to Pronto Service',
             'comment': 'This is a comment.',
@@ -496,6 +514,7 @@ class BoardSingleViewTest(TestCase):
         self.assertNotContains(response, expected, status_code=200)
 
     def test_board_single_should_have_logout(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -538,12 +557,15 @@ class BoardResetViewTest(TestCase):
             zendesk_ticket_id='56578',
             board=board
         )
+
+    def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
 
     def test_reset_view_should_reset_zendesk_ticket_id_for_tickets_in_board(
         self
     ):
+        self.login()
         self.client.get(
             reverse('board_reset', kwargs={'slug': self.board.slug})
         )
@@ -555,6 +577,7 @@ class BoardResetViewTest(TestCase):
         self.assertEqual(second_ticket.zendesk_ticket_id, '56578')
 
     def test_reset_view_should_redirect_to_board(self):
+        self.login()
         response = self.client.get(
             reverse('board_reset', kwargs={'slug': self.board.slug})
         )
@@ -587,6 +610,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             private_comment='Private comment',
             board=self.board
         )
+
+    def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
 
@@ -598,6 +623,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         ticket = Ticket.objects.last()
         ticket.tags = 'welcome, pronto_marketing'
         ticket.save()
@@ -659,6 +685,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
@@ -768,6 +795,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
@@ -854,6 +882,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         mock_requester.return_value.search.return_value = {
             'users': [{
                 'id': '1095195473'
@@ -887,6 +916,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         self.assertIsNone(self.ticket.zendesk_ticket_id)
 
         ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
@@ -940,6 +970,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self,
         mock
     ):
+        self.login()
         ticket = Ticket.objects.last()
         ticket.zendesk_ticket_id = '123'
         ticket.save()
@@ -958,6 +989,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         self.assertIsNone(self.ticket.zendesk_ticket_id)
 
         ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
@@ -1003,6 +1035,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
     @patch('boards.views.ZendeskRequester')
     def test_create_view_should_not_create_ticket_if_no_assignee(self, mock):
+        self.login()
         self.ticket.assignee = None
         self.ticket.save()
 
@@ -1012,29 +1045,3 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         self.assertEqual(mock.return_value.search.call_count, 0)
         self.assertIsNone(self.ticket.zendesk_ticket_id)
-
-
-class LoginViewTest(TestCase):
-    def test_need_login(self):
-        with self.settings(LOGIN_URL=reverse('login')):
-            response = self.client.get('/')
-            self.assertRedirects(response, '/login/?next=/')
-
-    def test_login_pass(self):
-        User.objects.create_superuser('natty', 'natty@test', 'pass')
-        response = self.client.post(reverse('login'), {
-            'username': 'natty', 'password': 'pass'})
-        self.assertEqual(response.status_code, 302)
-
-    def test_login_fail(self):
-        response = self.client.post(reverse('login'), {
-            'username': 'john', 'password': 'smith'})
-        self.assertEqual(response.status_code, 200)
-
-    def test_logout(self):
-        User.objects.create_superuser('natty', 'natty@test', 'pass')
-        self.client.post(reverse('login'), {'username': 'natty', 'password': 'pass'})
-        self.client.post(reverse('logout'))
-        with self.settings(LOGIN_URL=reverse('login')):
-            response = self.client.get('/')
-            self.assertRedirects(response, '/login/?next=/')

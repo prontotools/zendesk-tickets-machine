@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'agents',
     'agent_groups',
     'boards',
+    'core',
     'requesters',
     'tickets',
 ]
