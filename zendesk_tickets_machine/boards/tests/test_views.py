@@ -93,6 +93,11 @@ class BoardViewTest(TestCase):
         expected = '<a href="/logout/">logout</a>'
         self.assertContains(response, expected, status_code=200)
 
+    def test_board_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get('/')
+            self.assertRedirects(response, '/login/?next=/')
+
 
 class BoardSingleViewTest(TestCase):
     def setUp(self):
@@ -521,6 +526,13 @@ class BoardSingleViewTest(TestCase):
         expected = '<a href="/logout/">logout</a>'
         self.assertContains(response, expected, status_code=200)
 
+    def test_board_single_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('board_single', kwargs={'slug': self.board.slug})
+            )
+            self.assertRedirects(response, '/login/?next=/pre-production/')
+
 
 class BoardResetViewTest(TestCase):
     def setUp(self):
@@ -588,6 +600,14 @@ class BoardResetViewTest(TestCase):
             status_code=302,
             target_status_code=200
         )
+
+    def test_reset_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('board_reset', kwargs={'slug': self.board.slug})
+            )
+            self.assertRedirects(
+                response, '/login/?next=/pre-production/reset/')
 
 
 class BoardZendeskTicketsCreateViewTest(TestCase):
@@ -1045,3 +1065,11 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         self.assertEqual(mock.return_value.search.call_count, 0)
         self.assertIsNone(self.ticket.zendesk_ticket_id)
+
+    def test_create_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('board_tickets_create',
+                        kwargs={'slug': self.board.slug})
+            )
+            self.assertRedirects(response, '/login/?next=/production/tickets/')
