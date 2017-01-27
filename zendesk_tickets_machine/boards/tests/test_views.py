@@ -3,6 +3,7 @@ import datetime
 from unittest.mock import call, patch
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -15,13 +16,20 @@ from tickets.models import Ticket
 
 
 class BoardViewTest(TestCase):
+
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
+
     def test_board_view_should_have_title(self):
+        self.login()
         response = self.client.get(reverse('boards'))
 
         expected = '<title>Pronto Zendesk Tickets Machine</title>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_boards_in_board_group(self):
+        self.login()
         board_group = BoardGroup.objects.create(name='CP Production')
         first_board = Board.objects.create(
             name='Pre-Production',
@@ -57,6 +65,7 @@ class BoardViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_ungrouped_boards(self):
+        self.login()
         board = Board.objects.create(name='Pre-Production')
 
         response = self.client.get(reverse('boards'))
@@ -74,6 +83,20 @@ class BoardViewTest(TestCase):
             board.name
         )
         self.assertContains(response, expected, status_code=200)
+
+    def test_board_view_should_have_logout(self):
+        self.login()
+        Board.objects.create(name='Pre-Production')
+
+        response = self.client.get(reverse('boards'))
+
+        expected = '<a href="/logout/">logout</a>'
+        self.assertContains(response, expected, status_code=200)
+
+    def test_board_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get('/')
+            self.assertRedirects(response, '/login/?next=/')
 
 
 class BoardSingleViewTest(TestCase):
@@ -112,7 +135,12 @@ class BoardSingleViewTest(TestCase):
             board=board
         )
 
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
+
     def test_board_single_view_should_have_title_with_board_name(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -121,6 +149,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_render_ticket_form(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -131,39 +160,38 @@ class BoardSingleViewTest(TestCase):
         expected = "<input type='hidden' name='csrfmiddlewaretoken'"
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_subject" ' \
-            'maxlength="300" name="subject" placeholder="Subject" ' \
-            'type="text" required />'
+        expected = '<input type="text" name="subject" placeholder="Subject" ' \
+            'class="form-control" maxlength="300" required id="id_subject" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_requester" ' \
-            'maxlength="100" name="requester" placeholder="Requester" ' \
-            'type="text" required />'
+        expected = '<input type="text" name="requester" ' \
+            'placeholder="Requester" class="form-control" maxlength="100" ' \
+            'required id="id_requester" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<textarea class="form-control" cols="40" ' \
-            'id="id_comment" name="comment" placeholder="Comment" rows="6" ' \
-            'required>'
+        expected = '<textarea name="comment" cols="40" rows="6" ' \
+            'placeholder="Comment" class="form-control" required ' \
+            'id="id_comment">\n</textarea>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_tags" ' \
-            'maxlength="300" name="tags" placeholder="Tags" type="text" />'
+        expected = '<input type="text" name="tags" placeholder="Tags" ' \
+            'class="form-control" maxlength="300" id="id_tags" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_assignee" ' \
-            'name="assignee">'
+        expected = '<select name="assignee" class="form-control" ' \
+            'id="id_assignee">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1">Natty</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_group" name="group" ' \
-            'required>'
+        expected = '<select name="group" class="form-control" ' \
+            'required id="id_group">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="1">Development</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_ticket_type" ' \
-            'name="ticket_type" onChange="check_ticket_type()">'
+        expected = '<select name="ticket_type" class="form-control" ' \
+            'onChange="check_ticket_type()" id="id_ticket_type">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="question">Question</option>'
         self.assertContains(response, expected, status_code=200)
@@ -176,12 +204,12 @@ class BoardSingleViewTest(TestCase):
 
         expected = '<div class="form-group" id="due_at" style="display:none">'
         self.assertContains(response, expected, status_code=200)
-        expected = '<input class="form-control" id="datepicker" ' \
-            'name="due_at" size="10" type="text" />'
+        expected = '<input type="text" name="due_at" class="form-control" ' \
+            'size="10" id="datepicker" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_priority" ' \
-            'name="priority" required>'
+        expected = '<select name="priority" class="form-control" ' \
+            'required id="id_priority">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="high">High</option>'
         self.assertContains(response, expected, status_code=200)
@@ -192,13 +220,13 @@ class BoardSingleViewTest(TestCase):
         expected = '<option value="low">Low</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<textarea class="form-control" cols="40" ' \
-            'id="id_private_comment" name="private_comment" ' \
-            'placeholder="Private Comment" rows="13">'
+        expected = '<textarea name="private_comment" cols="40" rows="13" ' \
+            'placeholder="Private Comment" class="form-control" ' \
+            'id="id_private_comment">'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_board" name="board" type="hidden" ' \
-            'value="%s" />' % self.board.id
+        expected = '<input type="hidden" name="board" value="%s" ' \
+            'id="id_board" />' % self.board.id
         self.assertContains(response, expected, status_code=200)
 
         expected = '<button type="submit" class="btn btn-default">' \
@@ -206,6 +234,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_table_header(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -229,6 +258,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_create_tickets_link(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -240,6 +270,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_reset_form_link(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -252,6 +283,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_board_name(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -260,6 +292,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_show_ticket_list(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -300,6 +333,7 @@ class BoardSingleViewTest(TestCase):
         self.assertNotContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_date_format(self):
+        self.login()
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -323,6 +357,7 @@ class BoardSingleViewTest(TestCase):
     def test_board_single_view_should_show_ticket_type_as_dashes_if_no_value(
         self
     ):
+        self.login()
         self.first_ticket.ticket_type = None
         self.first_ticket.save()
 
@@ -368,6 +403,7 @@ class BoardSingleViewTest(TestCase):
     def test_board_single_view_should_show_assignee_as_dashes_if_no_value(
         self
     ):
+        self.login()
         self.first_ticket.assignee = None
         self.first_ticket.save()
 
@@ -411,6 +447,7 @@ class BoardSingleViewTest(TestCase):
         self.assertNotContains(response, expected, status_code=200)
 
     def test_board_single_view_should_save_data_when_submit_ticket_form(self):
+        self.login()
         data = {
             'subject': 'Welcome to Pronto Service',
             'comment': 'This is a comment.',
@@ -481,6 +518,21 @@ class BoardSingleViewTest(TestCase):
             )
         self.assertNotContains(response, expected, status_code=200)
 
+    def test_board_single_should_have_logout(self):
+        self.login()
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+        expected = '<a href="/logout/">logout</a>'
+        self.assertContains(response, expected, status_code=200)
+
+    def test_board_single_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('board_single', kwargs={'slug': self.board.slug})
+            )
+            self.assertRedirects(response, '/login/?next=/pre-production/')
+
 
 class BoardResetViewTest(TestCase):
     def setUp(self):
@@ -518,9 +570,14 @@ class BoardResetViewTest(TestCase):
             board=board
         )
 
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
+
     def test_reset_view_should_reset_zendesk_ticket_id_for_tickets_in_board(
         self
     ):
+        self.login()
         self.client.get(
             reverse('board_reset', kwargs={'slug': self.board.slug})
         )
@@ -532,6 +589,7 @@ class BoardResetViewTest(TestCase):
         self.assertEqual(second_ticket.zendesk_ticket_id, '56578')
 
     def test_reset_view_should_redirect_to_board(self):
+        self.login()
         response = self.client.get(
             reverse('board_reset', kwargs={'slug': self.board.slug})
         )
@@ -542,6 +600,14 @@ class BoardResetViewTest(TestCase):
             status_code=302,
             target_status_code=200
         )
+
+    def test_reset_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('board_reset', kwargs={'slug': self.board.slug})
+            )
+            self.assertRedirects(
+                response, '/login/?next=/pre-production/reset/')
 
 
 class BoardZendeskTicketsCreateViewTest(TestCase):
@@ -565,6 +631,10 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             board=self.board
         )
 
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
@@ -573,6 +643,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         ticket = Ticket.objects.last()
         ticket.tags = 'welcome, pronto_marketing'
         ticket.save()
@@ -634,6 +705,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
@@ -743,6 +815,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
@@ -829,6 +902,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         mock_requester.return_value.search.return_value = {
             'users': [{
                 'id': '1095195473'
@@ -862,6 +936,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         self.assertIsNone(self.ticket.zendesk_ticket_id)
 
         ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
@@ -915,6 +990,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self,
         mock
     ):
+        self.login()
         ticket = Ticket.objects.last()
         ticket.zendesk_ticket_id = '123'
         ticket.save()
@@ -933,6 +1009,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_requester,
         mock_ticket
     ):
+        self.login()
         self.assertIsNone(self.ticket.zendesk_ticket_id)
 
         ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
@@ -978,6 +1055,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
     @patch('boards.views.ZendeskRequester')
     def test_create_view_should_not_create_ticket_if_no_assignee(self, mock):
+        self.login()
         self.ticket.assignee = None
         self.ticket.save()
 
@@ -987,3 +1065,11 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         self.assertEqual(mock.return_value.search.call_count, 0)
         self.assertIsNone(self.ticket.zendesk_ticket_id)
+
+    def test_create_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('board_tickets_create',
+                        kwargs={'slug': self.board.slug})
+            )
+            self.assertRedirects(response, '/login/?next=/production/tickets/')

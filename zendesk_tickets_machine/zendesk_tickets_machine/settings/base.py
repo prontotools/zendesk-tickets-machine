@@ -40,9 +40,12 @@ INSTALLED_APPS = [
     'agents',
     'agent_groups',
     'boards',
+    'core',
     'requesters',
     'tickets',
 ]
+
+LOGIN_URL = '/login/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

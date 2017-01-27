@@ -1,6 +1,8 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 {% block title %}{{ board_name }} | {% endblock %}
 {% block body %}
+  <a href="{% url 'logout' %}">logout</a>
   <h1>{{ board_name }}</h1>
   <form method="post">
     {% csrf_token %}
@@ -98,4 +100,7 @@
       {% endspaceless %}
     {% endfor %}
   </table>
+{% endblock %}
+{% block javascript %}
+<script src="{% static 'js/app.js' %}" type="text/javascript"></script>
 {% endblock %}

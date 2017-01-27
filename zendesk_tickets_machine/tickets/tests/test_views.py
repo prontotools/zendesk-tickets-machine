@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -29,13 +30,19 @@ class TicketEditViewTest(TestCase):
             board=self.board
         )
 
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
+
     def test_ticket_edit_view_should_be_accessible(self):
+        self.login()
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
         self.assertEqual(response.status_code, 200)
 
     def test_ticket_edit_view_should_have_back_link_to_ticket_list(self):
+        self.login()
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
@@ -47,6 +54,7 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_have_table_header(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -70,6 +78,7 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_render_ticket_form(self):
+        self.login()
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
@@ -80,43 +89,44 @@ class TicketEditViewTest(TestCase):
         expected = "<input type='hidden' name='csrfmiddlewaretoken'"
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_subject" ' \
-            'maxlength="300" name="subject" placeholder="Subject" ' \
-            'type="text" value="Ticket 1" required />'
+        expected = '<input type="text" name="subject" value="Ticket 1" ' \
+            'placeholder="Subject" class="form-control" maxlength="300" ' \
+            'required id="id_subject" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = 'textarea class="form-control" cols="40" id="id_comment" ' \
-            'name="comment" placeholder="Comment" rows="6" required>'
+        expected = '<textarea name="comment" cols="40" rows="6" ' \
+            'placeholder="Comment" class="form-control" required ' \
+            'id="id_comment">\nComment 1</textarea>'
         self.assertContains(response, expected, status_code=200)
         expected = 'Comment 1</textarea>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_requester" ' \
-            'maxlength="100" name="requester" placeholder="Requester" ' \
-            'type="text" value="client@hisotech.com" required />'
+        expected = '<input type="text" name="requester" ' \
+            'value="client@hisotech.com" placeholder="Requester" ' \
+            'class="form-control" maxlength="100" required ' \
+            'id="id_requester" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_assignee" ' \
-            'name="assignee">'
+        expected = '<select name="assignee" class="form-control" ' \
+            'id="id_assignee">'
         self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1" selected="selected">Kan</option>'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<select class="form-control" id="id_group" ' \
-            'name="group" required>'
-        self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1" selected="selected">Development</option>'
+        expected = '<option value="1" selected>Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_ticket_type" ' \
-            'name="ticket_type" onChange="check_ticket_type()">'
+        expected = '<select name="group" class="form-control" ' \
+            'required id="id_group">'
         self.assertContains(response, expected, status_code=200)
-        expected = '<input class="form-control" id="datepicker" ' \
-            'name="due_at" size="10" type="text" />'
+        expected = '<option value="1" selected>Development</option>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select name="ticket_type" class="form-control" ' \
+            'onChange="check_ticket_type()" id="id_ticket_type">'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<input type="text" name="due_at" class="form-control" ' \
+            'size="10" id="datepicker" />'
         self.assertContains(response, expected, status_code=200)
         self.assertContains(response, expected, status_code=200)
-        expected = '<option value="question" selected="selected">Question' \
-            '</option>'
+        expected = '<option value="question" selected>Question</option>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="incident">Incident</option>'
         self.assertContains(response, expected, status_code=200)
@@ -125,42 +135,43 @@ class TicketEditViewTest(TestCase):
         expected = '<option value="task">Task</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select class="form-control" id="id_priority" ' \
-            'name="priority" required>'
+        expected = '<select name="priority" class="form-control" ' \
+            'required id="id_priority">'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="high">High</option>'
         self.assertContains(response, expected, status_code=200)
-        expected = '<option value="urgent" selected="selected">Urgent</option>'
+        expected = '<option value="urgent" selected>Urgent</option>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="normal">Normal</option>'
         self.assertContains(response, expected, status_code=200)
         expected = '<option value="low">Low</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input class="form-control" id="id_tags" ' \
-            'maxlength="300" name="tags" placeholder="Tags" type="text" ' \
-            'value="welcome" />'
+        expected = '<input type="text" name="tags" value="welcome" ' \
+            'placeholder="Tags" class="form-control" maxlength="300" ' \
+            'id="id_tags" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<textarea class="form-control" cols="40" ' \
-            'id="id_private_comment" name="private_comment" ' \
-            'placeholder="Private Comment" rows="13">'
+        expected = '<textarea name="private_comment" cols="40" ' \
+            'rows="13" placeholder="Private Comment" class="form-control" ' \
+            'id="id_private_comment">\nPrivate comment</textarea>'
         self.assertContains(response, expected, status_code=200)
         expected = 'Private comment</textarea>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_zendesk_ticket_id" maxlength="50" ' \
-            'name="zendesk_ticket_id" type="text" value="24328" />'
+        expected = '<input type="text" name="zendesk_ticket_id" ' \
+            'value="24328" maxlength="50" id="id_zendesk_ticket_id" />'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input id="id_board" name="board" type="hidden" ' \
-            'value="%s" />' % self.board.id
+        expected = '<input type="hidden" name="board" value="%s" ' \
+            'id="id_board" />' % self.board.id
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input type="submit" class="btn btn-default" />'
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_edit_view_should_save_data_and_redirect_to_its_board(self):
+        self.login()
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
             name='Development',
@@ -207,6 +218,14 @@ class TicketEditViewTest(TestCase):
             target_status_code=200
         )
 
+    def test_ticket_edit_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('ticket_edit',
+                        kwargs={'ticket_id': self.ticket.id})
+            )
+            self.assertRedirects(response, '/login/?next=/tickets/1/')
+
 
 class TicketDeleteViewTest(TestCase):
     def setUp(self):
@@ -230,10 +249,16 @@ class TicketDeleteViewTest(TestCase):
             board=self.board
         )
 
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
+
     def test_ticket_delete_view_should_delete_then_redirect_to_its_board(self):
+        self.login()
         response = self.client.get(
             reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
         )
+
         self.assertEqual(Ticket.objects.count(), 0)
 
         self.assertRedirects(
@@ -242,3 +267,11 @@ class TicketDeleteViewTest(TestCase):
             status_code=302,
             target_status_code=200
         )
+
+    def test_ticket_delete_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('ticket_delete',
+                        kwargs={'ticket_id': self.ticket.id})
+            )
+            self.assertRedirects(response, '/login/?next=/tickets/1/delete/')

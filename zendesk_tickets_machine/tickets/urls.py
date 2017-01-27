@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 
 from .views import (
     TicketDeleteView,
@@ -8,7 +9,7 @@ from .views import (
 
 urlpatterns = [
     url(r'^(?P<ticket_id>[0-9]+)/$',
-        TicketEditView.as_view(), name='ticket_edit'),
+        login_required(TicketEditView.as_view()), name='ticket_edit'),
     url(r'^(?P<ticket_id>[0-9]+)/delete/$',
-        TicketDeleteView.as_view(), name='ticket_delete'),
+        login_required(TicketDeleteView.as_view()), name='ticket_delete'),
 ]
