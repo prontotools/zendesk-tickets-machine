@@ -29,16 +29,20 @@ class TicketEditViewTest(TestCase):
             zendesk_ticket_id='24328',
             board=self.board
         )
-        User.objects.create_superuser('natty', 'natty@test.com', 'pass')
+
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
 
     def test_ticket_edit_view_should_be_accessible(self):
+        self.login()
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
         self.assertEqual(response.status_code, 200)
 
     def test_ticket_edit_view_should_have_back_link_to_ticket_list(self):
+        self.login()
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
@@ -50,6 +54,7 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_have_table_header(self):
+        self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
@@ -73,6 +78,7 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_render_ticket_form(self):
+        self.login()
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
@@ -165,6 +171,7 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_edit_view_should_save_data_and_redirect_to_its_board(self):
+        self.login()
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
             name='Development',
@@ -211,6 +218,14 @@ class TicketEditViewTest(TestCase):
             target_status_code=200
         )
 
+    def test_ticket_edit_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('ticket_edit',
+                        kwargs={'ticket_id': self.ticket.id})
+            )
+            self.assertRedirects(response, '/login/?next=/tickets/1/')
+
 
 class TicketDeleteViewTest(TestCase):
     def setUp(self):
@@ -233,10 +248,13 @@ class TicketDeleteViewTest(TestCase):
             zendesk_ticket_id='24328',
             board=self.board
         )
-        User.objects.create_superuser('natty', 'natty@test.com', 'nattypass')
-        self.client.login(username='natty', password='nattypass')
+
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
 
     def test_ticket_delete_view_should_delete_then_redirect_to_its_board(self):
+        self.login()
         response = self.client.get(
             reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
         )
@@ -249,3 +267,11 @@ class TicketDeleteViewTest(TestCase):
             status_code=302,
             target_status_code=200
         )
+
+    def test_ticket_delete_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('ticket_delete',
+                        kwargs={'ticket_id': self.ticket.id})
+            )
+            self.assertRedirects(response, '/login/?next=/tickets/1/delete/')
