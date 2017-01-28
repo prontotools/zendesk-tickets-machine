@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.utils.timezone import utc
 
 from ..models import Board, BoardGroup
 from agents.models import Agent
@@ -334,6 +335,9 @@ class BoardSingleViewTest(TestCase):
 
     def test_board_single_view_should_have_date_format(self):
         self.login()
+        due_at = datetime.datetime(2017, 1, 1, 12, 30, 59, 0).replace(
+            tzinfo=utc
+        )
         Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
@@ -341,7 +345,7 @@ class BoardSingleViewTest(TestCase):
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
-            due_at=datetime.datetime(2017, 1, 1, 12, 30, 59, 0),
+            due_at=due_at,
             priority='urgent',
             tags='welcome',
             private_comment='Private comment',
