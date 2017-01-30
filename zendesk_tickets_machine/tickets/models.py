@@ -43,6 +43,7 @@ class Ticket(models.Model):
         blank=True
     )
     board = models.ForeignKey(Board)
+    is_active = models.BooleanField(default=True)
 
 
 @receiver(pre_save, sender=Ticket)
