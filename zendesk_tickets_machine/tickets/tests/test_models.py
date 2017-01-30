@@ -47,12 +47,13 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.assignee.name, 'Kan')
         self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')
-        self.assertEqual(ticket.due_at, None)
+        self.assertIsNone(ticket.due_at)
         self.assertEqual(ticket.priority, 'urgent')
         self.assertEqual(ticket.tags, 'welcome')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
         self.assertEqual(ticket.board.name, 'Pre-Production')
+        self.assertTrue(ticket.is_active)
 
     def test_after_save_it_stores_usage_if_get_zendesk_ticket_id_first_time(
         self

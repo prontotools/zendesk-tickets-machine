@@ -47,7 +47,7 @@ class BoardSingleView(TemplateView):
             'board': board.id
         }
         form = TicketForm(initial=initial)
-        tickets = Ticket.objects.filter(board__slug=slug)
+        tickets = Ticket.objects.filter(board__slug=slug, is_active=True)
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
@@ -100,7 +100,8 @@ class BoardZendeskTicketsCreateView(View):
         zendesk_user = ZendeskRequester()
 
         tickets = Ticket.objects.filter(
-            board__slug=slug
+            board__slug=slug,
+            is_active=True
         ).exclude(
             zendesk_ticket_id__isnull=False
         )

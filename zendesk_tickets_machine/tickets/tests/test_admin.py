@@ -60,6 +60,9 @@ class TicketAdminTest(TestCase):
         expected = '<div class="text"><a href="?o=9">Board</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
+        expected = '<div class="text"><a href="?o=10">Is active</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
     def test_access_ticket_admin_should_have_board_filter(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(
@@ -75,9 +78,11 @@ class TicketAdminTest(TestCase):
         )
 
         response = self.client.get(self.url)
-        expected = '<div id="changelist-filter">\n            ' \
-            '<h2>Filter</h2>\n            \n' \
-            '<h3> By name </h3>'
+
+        expected = '<h3> By name </h3>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<h3> By is active </h3>'
         self.assertContains(response, expected, count=1, status_code=200)
 
 

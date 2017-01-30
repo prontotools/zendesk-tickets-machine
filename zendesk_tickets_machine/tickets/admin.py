@@ -18,8 +18,12 @@ class TicketAdmin(admin.ModelAdmin):
         'priority',
         'tags',
         'board',
+        'is_active',
     )
-    list_filter = ('board__name',)
+    list_filter = (
+        'board__name',
+        'is_active',
+    )
 
 
 @admin.register(TicketZendeskAPIUsage)

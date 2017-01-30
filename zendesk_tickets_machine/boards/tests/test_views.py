@@ -17,7 +17,6 @@ from tickets.models import Ticket
 
 
 class BoardViewTest(TestCase):
-
     def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
@@ -121,12 +120,25 @@ class BoardSingleViewTest(TestCase):
             zendesk_ticket_id='24328',
             board=self.board
         )
+        self.deleted_ticket = Ticket.objects.create(
+            subject='Ticket (Deleted)',
+            comment='Comment',
+            requester='client@hisotech.com',
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            zendesk_ticket_id='24330',
+            board=self.board,
+            is_active=False
+        )
         board = Board.objects.create(name='Production')
         self.second_ticket = Ticket.objects.create(
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
-
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -292,7 +304,7 @@ class BoardSingleViewTest(TestCase):
         expected = '<h1>%s</h1>' % self.board.name
         self.assertContains(response, expected, status_code=200)
 
-    def test_board_single_view_should_show_ticket_list(self):
+    def test_board_single_view_should_show_active_ticket_list(self):
         self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
@@ -318,6 +330,27 @@ class BoardSingleViewTest(TestCase):
                 settings.ZENDESK_URL + '/agent/tickets/24328'
             )
         self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
+            '<td>Ticket (Deleted)</td><td>Comment</td>' \
+            '<td>client@hisotech.com</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24330</a></td></tr>' % (
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': self.deleted_ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': self.deleted_ticket.id}
+                ),
+                settings.ZENDESK_URL + '/agent/tickets/24330'
+            )
+        self.assertNotContains(response, expected, status_code=200)
 
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
@@ -634,6 +667,19 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             private_comment='Private comment',
             board=self.board
         )
+        self.deleted_ticket = Ticket.objects.create(
+            subject='Ticket (Deleted)',
+            comment='Comment',
+            requester='client@hisotech.com',
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            board=self.board,
+            is_active=False
+        )
 
     def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
@@ -648,7 +694,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_ticket
     ):
         self.login()
-        ticket = Ticket.objects.last()
+        ticket = Ticket.objects.get(id=self.ticket.id)
         ticket.tags = 'welcome, pronto_marketing'
         ticket.save()
 
@@ -983,7 +1029,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             reverse('board_tickets_create', kwargs={'slug': self.board.slug})
         )
 
-        ticket = Ticket.objects.last()
+        ticket = Ticket.objects.get(id=self.ticket.id)
         self.assertEqual(ticket.zendesk_ticket_id, '16')
 
         requester = Requester.objects.last()
@@ -995,7 +1041,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock
     ):
         self.login()
-        ticket = Ticket.objects.last()
+        ticket = Ticket.objects.get(id=self.ticket.id)
         ticket.zendesk_ticket_id = '123'
         ticket.save()
 
