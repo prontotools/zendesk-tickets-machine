@@ -1,36 +1,86 @@
 {% extends "base.html" %}
-
-{% block title %}{{ board_name }} | {% endblock %}
+{% load staticfiles %}
+{% block title %}Login | {% endblock %}
+{% block logo %}{% endblock %}
+{% block style %}
+  <style>
+    body {
+      padding-top: 120px;
+      padding-bottom: 40px;
+    }
+    .btn {
+      outline:0;
+      border:none;
+      border-top:none;
+      border-bottom:none;
+      border-left:none;
+      border-right:none;
+      box-shadow:inset 2px -3px rgba(0,0,0,0.15);
+    }
+    .btn:focus {
+      outline:0;
+      -webkit-outline:0;
+      -moz-outline:0;
+    }
+    .form-signin {
+      max-width: 280px;
+      padding: 15px;
+      margin: 0 auto;
+      margin-top:50px;
+    }
+    .form-signin .form-signin-heading, .form-signin {
+      margin-bottom: 10px;
+    }
+    .form-signin .form-control {
+      position: relative;
+      font-size: 16px;
+      height: auto;
+      padding: 10px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+    .form-signin .form-control:focus {
+      z-index: 2;
+    }
+    .form-signin input[type="text"] {
+      margin-bottom: -1px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-top-style: solid;
+      border-right-style: solid;
+      border-bottom-style: none;
+      border-left-style: solid;
+      border-color: #000;
+    }
+    .form-signin input[type="password"] {
+      margin-bottom: 10px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      border-top-style: none;
+      border-right-style: solid;
+      border-bottom-style: solid;
+      border-left-style: solid;
+      border-color: rgb(0,0,0);
+      border-top:1px solid rgba(0,0,0,0.08);
+    }
+    .form-signin-heading {
+      text-align: center;
+    }
+  </style>
+{% endblock %}
 {% block body %}
-
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
+<div class="container">
+  <form class="form-signin" method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="form-signin-heading"><img src="{% static 'img/pronto-logo-header.png' %}" width="150px"></div>
+    {% if form.errors %}
+      <div class="text-center alert alert-danger">Incorrect username or password.</div>
     {% endif %}
-{% endif %}
-
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-
+    <input type="text" class="form-control" placeholder="Username" required="" autofocus="" maxlength="254" id="id_username" name="username">
+    <input type="password" class="form-control" placeholder="Password" required="" id="id_password" name="password">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
+</div>
 {% endblock %}
