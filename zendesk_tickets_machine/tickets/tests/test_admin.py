@@ -78,9 +78,11 @@ class TicketAdminTest(TestCase):
         )
 
         response = self.client.get(self.url)
-        expected = '<div id="changelist-filter">\n            ' \
-            '<h2>Filter</h2>\n            \n' \
-            '<h3> By name </h3>'
+
+        expected = '<h3> By name </h3>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<h3> By is active </h3>'
         self.assertContains(response, expected, count=1, status_code=200)
 
 
