@@ -60,6 +60,9 @@ class TicketAdminTest(TestCase):
         expected = '<div class="text"><a href="?o=9">Board</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
+        expected = '<div class="text"><a href="?o=10">Is active</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
     def test_access_ticket_admin_should_have_board_filter(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         agent_group = AgentGroup.objects.create(

@@ -18,6 +18,7 @@ class TicketAdmin(admin.ModelAdmin):
         'priority',
         'tags',
         'board',
+        'is_active',
     )
     list_filter = ('board__name',)
 
