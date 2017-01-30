@@ -253,13 +253,26 @@ class TicketDeleteViewTest(TestCase):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
 
+    def test_ticket_delete_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('ticket_delete',
+                        kwargs={'ticket_id': self.ticket.id})
+            )
+            url = reverse('login') + '?next=' + \
+                reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
+            self.assertRedirects(response, url)
+
     def test_ticket_delete_view_should_delete_then_redirect_to_its_board(self):
         self.login()
         response = self.client.get(
             reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
         )
 
-        self.assertEqual(Ticket.objects.count(), 0)
+        self.assertEqual(Ticket.objects.count(), 1)
+
+        ticket = Ticket.objects.last()
+        self.assertFalse(ticket.is_active)
 
         self.assertRedirects(
             response,
@@ -267,11 +280,3 @@ class TicketDeleteViewTest(TestCase):
             status_code=302,
             target_status_code=200
         )
-
-    def test_ticket_delete_view_should_required_login(self):
-        with self.settings(LOGIN_URL=reverse('login')):
-            response = self.client.get(
-                reverse('ticket_delete',
-                        kwargs={'ticket_id': self.ticket.id})
-            )
-            self.assertRedirects(response, '/login/?next=/tickets/1/delete/')
