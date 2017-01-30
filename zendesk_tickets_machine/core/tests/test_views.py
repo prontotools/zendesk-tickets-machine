@@ -70,7 +70,7 @@ class LoginViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<input type="hidden" name="next" ' \
-            'value="/accounts/profile/" />'
+            'value="/" />'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_login_fail_should_have_login_error_message(self):
