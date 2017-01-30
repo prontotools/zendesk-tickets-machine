@@ -667,6 +667,19 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             private_comment='Private comment',
             board=self.board
         )
+        self.deleted_ticket = Ticket.objects.create(
+            subject='Ticket (Deleted)',
+            comment='Comment',
+            requester='client@hisotech.com',
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            board=self.board,
+            is_active=False
+        )
 
     def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
@@ -681,7 +694,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_ticket
     ):
         self.login()
-        ticket = Ticket.objects.last()
+        ticket = Ticket.objects.get(id=self.ticket.id)
         ticket.tags = 'welcome, pronto_marketing'
         ticket.save()
 
@@ -1016,7 +1029,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             reverse('board_tickets_create', kwargs={'slug': self.board.slug})
         )
 
-        ticket = Ticket.objects.last()
+        ticket = Ticket.objects.get(id=self.ticket.id)
         self.assertEqual(ticket.zendesk_ticket_id, '16')
 
         requester = Requester.objects.last()
@@ -1028,7 +1041,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock
     ):
         self.login()
-        ticket = Ticket.objects.last()
+        ticket = Ticket.objects.get(id=self.ticket.id)
         ticket.zendesk_ticket_id = '123'
         ticket.save()
 

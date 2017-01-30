@@ -100,7 +100,8 @@ class BoardZendeskTicketsCreateView(View):
         zendesk_user = ZendeskRequester()
 
         tickets = Ticket.objects.filter(
-            board__slug=slug
+            board__slug=slug,
+            is_active=True
         ).exclude(
             zendesk_ticket_id__isnull=False
         )
