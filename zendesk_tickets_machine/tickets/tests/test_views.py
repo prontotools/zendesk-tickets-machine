@@ -294,12 +294,37 @@ class TicketDeleteViewTest(TestCase):
     def test_ticket_delete_view_should_required_login(self):
         with self.settings(LOGIN_URL=reverse('login')):
             response = self.client.get(
-                reverse('ticket_delete',
-                        kwargs={'ticket_id': self.ticket.id})
+                reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
             )
             url = reverse('login') + '?next=' + \
                 reverse('ticket_delete', kwargs={'ticket_id': self.ticket.id})
             self.assertRedirects(response, url)
+
+    def test_ticket_delete_view_should_redirect_to_home_if_not_exist(self):
+        self.login()
+        response = self.client.get(
+            reverse('ticket_delete', kwargs={'ticket_id': 999}),
+            follow=True
+        )
+
+        messages = list(response.context['messages'])
+        self.assertEqual(len(messages), 1)
+
+        expected_message = 'Oops! The ticket you are looking for ' \
+            'no longer exists..'
+        self.assertEqual(messages[0].level, MSG.ERROR)
+        self.assertEqual(messages[0].message, expected_message)
+
+        self.assertRedirects(
+            response,
+            reverse('boards'),
+            status_code=302,
+            target_status_code=200
+        )
+
+        expected = '<h5 class="alert alert-danger">' \
+            '%s</h5>' % expected_message
+        self.assertContains(response, expected, status_code=200)
 
     def test_ticket_delete_view_should_delete_then_redirect_to_its_board(self):
         self.login()

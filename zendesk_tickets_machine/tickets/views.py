@@ -60,7 +60,15 @@ class TicketEditView(TemplateView):
 
 class TicketDeleteView(View):
     def get(self, request, ticket_id):
-        ticket = Ticket.objects.get(id=ticket_id)
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+        except Ticket.DoesNotExist:
+            text = 'Oops! The ticket you are looking for ' \
+                'no longer exists..'
+            messages.error(request, text)
+
+            return HttpResponseRedirect(reverse('boards'))
+
         ticket.is_active = False
         ticket.save()
 
