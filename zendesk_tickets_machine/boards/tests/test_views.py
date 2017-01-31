@@ -4,6 +4,7 @@ from unittest.mock import call, patch
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.messages import constants as MSG
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -154,6 +155,32 @@ class BoardSingleViewTest(TestCase):
     def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
+
+    def test_board_single_view_should_redirect_to_home_if_not_exist(self):
+        self.login()
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': 'ghost-board'}),
+            follow=True
+        )
+
+        messages = list(response.context['messages'])
+        self.assertEqual(len(messages), 1)
+
+        expected_message = 'Oops! The board you are looking for ' \
+            'no longer exists..'
+        self.assertEqual(messages[0].level, MSG.ERROR)
+        self.assertEqual(messages[0].message, expected_message)
+
+        self.assertRedirects(
+            response,
+            reverse('boards'),
+            status_code=302,
+            target_status_code=200
+        )
+
+        expected = '<h5 class="alert alert-danger">' \
+            '%s</h5>' % expected_message
+        self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_title_with_board_name(self):
         self.login()
