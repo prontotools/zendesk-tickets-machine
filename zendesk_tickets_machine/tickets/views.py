@@ -11,7 +11,10 @@ class TicketEditView(TemplateView):
     template_name = 'ticket_edit.html'
 
     def get(self, request, ticket_id):
-        ticket = Ticket.objects.get(id=ticket_id)
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+        except Ticket.DoesNotExist:
+            return HttpResponseRedirect(reverse('boards'))
 
         initial = {
             'subject': ticket.subject,

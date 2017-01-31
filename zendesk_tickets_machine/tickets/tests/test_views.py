@@ -42,6 +42,18 @@ class TicketEditViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_ticket_edit_view_should_redirect_to_home_if_not_exist(self):
+        self.login()
+        response = self.client.get(
+            reverse('ticket_edit', kwargs={'ticket_id': 999})
+        )
+        self.assertRedirects(
+            response,
+            reverse('boards'),
+            status_code=302,
+            target_status_code=200
+        )
+
     def test_ticket_edit_view_should_have_back_link_to_ticket_list(self):
         self.login()
         response = self.client.get(
