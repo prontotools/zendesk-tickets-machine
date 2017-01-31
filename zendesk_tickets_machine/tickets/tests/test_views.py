@@ -53,7 +53,7 @@ class TicketEditViewTest(TestCase):
         messages = list(response.context['messages'])
         self.assertEqual(len(messages), 1)
 
-        expected_message = 'Oops! That board or ticket you are looking for ' \
+        expected_message = 'Oops! The ticket you are looking for ' \
             'no longer exists..'
         self.assertEqual(messages[0].level, MSG.ERROR)
         self.assertEqual(messages[0].message, expected_message)

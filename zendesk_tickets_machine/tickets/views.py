@@ -15,7 +15,7 @@ class TicketEditView(TemplateView):
         try:
             ticket = Ticket.objects.get(id=ticket_id)
         except Ticket.DoesNotExist:
-            text = 'Oops! That board or ticket you are looking for ' \
+            text = 'Oops! The ticket you are looking for ' \
                 'no longer exists..'
             messages.error(request, text)
 
