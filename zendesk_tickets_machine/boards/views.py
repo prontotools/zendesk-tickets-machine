@@ -77,7 +77,7 @@ class BoardSingleView(TemplateView):
         form = TicketForm(request.POST)
         form.save()
 
-        tickets = Ticket.objects.filter(board__slug=slug)
+        tickets = Ticket.objects.filter(board__slug=slug, is_active=True)
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(

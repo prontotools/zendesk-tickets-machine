@@ -637,6 +637,50 @@ class BoardSingleViewTest(TestCase):
             )
         self.assertContains(response, expected, status_code=200)
 
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
+            '<td>Welcome to Pronto Service</td><td>This is a comment.</td>' \
+            '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': ticket.id}
+                ),
+                settings.ZENDESK_URL + '/agent/tickets/24328'
+            )
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
+            '<td>Ticket (Deleted)</td><td>Comment</td>' \
+            '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24330</a></td></tr>' % (
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': self.deleted_ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': self.deleted_ticket.id}
+                ),
+                settings.ZENDESK_URL + '/agent/tickets/24330'
+            )
+        self.assertNotContains(response, expected, status_code=200)
+
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
