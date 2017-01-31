@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -14,6 +15,10 @@ class TicketEditView(TemplateView):
         try:
             ticket = Ticket.objects.get(id=ticket_id)
         except Ticket.DoesNotExist:
+            text = 'Oops! That board or ticket you are looking for ' \
+                'no longer exists..'
+            messages.error(request, text)
+
             return HttpResponseRedirect(reverse('boards'))
 
         initial = {
