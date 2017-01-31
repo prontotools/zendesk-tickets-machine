@@ -17,6 +17,7 @@ class TicketEditView(TemplateView):
             'subject': ticket.subject,
             'comment': ticket.comment,
             'requester': ticket.requester,
+            'created_by': ticket.created_by,
             'assignee': ticket.assignee,
             'assignee_id': ticket.assignee_id,
             'group': ticket.group,

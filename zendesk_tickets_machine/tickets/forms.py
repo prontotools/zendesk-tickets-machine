@@ -11,6 +11,7 @@ class TicketForm(forms.ModelForm):
             'subject',
             'comment',
             'requester',
+            'created_by',
             'assignee',
             'group',
             'ticket_type',
@@ -38,6 +39,11 @@ class TicketForm(forms.ModelForm):
             'requester': forms.TextInput(
                 attrs={
                     'placeholder': 'Requester',
+                    'class': 'form-control'
+                }
+            ),
+            'created_by': forms.Select(
+                attrs={
                     'class': 'form-control'
                 }
             ),

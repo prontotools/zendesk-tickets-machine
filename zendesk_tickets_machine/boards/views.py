@@ -114,13 +114,18 @@ class BoardZendeskTicketsCreateView(View):
                 due_at = each.due_at.isoformat()
             else:
                 due_at = ''
+            if each.created_by is None:
+                created_by = each.assignee.zendesk_user_id
+            else:
+                created_by = each.created_by.zendesk_user_id
             try:
                 requester_id = requester_result['users'][0]['id']
                 data = {
                     'ticket': {
                         'subject': each.subject,
                         'comment': {
-                            'body': each.comment
+                            'body': each.comment,
+                            'author_id': created_by
                         },
                         'requester_id': requester_id,
                         'assignee_id': each.assignee.zendesk_user_id,

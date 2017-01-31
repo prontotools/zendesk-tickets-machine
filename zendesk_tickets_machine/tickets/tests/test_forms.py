@@ -17,6 +17,7 @@ class TicketFormTest(TestCase):
             'subject',
             'comment',
             'requester',
+            'created_by',
             'assignee',
             'group',
             'ticket_type',
@@ -30,7 +31,7 @@ class TicketFormTest(TestCase):
         for each in expected_fields:
             self.assertTrue(each in form.fields)
 
-        self.assertEqual(len(form.fields), 12)
+        self.assertEqual(len(form.fields), 13)
 
     def test_ticket_form_should_save_zendesk_ticket_id_as_null(self):
         agent = Agent.objects.create(
@@ -44,6 +45,7 @@ class TicketFormTest(TestCase):
             'subject': 'Welcome',
             'comment': 'This is a comment.',
             'requester': 'customer@example.com',
+            'created_by': agent.id,
             'assignee': agent.id,
             'group': agent_group.id,
             'ticket_type': 'task',

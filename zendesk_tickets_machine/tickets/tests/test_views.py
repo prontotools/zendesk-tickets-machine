@@ -20,6 +20,7 @@ class TicketEditViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=agent,
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -67,6 +68,7 @@ class TicketEditViewTest(TestCase):
             '<th>Subject</th>' \
             '<th>Comment</th>' \
             '<th>Requester</th>' \
+            '<th>Created By</th>' \
             '<th>Assignee</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
@@ -105,6 +107,12 @@ class TicketEditViewTest(TestCase):
             'value="client@hisotech.com" placeholder="Requester" ' \
             'class="form-control" maxlength="100" required ' \
             'id="id_requester" />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select name="created_by" class="form-control" ' \
+            'id="id_created_by">'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="1" selected>Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="assignee" class="form-control" ' \
@@ -182,6 +190,7 @@ class TicketEditViewTest(TestCase):
             'subject': 'Welcome to Pronto Service',
             'comment': 'This is a comment.',
             'requester': 'client@hisotech.com',
+            'created_by': agent.id,
             'assignee': agent.id,
             'group': agent_group.id,
             'ticket_type': 'question',
@@ -202,6 +211,7 @@ class TicketEditViewTest(TestCase):
         self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
         self.assertEqual(ticket.comment, 'This is a comment.')
         self.assertEqual(ticket.requester, 'client@hisotech.com')
+        self.assertEqual(ticket.created_by.name, 'Kan')
         self.assertEqual(ticket.assignee.name, 'Kan')
         self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')
@@ -239,6 +249,7 @@ class TicketDeleteViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=agent,
             assignee=agent,
             group=agent_group,
             ticket_type='question',

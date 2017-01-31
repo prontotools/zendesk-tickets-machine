@@ -17,6 +17,10 @@
           {{ form.requester }}
         </div>
         <div class="form-group">
+          <label for="created_by">Created By</label>
+          {{ form.created_by }}
+        </div>
+        <div class="form-group">
           <label class="sr-only" for="comment">Comment</label>
           {{ form.comment }}
         </div>
@@ -71,6 +75,7 @@
       <th>Subject</th>
       <th>Comment</th>
       <th>Requester</th>
+      <th>Created By</th>
       <th>Assignee</th>
       <th>Group</th>
       <th>Ticket Type</th>
@@ -88,6 +93,7 @@
         <td>{{ each.subject }}</td>
         <td>{{ each.comment }}</td>
         <td>{{ each.requester }}</td>
+        <td>{% if each.created_by %}{{ each.created_by }}{% else %}---{% endif %}</td>
         <td>{% if each.assignee %}{{ each.assignee }}{% else %}---{% endif %}</td>
         <td>{{ each.group }}</td>
         <td>{% if each.ticket_type %}{{ each.ticket_type }}{% else %}---{% endif %}</td>

@@ -111,6 +111,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -124,6 +125,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket (Deleted)',
             comment='Comment',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -139,6 +141,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -180,6 +183,12 @@ class BoardSingleViewTest(TestCase):
         expected = '<input type="text" name="requester" ' \
             'placeholder="Requester" class="form-control" maxlength="100" ' \
             'required id="id_requester" />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select name="created_by" class="form-control" ' \
+            'id="id_created_by">'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="1">Natty</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<textarea name="comment" cols="40" rows="6" ' \
@@ -260,6 +269,7 @@ class BoardSingleViewTest(TestCase):
             '<th>Subject</th>' \
             '<th>Comment</th>' \
             '<th>Requester</th>' \
+            '<th>Created By</th>' \
             '<th>Assignee</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
@@ -314,6 +324,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -335,6 +346,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket (Deleted)</td><td>Comment</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -356,6 +368,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>None</td>' \
             '<td>urgent</td><td>welcome internal</td>' \
@@ -375,6 +388,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -406,6 +420,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>---</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -427,6 +442,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>None</td>' \
             '<td>urgent</td><td>welcome internal</td>' \
@@ -452,6 +468,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>---</td><td>Development</td>' \
             '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -473,6 +490,55 @@ class BoardSingleViewTest(TestCase):
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome internal</td>' \
+            '<td>Private comment</td>' \
+            '<td></td></tr>' % (
+                self.second_ticket.id,
+                self.second_ticket.id
+            )
+        self.assertNotContains(response, expected, status_code=200)
+
+    def test_board_single_view_should_show_created_by_as_dashes_if_no_value(
+        self
+    ):
+        self.login()
+        self.first_ticket.created_by = None
+        self.first_ticket.save()
+
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
+            '<td>Ticket 1</td><td>Comment 1</td>' \
+            '<td>client@hisotech.com</td>' \
+            '<td>---</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': self.first_ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': self.first_ticket.id}
+                ),
+                settings.ZENDESK_URL + '/agent/tickets/24328'
+            )
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
+            '<a href="/%s/delete/">Delete</a></td>' \
+            '<td>Ticket 2</td><td>Comment 2</td>' \
+            '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>None</td>' \
             '<td>urgent</td><td>welcome internal</td>' \
@@ -489,6 +555,7 @@ class BoardSingleViewTest(TestCase):
             'subject': 'Welcome to Pronto Service',
             'comment': 'This is a comment.',
             'requester': 'client@hisotech.com',
+            'created_by': self.agent.id,
             'assignee': self.agent.id,
             'group': self.agent_group.id,
             'ticket_type': 'question',
@@ -509,6 +576,7 @@ class BoardSingleViewTest(TestCase):
         self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
         self.assertEqual(ticket.comment, 'This is a comment.')
         self.assertEqual(ticket.requester, 'client@hisotech.com')
+        self.assertEqual(ticket.created_by.name, 'Natty')
         self.assertEqual(ticket.assignee.name, 'Natty')
         self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')
@@ -524,6 +592,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -545,6 +614,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>None</td>' \
             '<td>urgent</td><td>welcome internal</td>' \
@@ -583,6 +653,7 @@ class BoardResetViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=agent,
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -597,6 +668,7 @@ class BoardResetViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
+            created_by=agent,
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -659,6 +731,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -671,6 +744,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket (Deleted)',
             comment='Comment',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -717,7 +791,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             'ticket': {
                 'subject': 'Ticket 1',
                 'comment': {
-                    'body': 'Comment 1'
+                    'body': 'Comment 1',
+                    'author_id': '123'
                 },
                 'requester_id': '2',
                 'assignee_id': '123',
@@ -782,6 +857,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -803,7 +879,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'ticket': {
                     'subject': 'Ticket 1',
                     'comment': {
-                        'body': 'Comment 1'
+                        'body': 'Comment 1',
+                        'author_id': '123'
                     },
                     'requester_id': '2',
                     'assignee_id': '123',
@@ -818,7 +895,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'ticket': {
                     'subject': 'Ticket 2',
                     'comment': {
-                        'body': 'Comment 2'
+                        'body': 'Comment 2',
+                        'author_id': '123'
                     },
                     'requester_id': '2',
                     'assignee_id': '123',
@@ -893,6 +971,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -914,7 +993,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'ticket': {
                     'subject': 'Ticket 1',
                     'comment': {
-                        'body': 'Comment 1'
+                        'body': 'Comment 1',
+                        'author_id': '123'
                     },
                     'requester_id': '2',
                     'assignee_id': '123',

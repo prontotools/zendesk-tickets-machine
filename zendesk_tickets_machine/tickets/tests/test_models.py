@@ -29,6 +29,7 @@ class TicketTest(TestCase):
         ticket.subject = 'Welcome to Pronto Service'
         ticket.comment = comment
         ticket.requester = 'client@hisotech.com'
+        ticket.created_by = agent
         ticket.assignee = agent
         ticket.group = agent_group
         ticket.ticket_type = 'question'
@@ -44,6 +45,7 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
         self.assertEqual(ticket.comment, comment)
         self.assertEqual(ticket.requester, 'client@hisotech.com')
+        self.assertEqual(ticket.created_by.name, 'Kan')
         self.assertEqual(ticket.assignee.name, 'Kan')
         self.assertEqual(ticket.group.name, 'Development')
         self.assertEqual(ticket.ticket_type, 'question')
@@ -76,6 +78,7 @@ class TicketTest(TestCase):
             subject='Welcome to Pronto Service',
             comment=comment,
             requester='client@hisotech.com',
+            created_by=agent,
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -114,6 +117,7 @@ class TicketTest(TestCase):
             subject='Welcome to Pronto Service',
             comment=comment,
             requester='client@hisotech.com',
+            created_by=agent,
             assignee=agent,
             group=agent_group,
             ticket_type='question',
