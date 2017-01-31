@@ -96,6 +96,9 @@ class TicketForm(forms.ModelForm):
         if not ticket.zendesk_ticket_id:
             ticket.zendesk_ticket_id = None
 
+        if ticket.tags is None:
+            ticket.tags = ''
+
         if commit:
             ticket.save()
 
