@@ -313,19 +313,20 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<a href="%s">Create Tickets</a>' % reverse(
-            'board_tickets_create',
-            kwargs={'slug': self.board.slug}
-        )
+        expected = '<a href="%s" class="btn btn-success">' \
+            'Create Tickets</a>' % reverse(
+                'board_tickets_create',
+                kwargs={'slug': self.board.slug}
+            )
         self.assertContains(response, expected, count=1, status_code=200)
 
-    def test_board_single_view_should_have_reset_form_link(self):
+    def test_board_single_view_should_have_reset_tickets_link(self):
         self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<a href="%s">' \
+        expected = '<a href="%s" class="btn btn-warning pull-right">' \
             'Reset Tickets</a>' % reverse(
                 'board_reset',
                 kwargs={'slug': self.board.slug}

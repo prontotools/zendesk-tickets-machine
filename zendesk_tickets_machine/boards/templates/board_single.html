@@ -65,8 +65,11 @@
     </div>
     {{ form.board }}
   </form>
-
-  <a href="{% url 'board_tickets_create' board_slug %}">Create Tickets</a> | <a href="{% url 'board_reset' board_slug %}">Reset Tickets</a>
+  <hr />
+  <div>
+    <a href="{% url 'board_tickets_create' board_slug %}" class="btn btn-success">Create Tickets</a>
+    <a href="{% url 'board_reset' board_slug %}" class="btn btn-warning pull-right">Reset Tickets</a>
+  </div>
 
   <table class="table table-bordered table-condensed table-hover">
     <tr class="active">
