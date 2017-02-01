@@ -25,7 +25,8 @@ class TicketAPITest(TestCase):
                 'requester_id': 1095195473,
                 'assignee_id': 1095195243,
                 'comment': {
-                    'body': 'This is a comment'
+                    'body': 'This is a comment',
+                    'author_id': 1095195243
                 }
             }
         }

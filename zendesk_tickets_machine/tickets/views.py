@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -11,12 +12,20 @@ class TicketEditView(TemplateView):
     template_name = 'ticket_edit.html'
 
     def get(self, request, ticket_id):
-        ticket = Ticket.objects.get(id=ticket_id)
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+        except Ticket.DoesNotExist:
+            text = 'Oops! The ticket you are looking for ' \
+                'no longer exists..'
+            messages.error(request, text)
+
+            return HttpResponseRedirect(reverse('boards'))
 
         initial = {
             'subject': ticket.subject,
             'comment': ticket.comment,
             'requester': ticket.requester,
+            'created_by': ticket.created_by,
             'assignee': ticket.assignee,
             'assignee_id': ticket.assignee_id,
             'group': ticket.group,
@@ -51,7 +60,15 @@ class TicketEditView(TemplateView):
 
 class TicketDeleteView(View):
     def get(self, request, ticket_id):
-        ticket = Ticket.objects.get(id=ticket_id)
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+        except Ticket.DoesNotExist:
+            text = 'Oops! The ticket you are looking for ' \
+                'no longer exists..'
+            messages.error(request, text)
+
+            return HttpResponseRedirect(reverse('boards'))
+
         ticket.is_active = False
         ticket.save()
 

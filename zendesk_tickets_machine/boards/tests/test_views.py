@@ -4,6 +4,7 @@ from unittest.mock import call, patch
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.messages import constants as MSG
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -111,6 +112,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -124,6 +126,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket (Deleted)',
             comment='Comment',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -139,6 +142,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -151,6 +155,32 @@ class BoardSingleViewTest(TestCase):
     def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
+
+    def test_board_single_view_should_redirect_to_home_if_not_exist(self):
+        self.login()
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': 'ghost-board'}),
+            follow=True
+        )
+
+        messages = list(response.context['messages'])
+        self.assertEqual(len(messages), 1)
+
+        expected_message = 'Oops! The board you are looking for ' \
+            'no longer exists..'
+        self.assertEqual(messages[0].level, MSG.ERROR)
+        self.assertEqual(messages[0].message, expected_message)
+
+        self.assertRedirects(
+            response,
+            reverse('boards'),
+            status_code=302,
+            target_status_code=200
+        )
+
+        expected = '<h5 class="alert alert-danger">' \
+            '%s</h5>' % expected_message
+        self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_title_with_board_name(self):
         self.login()
@@ -180,6 +210,12 @@ class BoardSingleViewTest(TestCase):
         expected = '<input type="text" name="requester" ' \
             'placeholder="Requester" class="form-control" maxlength="100" ' \
             'required id="id_requester" />'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select name="created_by" class="form-control" ' \
+            'id="id_created_by">'
+        self.assertContains(response, expected, status_code=200)
+        expected = '<option value="1">Natty</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<textarea name="comment" cols="40" rows="6" ' \
@@ -260,6 +296,7 @@ class BoardSingleViewTest(TestCase):
             '<th>Subject</th>' \
             '<th>Comment</th>' \
             '<th>Requester</th>' \
+            '<th>Created By</th>' \
             '<th>Assignee</th>' \
             '<th>Group</th>' \
             '<th>Ticket Type</th>' \
@@ -314,6 +351,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -335,6 +373,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket (Deleted)</td><td>Comment</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -356,6 +395,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>None</td>' \
             '<td>urgent</td><td>welcome internal</td>' \
@@ -375,6 +415,7 @@ class BoardSingleViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -406,6 +447,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>---</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -427,6 +469,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>None</td>' \
             '<td>urgent</td><td>welcome internal</td>' \
@@ -452,6 +495,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>---</td><td>Development</td>' \
             '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -473,6 +517,7 @@ class BoardSingleViewTest(TestCase):
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>None</td>' \
             '<td>urgent</td><td>welcome internal</td>' \
@@ -483,47 +528,22 @@ class BoardSingleViewTest(TestCase):
             )
         self.assertNotContains(response, expected, status_code=200)
 
-    def test_board_single_view_should_save_data_when_submit_ticket_form(self):
+    def test_board_single_view_should_show_created_by_as_dashes_if_no_value(
+        self
+    ):
         self.login()
-        data = {
-            'subject': 'Welcome to Pronto Service',
-            'comment': 'This is a comment.',
-            'requester': 'client@hisotech.com',
-            'assignee': self.agent.id,
-            'group': self.agent_group.id,
-            'ticket_type': 'question',
-            'priority': 'urgent',
-            'tags': 'welcome',
-            'private_comment': 'Private comment',
-            'zendesk_ticket_id': '24328',
-            'board': self.board.id
-        }
+        self.first_ticket.created_by = None
+        self.first_ticket.save()
 
-        response = self.client.post(
-            reverse('board_single', kwargs={'slug': self.board.slug}),
-            data=data
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
         )
-
-        ticket = Ticket.objects.last()
-
-        self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
-        self.assertEqual(ticket.comment, 'This is a comment.')
-        self.assertEqual(ticket.requester, 'client@hisotech.com')
-        self.assertEqual(ticket.assignee.name, 'Natty')
-        self.assertEqual(ticket.group.name, 'Development')
-        self.assertEqual(ticket.ticket_type, 'question')
-        self.assertEqual(ticket.priority, 'urgent')
-        self.assertEqual(ticket.tags, 'welcome')
-        self.assertEqual(ticket.private_comment, 'Private comment')
-        self.assertEqual(ticket.zendesk_ticket_id, '24328')
-
-        expected = '<h1>%s</h1>' % self.board.name
-        self.assertContains(response, expected, status_code=200)
 
         expected = '<tr><td><a href="%s">Edit</a> | ' \
             '<a href="%s">Delete</a></td>' \
             '<td>Ticket 1</td><td>Comment 1</td>' \
             '<td>client@hisotech.com</td>' \
+            '<td>---</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td></td>' \
             '<td>urgent</td><td>welcome</td>' \
@@ -544,7 +564,128 @@ class BoardSingleViewTest(TestCase):
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
             '<td>Ticket 2</td><td>Comment 2</td>' \
+            '<td>client+another@hisotech.com</td><td>1095195474</td>' \
+            '<td>Natty</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td>None</td>' \
+            '<td>urgent</td><td>welcome internal</td>' \
+            '<td>Private comment</td>' \
+            '<td></td></tr>' % (
+                self.second_ticket.id,
+                self.second_ticket.id
+            )
+        self.assertNotContains(response, expected, status_code=200)
+
+    def test_board_single_view_should_save_data_when_submit_ticket_form(self):
+        self.login()
+        data = {
+            'subject': 'Welcome to Pronto Service',
+            'comment': 'This is a comment.',
+            'requester': 'client@hisotech.com',
+            'created_by': self.agent.id,
+            'assignee': self.agent.id,
+            'group': self.agent_group.id,
+            'ticket_type': 'question',
+            'priority': 'urgent',
+            'tags': 'welcome',
+            'private_comment': 'Private comment',
+            'zendesk_ticket_id': '24328',
+            'board': self.board.id
+        }
+
+        response = self.client.post(
+            reverse('board_single', kwargs={'slug': self.board.slug}),
+            data=data
+        )
+
+        ticket = Ticket.objects.last()
+
+        self.assertEqual(ticket.subject, 'Welcome to Pronto Service')
+        self.assertEqual(ticket.comment, 'This is a comment.')
+        self.assertEqual(ticket.requester, 'client@hisotech.com')
+        self.assertEqual(ticket.created_by.name, 'Natty')
+        self.assertEqual(ticket.assignee.name, 'Natty')
+        self.assertEqual(ticket.group.name, 'Development')
+        self.assertEqual(ticket.ticket_type, 'question')
+        self.assertEqual(ticket.priority, 'urgent')
+        self.assertEqual(ticket.tags, 'welcome')
+        self.assertEqual(ticket.private_comment, 'Private comment')
+        self.assertEqual(ticket.zendesk_ticket_id, '24328')
+
+        expected = '<h1>%s</h1>' % self.board.name
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
+            '<td>Ticket 1</td><td>Comment 1</td>' \
+            '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': self.first_ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': self.first_ticket.id}
+                ),
+                settings.ZENDESK_URL + '/agent/tickets/24328'
+            )
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
+            '<td>Welcome to Pronto Service</td><td>This is a comment.</td>' \
+            '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': ticket.id}
+                ),
+                settings.ZENDESK_URL + '/agent/tickets/24328'
+            )
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<tr><td><a href="%s">Edit</a> | ' \
+            '<a href="%s">Delete</a></td>' \
+            '<td>Ticket (Deleted)</td><td>Comment</td>' \
+            '<td>client@hisotech.com</td>' \
+            '<td>Natty</td>' \
+            '<td>Natty</td><td>Development</td>' \
+            '<td>question</td><td></td>' \
+            '<td>urgent</td><td>welcome</td>' \
+            '<td>Private comment</td>' \
+            '<td><a href="%s" target="_blank">24330</a></td></tr>' % (
+                reverse(
+                    'ticket_edit',
+                    kwargs={'ticket_id': self.deleted_ticket.id}
+                ),
+                reverse(
+                    'ticket_delete',
+                    kwargs={'ticket_id': self.deleted_ticket.id}
+                ),
+                settings.ZENDESK_URL + '/agent/tickets/24330'
+            )
+        self.assertNotContains(response, expected, status_code=200)
+
+        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
+            '<a href="/%s/delete/">Delete</a></td>' \
+            '<td>Ticket 2</td><td>Comment 2</td>' \
             '<td>client+another@hisotech.com</td>' \
+            '<td>Natty</td>' \
             '<td>Natty</td><td>Development</td>' \
             '<td>question</td><td>None</td>' \
             '<td>urgent</td><td>welcome internal</td>' \
@@ -583,6 +724,7 @@ class BoardResetViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=agent,
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -597,6 +739,7 @@ class BoardResetViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client+another@hisotech.com',
+            created_by=agent,
             assignee=agent,
             group=agent_group,
             ticket_type='question',
@@ -659,6 +802,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -671,6 +815,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket (Deleted)',
             comment='Comment',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -717,7 +862,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             'ticket': {
                 'subject': 'Ticket 1',
                 'comment': {
-                    'body': 'Comment 1'
+                    'body': 'Comment 1',
+                    'author_id': '123'
                 },
                 'requester_id': '2',
                 'assignee_id': '123',
@@ -782,6 +928,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -803,7 +950,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'ticket': {
                     'subject': 'Ticket 1',
                     'comment': {
-                        'body': 'Comment 1'
+                        'body': 'Comment 1',
+                        'author_id': '123'
                     },
                     'requester_id': '2',
                     'assignee_id': '123',
@@ -818,7 +966,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'ticket': {
                     'subject': 'Ticket 2',
                     'comment': {
-                        'body': 'Comment 2'
+                        'body': 'Comment 2',
+                        'author_id': '123'
                     },
                     'requester_id': '2',
                     'assignee_id': '123',
@@ -893,6 +1042,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             subject='Ticket 2',
             comment='Comment 2',
             requester='client@hisotech.com',
+            created_by=self.agent,
             assignee=self.agent,
             group=self.agent_group,
             ticket_type='question',
@@ -914,7 +1064,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'ticket': {
                     'subject': 'Ticket 1',
                     'comment': {
-                        'body': 'Comment 1'
+                        'body': 'Comment 1',
+                        'author_id': '123'
                     },
                     'requester_id': '2',
                     'assignee_id': '123',

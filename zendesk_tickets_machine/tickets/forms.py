@@ -11,6 +11,7 @@ class TicketForm(forms.ModelForm):
             'subject',
             'comment',
             'requester',
+            'created_by',
             'assignee',
             'group',
             'ticket_type',
@@ -38,6 +39,11 @@ class TicketForm(forms.ModelForm):
             'requester': forms.TextInput(
                 attrs={
                     'placeholder': 'Requester',
+                    'class': 'form-control'
+                }
+            ),
+            'created_by': forms.Select(
+                attrs={
                     'class': 'form-control'
                 }
             ),
@@ -89,6 +95,9 @@ class TicketForm(forms.ModelForm):
 
         if not ticket.zendesk_ticket_id:
             ticket.zendesk_ticket_id = None
+
+        if ticket.tags is None:
+            ticket.tags = ''
 
         if commit:
             ticket.save()

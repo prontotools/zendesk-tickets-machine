@@ -2,6 +2,7 @@ import time
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
@@ -41,7 +42,14 @@ class BoardSingleView(TemplateView):
     template_name = 'board_single.html'
 
     def get(self, request, slug):
-        board = Board.objects.get(slug=slug)
+        try:
+            board = Board.objects.get(slug=slug)
+        except Board.DoesNotExist:
+            text = 'Oops! The board you are looking for ' \
+                'no longer exists..'
+            messages.error(request, text)
+
+            return HttpResponseRedirect(reverse('boards'))
 
         initial = {
             'board': board.id
@@ -69,7 +77,7 @@ class BoardSingleView(TemplateView):
         form = TicketForm(request.POST)
         form.save()
 
-        tickets = Ticket.objects.filter(board__slug=slug)
+        tickets = Ticket.objects.filter(board__slug=slug, is_active=True)
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
@@ -114,13 +122,18 @@ class BoardZendeskTicketsCreateView(View):
                 due_at = each.due_at.isoformat()
             else:
                 due_at = ''
+            if each.created_by is None:
+                created_by = each.assignee.zendesk_user_id
+            else:
+                created_by = each.created_by.zendesk_user_id
             try:
                 requester_id = requester_result['users'][0]['id']
                 data = {
                     'ticket': {
                         'subject': each.subject,
                         'comment': {
-                            'body': each.comment
+                            'body': each.comment,
+                            'author_id': created_by
                         },
                         'requester_id': requester_id,
                         'assignee_id': each.assignee.zendesk_user_id,
