@@ -3,7 +3,7 @@ import time
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
@@ -91,6 +91,11 @@ class BoardSingleView(TemplateView):
                 'zendesk_ticket_url': zendesk_ticket_url
             }
         )
+
+
+class BoardRequestersResetView(View):
+    def get(self, request, slug):
+        return HttpResponse()
 
 
 class BoardResetView(View):

@@ -67,8 +67,9 @@
   </form>
   <hr />
   <div>
-    <a href="{% url 'board_tickets_create' board_slug %}" class="btn btn-success">Create Tickets</a>
+    <a href="{% url 'board_tickets_create' board_slug %}" class="btn btn-success" style="margin-bottom: 10px;">Create Tickets</a>
     <a href="{% url 'board_reset' board_slug %}" class="btn btn-warning pull-right">Reset Tickets</a>
+    <a href="{% url 'board_requesters_reset' board_slug %}" class="btn btn-warning pull-right" style="margin-right: 5px;">Reset Requesters</a>
   </div>
 
   <table class="table table-bordered table-condensed table-hover">
