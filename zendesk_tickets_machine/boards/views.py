@@ -95,6 +95,8 @@ class BoardSingleView(TemplateView):
 
 class BoardRequestersResetView(View):
     def get(self, request, slug):
+        Ticket.objects.filter(board__slug=slug).update(requester='')
+
         return HttpResponse()
 
 

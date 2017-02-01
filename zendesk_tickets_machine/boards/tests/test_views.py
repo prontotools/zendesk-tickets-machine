@@ -778,6 +778,23 @@ class BoardRequestersResetViewTest(TestCase):
                 response, '/login/?next=/pre-production/requesters/reset/'
             )
 
+    def test_requesters_reset_view_should_reset_requesters_in_tickets_in_board(
+        self
+    ):
+        self.login()
+        self.client.get(
+            reverse('board_requesters_reset', kwargs={'slug': self.board.slug})
+        )
+
+        first_ticket = Ticket.objects.get(id=self.first_ticket.id)
+        self.assertEqual(first_ticket.requester, '')
+
+        second_ticket = Ticket.objects.get(id=self.second_ticket.id)
+        self.assertEqual(
+            second_ticket.requester,
+            'client+another@hisotech.com'
+        )
+
 
 class BoardResetViewTest(TestCase):
     def setUp(self):
