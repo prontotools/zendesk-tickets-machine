@@ -3,7 +3,7 @@ import time
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
@@ -97,7 +97,9 @@ class BoardRequestersResetView(View):
     def get(self, request, slug):
         Ticket.objects.filter(board__slug=slug).update(requester='')
 
-        return HttpResponse()
+        return HttpResponseRedirect(
+            reverse('board_single', kwargs={'slug': slug})
+        )
 
 
 class BoardResetView(View):

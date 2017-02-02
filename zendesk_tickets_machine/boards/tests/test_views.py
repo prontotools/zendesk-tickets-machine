@@ -795,6 +795,19 @@ class BoardRequestersResetViewTest(TestCase):
             'client+another@hisotech.com'
         )
 
+    def test_requesters_reset_view_should_redirect_to_board(self):
+        self.login()
+        response = self.client.get(
+            reverse('board_requesters_reset', kwargs={'slug': self.board.slug})
+        )
+
+        self.assertRedirects(
+            response,
+            reverse('board_single', kwargs={'slug': self.board.slug}),
+            status_code=302,
+            target_status_code=200
+        )
+
 
 class BoardResetViewTest(TestCase):
     def setUp(self):
