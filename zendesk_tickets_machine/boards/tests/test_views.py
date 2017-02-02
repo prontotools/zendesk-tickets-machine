@@ -771,8 +771,10 @@ class BoardRequestersResetViewTest(TestCase):
     def test_requesters_reset_view_should_required_login(self):
         with self.settings(LOGIN_URL=reverse('login')):
             response = self.client.get(
-                reverse('board_requesters_reset',
-                kwargs={'slug': self.board.slug})
+                reverse(
+                    'board_requesters_reset',
+                    kwargs={'slug': self.board.slug}
+                )
             )
             self.assertRedirects(
                 response, '/login/?next=/pre-production/requesters/reset/'
