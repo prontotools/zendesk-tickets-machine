@@ -928,6 +928,14 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
 
+    def test_create_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('board_tickets_create',
+                        kwargs={'slug': self.board.slug})
+            )
+            self.assertRedirects(response, '/login/?next=/production/tickets/')
+
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
@@ -1365,10 +1373,15 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.assertEqual(mock.return_value.search.call_count, 0)
         self.assertIsNone(self.ticket.zendesk_ticket_id)
 
-    def test_create_view_should_required_login(self):
-        with self.settings(LOGIN_URL=reverse('login')):
-            response = self.client.get(
-                reverse('board_tickets_create',
-                        kwargs={'slug': self.board.slug})
-            )
-            self.assertRedirects(response, '/login/?next=/production/tickets/')
+    @patch('boards.views.ZendeskRequester')
+    def test_create_view_should_not_create_ticket_if_no_requester(self, mock):
+        self.login()
+        self.ticket.requester = ''
+        self.ticket.save()
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
+
+        self.assertEqual(mock.return_value.search.call_count, 0)
+        self.assertIsNone(self.ticket.zendesk_ticket_id)

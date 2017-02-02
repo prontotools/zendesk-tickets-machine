@@ -123,7 +123,7 @@ class BoardZendeskTicketsCreateView(View):
             zendesk_ticket_id__isnull=False
         )
         for each in tickets:
-            if each.assignee is None:
+            if each.assignee is None or each.requester == '':
                 continue
 
             requester_result = zendesk_user.search(each.requester)
