@@ -307,25 +307,39 @@ class BoardSingleViewTest(TestCase):
             '<th>Zendesk Ticket ID</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-    def test_board_single_view_should_have_create_tickets_link(self):
+    def test_board_single_view_should_have_create_tickets_button(self):
         self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<a href="%s">Create Tickets</a>' % reverse(
-            'board_tickets_create',
-            kwargs={'slug': self.board.slug}
-        )
+        expected = '<a href="%s" class="btn btn-success" ' \
+            'style="margin-bottom: 10px;">Create Tickets</a>' % reverse(
+                'board_tickets_create',
+                kwargs={'slug': self.board.slug}
+            )
         self.assertContains(response, expected, count=1, status_code=200)
 
-    def test_board_single_view_should_have_reset_form_link(self):
+    def test_board_single_view_should_have_reset_requesters_button(self):
         self.login()
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<a href="%s">' \
+        expected = '<a href="%s" class="btn btn-warning pull-right" ' \
+            'style="margin-right: 5px;">Reset Requesters</a>' % reverse(
+                'board_requesters_reset',
+                kwargs={'slug': self.board.slug}
+            )
+        self.assertContains(response, expected, count=1, status_code=200)
+
+    def test_board_single_view_should_have_reset_tickets_button(self):
+        self.login()
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '<a href="%s" class="btn btn-warning pull-right">' \
             'Reset Tickets</a>' % reverse(
                 'board_reset',
                 kwargs={'slug': self.board.slug}
@@ -712,6 +726,91 @@ class BoardSingleViewTest(TestCase):
             self.assertRedirects(response, '/login/?next=/pre-production/')
 
 
+class BoardRequestersResetViewTest(TestCase):
+    def setUp(self):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+        self.board = Board.objects.create(name='Pre-Production')
+        self.first_ticket = Ticket.objects.create(
+            subject='Ticket 1',
+            comment='Comment 1',
+            requester='client@hisotech.com',
+            created_by=agent,
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='urgent',
+            tags='welcome',
+            private_comment='Private comment',
+            zendesk_ticket_id='24328',
+            board=self.board
+        )
+        board = Board.objects.create(name='Another Pre-Production')
+        self.second_ticket = Ticket.objects.create(
+            subject='Ticket 2',
+            comment='Comment 2',
+            requester='client+another@hisotech.com',
+            created_by=agent,
+            assignee=agent,
+            group=agent_group,
+            ticket_type='question',
+            priority='high',
+            tags='welcome internal',
+            private_comment='Private comment',
+            zendesk_ticket_id='56578',
+            board=board
+        )
+
+    def login(self):
+        User.objects.create_superuser('natty', 'natty@test', 'pass')
+        self.client.login(username='natty', password='pass')
+
+    def test_requesters_reset_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse(
+                    'board_requesters_reset',
+                    kwargs={'slug': self.board.slug}
+                )
+            )
+            self.assertRedirects(
+                response, '/login/?next=/pre-production/requesters/reset/'
+            )
+
+    def test_requesters_reset_view_should_reset_requesters_in_tickets_in_board(
+        self
+    ):
+        self.login()
+        self.client.get(
+            reverse('board_requesters_reset', kwargs={'slug': self.board.slug})
+        )
+
+        first_ticket = Ticket.objects.get(id=self.first_ticket.id)
+        self.assertEqual(first_ticket.requester, '')
+
+        second_ticket = Ticket.objects.get(id=self.second_ticket.id)
+        self.assertEqual(
+            second_ticket.requester,
+            'client+another@hisotech.com'
+        )
+
+    def test_requesters_reset_view_should_redirect_to_board(self):
+        self.login()
+        response = self.client.get(
+            reverse('board_requesters_reset', kwargs={'slug': self.board.slug})
+        )
+
+        self.assertRedirects(
+            response,
+            reverse('board_single', kwargs={'slug': self.board.slug}),
+            status_code=302,
+            target_status_code=200
+        )
+
+
 class BoardResetViewTest(TestCase):
     def setUp(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -787,7 +886,8 @@ class BoardResetViewTest(TestCase):
                 reverse('board_reset', kwargs={'slug': self.board.slug})
             )
             self.assertRedirects(
-                response, '/login/?next=/pre-production/reset/')
+                response, '/login/?next=/pre-production/reset/'
+            )
 
 
 class BoardZendeskTicketsCreateViewTest(TestCase):
@@ -829,6 +929,14 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
     def login(self):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
+
+    def test_create_view_should_required_login(self):
+        with self.settings(LOGIN_URL=reverse('login')):
+            response = self.client.get(
+                reverse('board_tickets_create',
+                        kwargs={'slug': self.board.slug})
+            )
+            self.assertRedirects(response, '/login/?next=/production/tickets/')
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
@@ -1267,10 +1375,15 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.assertEqual(mock.return_value.search.call_count, 0)
         self.assertIsNone(self.ticket.zendesk_ticket_id)
 
-    def test_create_view_should_required_login(self):
-        with self.settings(LOGIN_URL=reverse('login')):
-            response = self.client.get(
-                reverse('board_tickets_create',
-                        kwargs={'slug': self.board.slug})
-            )
-            self.assertRedirects(response, '/login/?next=/production/tickets/')
+    @patch('boards.views.ZendeskRequester')
+    def test_create_view_should_not_create_ticket_if_no_requester(self, mock):
+        self.login()
+        self.ticket.requester = ''
+        self.ticket.save()
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
+
+        self.assertEqual(mock.return_value.search.call_count, 0)
+        self.assertIsNone(self.ticket.zendesk_ticket_id)

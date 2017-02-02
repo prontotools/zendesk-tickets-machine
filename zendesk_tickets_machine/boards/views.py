@@ -93,6 +93,15 @@ class BoardSingleView(TemplateView):
         )
 
 
+class BoardRequestersResetView(View):
+    def get(self, request, slug):
+        Ticket.objects.filter(board__slug=slug).update(requester='')
+
+        return HttpResponseRedirect(
+            reverse('board_single', kwargs={'slug': slug})
+        )
+
+
 class BoardResetView(View):
     def get(self, request, slug):
         Ticket.objects.filter(board__slug=slug).update(zendesk_ticket_id=None)
@@ -114,7 +123,7 @@ class BoardZendeskTicketsCreateView(View):
             zendesk_ticket_id__isnull=False
         )
         for each in tickets:
-            if each.assignee is None:
+            if each.assignee is None or each.requester == '':
                 continue
 
             requester_result = zendesk_user.search(each.requester)
