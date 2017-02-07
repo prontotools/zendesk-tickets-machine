@@ -48,6 +48,9 @@ class Ticket(models.Model):
     board = models.ForeignKey(Board)
     is_active = models.BooleanField(default=True)
 
+    def link(self):
+        return format_html('<a href="{}">Edit</a> | <a href="{}">Delete</a>' , '#', '#')
+
 
 @receiver(pre_save, sender=Ticket)
 def create_zendesk_api_usage(sender, instance, **kwargs):

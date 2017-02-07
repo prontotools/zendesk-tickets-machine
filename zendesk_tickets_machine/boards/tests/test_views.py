@@ -497,27 +497,61 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<tr><td><a href="%s">Edit</a> | ' \
-            '<a href="%s">Delete</a></td>' \
-            '<td>Ticket 1</td><td>Comment 1</td>' \
-            '<td>client@hisotech.com</td>' \
-            '<td>Natty</td>' \
-            '<td>Natty</td><td>Development</td>' \
-            '<td>---</td><td></td>' \
-            '<td>urgent</td><td>welcome</td>' \
-            '<td>Private comment</td>' \
-            '<td><a href="%s" target="_blank">24328</a></td></tr>' % (
+        expected = '<td class="edit"><a href="%s">Edit</a></td>' % (
                 reverse(
                     'ticket_edit',
                     kwargs={'ticket_id': self.first_ticket.id}
-                ),
+                )
+            )
+        self.assertContains(response, expected, status_code=200)
+        
+        expected = '<td class="delete"><a href="%s">Delete</a></td>' % (
                 reverse(
                     'ticket_delete',
                     kwargs={'ticket_id': self.first_ticket.id}
-                ),
-                settings.ZENDESK_URL + '/agent/tickets/24328'
+                )
             )
+
+        print(response.content)
         self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="subject">Ticket 1</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="comment">Comment 1</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="requester">client@hisotech.com</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="created_by">Natty</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="assignee">Natty</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="group">Development</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        #expected = '<td class="ticket_type">---</td>'
+        #self.assertContains(response, expected, status_code=200)
+
+        #expected = '<td class="due_at">/td>'
+        #self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="priority">Urgent</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="tags">welcome</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="private_comment">Private comment</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<td class="zendesk_ticket_id">24328</td>'
+        self.assertContains(response, expected, status_code=200)
+
+        
 
         expected = '<tr><td><a href="/%s/">Edit</a> | ' \
             '<a href="/%s/delete/">Delete</a></td>' \
