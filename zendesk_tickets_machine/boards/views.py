@@ -72,7 +72,14 @@ class BoardSingleView(TemplateView):
         )
 
     def post(self, request, slug):
-        board = Board.objects.get(slug=slug)
+        try:
+            board = Board.objects.get(slug=slug)
+        except Board.DoesNotExist:
+            text = 'Oops! The board you are looking for ' \
+                'no longer exists..'
+            messages.error(request, text)
+
+            return HttpResponseRedirect(reverse('boards'))
 
         form = TicketForm(request.POST)
         form.save()

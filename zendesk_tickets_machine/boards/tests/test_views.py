@@ -158,8 +158,48 @@ class BoardSingleViewTest(TestCase):
 
     def test_board_single_view_should_redirect_to_home_if_not_exist(self):
         self.login()
+
         response = self.client.get(
             reverse('board_single', kwargs={'slug': 'ghost-board'}),
+            follow=True
+        )
+
+        messages = list(response.context['messages'])
+        self.assertEqual(len(messages), 1)
+
+        expected_message = 'Oops! The board you are looking for ' \
+            'no longer exists..'
+        self.assertEqual(messages[0].level, MSG.ERROR)
+        self.assertEqual(messages[0].message, expected_message)
+
+        self.assertRedirects(
+            response,
+            reverse('boards'),
+            status_code=302,
+            target_status_code=200
+        )
+
+        expected = '<h5 class="alert alert-danger">' \
+            '%s</h5>' % expected_message
+        self.assertContains(response, expected, status_code=200)
+
+        data = {
+            'subject': 'Welcome to Pronto Service',
+            'comment': 'This is a comment.',
+            'requester': 'client@hisotech.com',
+            'created_by': self.agent.id,
+            'assignee': self.agent.id,
+            'group': self.agent_group.id,
+            'ticket_type': 'question',
+            'priority': 'urgent',
+            'tags': 'welcome',
+            'private_comment': 'Private comment',
+            'zendesk_ticket_id': '24328',
+            'board': self.board.id
+        }
+        response = self.client.post(
+            reverse('board_single', kwargs={'slug': 'ghost-board'}),
+            data=data,
             follow=True
         )
 
