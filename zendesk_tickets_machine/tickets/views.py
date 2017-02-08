@@ -49,7 +49,15 @@ class TicketEditView(TemplateView):
         )
 
     def post(self, request, ticket_id):
-        ticket = Ticket.objects.get(id=ticket_id)
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+        except Ticket.DoesNotExist:
+            text = 'Oops! The ticket you are looking for ' \
+                'no longer exists..'
+            messages.error(request, text)
+
+            return HttpResponseRedirect(reverse('boards'))
+
         form = TicketForm(request.POST, instance=ticket)
         form.save()
 
