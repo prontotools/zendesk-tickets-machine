@@ -21,3 +21,8 @@ $(document).ready(check_ticket_type());
 $(function() {
     $("#datepicker").datepicker();
 });
+
+/* select all*/
+$(':checkbox[name=select_all]').click (function () {
+  $(':checkbox[name=check]').prop('checked', this.checked);
+}); 
