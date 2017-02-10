@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import django_tables2 as tables
 from django_tables2.utils import A
 from django.conf import settings
@@ -8,8 +9,18 @@ class TicketTable(tables.Table):
     check = tables.CheckBoxColumn(verbose_name=('Edit'), accessor='pk', orderable=False, attrs={'th__input': {'name': 'select_all'}})
     edit = tables.LinkColumn('ticket_edit', text='Edit', args=[A('pk')], orderable=False)
     delete = tables.LinkColumn('ticket_delete', text='Delete', args=[A('pk')], orderable=False)
-    due_at = tables.DateColumn(format='M d, Y')
-    zendesk_ticket_id = tables.Column()
+    subject = tables.Column(orderable=False)
+    comment = tables.Column(orderable=False)
+    requester = tables.Column(default='-', orderable=False)
+    created_by = tables.Column(default='-', orderable=False)
+    assignee = tables.Column(default='-', orderable=False)
+    group = tables.Column(orderable=False)
+    ticket_type = tables.Column(default='-', orderable=False)
+    due_at = tables.DateColumn(default='-', format='M d, Y', orderable=False, verbose_name=('Due Date'))
+    priority = tables.Column(orderable=False)
+    tags = tables.Column(default='-', orderable=False)
+    private_comment = tables.Column(default='-', orderable=False)
+    zendesk_ticket_id = tables.Column(default='-', orderable=False)
 
     class Meta:
         model = Ticket

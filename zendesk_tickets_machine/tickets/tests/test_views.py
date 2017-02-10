@@ -137,31 +137,23 @@ class TicketEditViewTest(TestCase):
             'table-hover">'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<th class="check"><input type="checkbox"/></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="orderable subject"><a href="?sort=subject">Subject</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="comment orderable"><a href="?sort=comment">Comment</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="orderable requester"><a href="?sort=requester">Requester</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="created_by orderable"><a href="?sort=created_by">Created By</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="assignee orderable"><a href="?sort=assignee">Assignee</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="group orderable"><a href="?sort=group">Group</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="orderable ticket_type"><a href="?sort=ticket_type">Ticket Type</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="due_at orderable"><a href="?sort=due_at">Due At</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="orderable priority"><a href="?sort=priority">Priority</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="orderable tags"><a href="?sort=tags">Tags</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="orderable private_comment"><a href="?sort=private_comment">Private Comment</a></th>'
-        self.assertContains(response, expected, count=1, status_code=200)
-        expected = '<th class="orderable zendesk_ticket_id"><a href="?sort=zendesk_ticket_id">Zendesk Ticket Id</a></th>'
+        expected = '<th class="check">' \
+            '<input type="checkbox" name="select_all"/></th>' \
+            '<th class="edit">Edit</th>' \
+            '<th class="delete">Delete</th>' \
+            '<th class="subject">Subject</th>' \
+            '<th class="comment">Comment</th>' \
+            '<th class="requester">Requester</th>' \
+            '<th class="created_by">Created By</th>' \
+            '<th class="assignee">Assignee</th>' \
+            '<th class="group">Group</th>' \
+            '<th class="ticket_type">Ticket Type</th>' \
+            '<th class="due_at">Due Date</th>' \
+            '<th class="priority">Priority</th>' \
+            '<th class="tags">Tags</th>' \
+            '<th class="private_comment">Private Comment</th>' \
+            '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>'
+
         self.assertContains(response, expected, count=1, status_code=200)
         
 

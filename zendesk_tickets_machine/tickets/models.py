@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -47,9 +48,6 @@ class Ticket(models.Model):
     )
     board = models.ForeignKey(Board)
     is_active = models.BooleanField(default=True)
-
-    def link(self):
-        return format_html('<a href="{}">Edit</a> | <a href="{}">Delete</a>' , '#', '#')
 
 
 @receiver(pre_save, sender=Ticket)
