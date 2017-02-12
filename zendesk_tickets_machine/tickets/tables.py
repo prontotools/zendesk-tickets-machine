@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-import django_tables2 as tables
-from django_tables2.utils import A
 from django.conf import settings
 from django.utils.safestring import mark_safe
+
+from django_tables2.utils import A
+import django_tables2 as tables
+
+
 
 from .models import Ticket
 class TicketTable(tables.Table):

@@ -110,7 +110,7 @@ class BoardSingleView(TemplateView):
         edit_subject = self.POST.get('edit_subject')
         edit_due_at = self.POST.get('edit_due_at')
         edit_assignee = self.POST.get('edit_assignee')
-        print(edit_assignee)
+
         if edit_tags:
             Ticket.objects.filter(pk__in=id_list).update(tags=edit_tags)
         if edit_subject:
