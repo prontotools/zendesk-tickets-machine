@@ -105,7 +105,7 @@ class TicketForm(forms.ModelForm):
 
         return ticket
 
-class TicketUpdateOnce(forms.Form):
+class TicketUpdateOnceForm(forms.Form):
     subject = forms.CharField(widget=forms.TextInput(attrs={'id': 'edit_subject'}))
     tags = forms.CharField(widget=forms.TextInput(attrs={'id': 'edit_tags'}))
     due_at = forms.CharField(widget=widgets.AdminDateWidget(
