@@ -29,16 +29,7 @@ $(function() {
 /* select all*/
 $(':checkbox[name=select_all]').click (function () {
   $(':checkbox[name=check]').prop('checked', this.checked);
-}); 
-
-
-function edit_once(){
-  items = $(':checkbox[name="check"]:checked');
-  id_list = [];
-  for(i=0;i<items.length;i++){
-    id_list.push(items[i].value);
-  }
-}
+});
 
 // using jQuery
 function getCookie(name) {
