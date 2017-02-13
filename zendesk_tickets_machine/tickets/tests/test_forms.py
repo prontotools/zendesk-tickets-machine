@@ -88,10 +88,23 @@ class TicketFormTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertEqual(ticket.tags, '')
+
     def test_ticket_form_should_have_defined_attributes(self):
         form = TicketForm()
-        self.assertEqual(form.fields['ticket_type'].widget.attrs, {'class': 'form-control', 'onChange': 'check_ticket_type()'})
-        self.assertEqual(form.fields['due_at'].widget.attrs, {'class': 'form-control', 'id': 'datepicker', 'size': '10'})
+        self.assertEqual(
+            form.fields['ticket_type'].widget.attrs,
+            {
+                'class': 'form-control',
+                'onChange': 'check_ticket_type()'
+            }
+        )
+        self.assertEqual(
+            form.fields['due_at'].widget.attrs,
+            {
+                'class': 'form-control',
+                'id': 'datepicker',
+                'size': '10'}
+        )
 
 
 class TicketUpdateOnceFormTest(TestCase):
@@ -111,7 +124,23 @@ class TicketUpdateOnceFormTest(TestCase):
 
     def test_ticket_update_once_form_should_have_defined_attributes(self):
         form = TicketUpdateOnceForm()
-        self.assertEqual(form.fields['subject'].widget.attrs, {'id': 'edit_subject'})
-        self.assertEqual(form.fields['tags'].widget.attrs, {'id': 'edit_tags'})
-        self.assertEqual(form.fields['due_at'].widget.attrs, {'class': 'datepicker', 'id': 'edit_due_at', 'size': '10'})
-        self.assertEqual(form.fields['assignee'].widget.attrs, {'id': 'edit_assignee'})
+        self.assertEqual(
+            form.fields['subject'].widget.attrs,
+            {'id': 'edit_subject'}
+        )
+        self.assertEqual(
+            form.fields['tags'].widget.attrs,
+            {'id': 'edit_tags'}
+        )
+        self.assertEqual(
+            form.fields['due_at'].widget.attrs,
+            {
+                'class': 'datepicker',
+                'id': 'edit_due_at',
+                'size': '10'
+            }
+        )
+        self.assertEqual(
+            form.fields['assignee'].widget.attrs,
+            {'id': 'edit_assignee'}
+        )
