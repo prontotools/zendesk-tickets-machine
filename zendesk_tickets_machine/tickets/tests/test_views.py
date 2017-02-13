@@ -155,7 +155,6 @@ class TicketEditViewTest(TestCase):
             '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>'
 
         self.assertContains(response, expected, count=1, status_code=200)
-        
 
     def test_ticket_edit_view_should_render_ticket_form(self):
         self.login()

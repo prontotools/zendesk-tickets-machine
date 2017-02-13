@@ -80,7 +80,7 @@ $("#button_edit_once_form").click(function(event){
 function edit_once(){
   items = $(':checkbox[name="check"]:checked');
   var id_list = [];
-  for(i=0;i<items.length;i++){
+  for(i = 0; i<items.length; i++){
     id_list.push(items[i].value);
   }
   return id_list;

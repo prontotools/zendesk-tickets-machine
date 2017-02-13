@@ -7,6 +7,7 @@ from agents.models import Agent
 from agent_groups.models import AgentGroup
 from boards.models import Board
 
+
 class TicketTableTest(TestCase):
     def test_ticket_table_should_have_all_defined_filed(self):
         agent = Agent.objects.create(
@@ -59,11 +60,7 @@ class TicketTableTest(TestCase):
 
         self.assertEqual(len(ticketTable.as_values()[0]), 15)
 
-    def test_ticket_table_fields_should_show_dash_if_empty_and_set_default(self):
-        agent = Agent.objects.create(
-            name='Kan Ouivirach',
-            zendesk_user_id='6969'
-        )
+    def test_ticket_table_should_show_dash_if_empty_and_set_default(self):
         agent_group = AgentGroup.objects.create(name='Development')
         board = Board.objects.create(name='Pre-Production')
 
@@ -88,14 +85,14 @@ class TicketTableTest(TestCase):
             'Edit',
             'Delete',
             'Welcome to Pronto Service',
-            'Thank you for signing up with us! ' \
-            'Currently we are sorting out the info and will ' \
+            'Thank you for signing up with us! '
+            'Currently we are sorting out the info and will '
             'reach out again soon to continue with the setup.',
             '-',
             '-',
             '-',
             agent_group,
-            '-', 
+            '-',
             '-',
             'Urgent',
             '-',
@@ -108,8 +105,11 @@ class TicketTableTest(TestCase):
 
         self.assertEqual(len(ticketTable.as_values()[1]), 15)
 
-    def test_ticket_table_render_zendesk_zendesk_id_should_return_correctly(self):
+    def test_ticket_table_render_zendesk_id_should_return_correctly(self):
         ticketTable = TicketTable({'test': 'test'})
         url = ticketTable.render_zendesk_ticket_id('1234')
-        self.assertEqual(url, '<a href="%s/agent/tickets/1234" target="_blank">1234</a>' % settings.ZENDESK_URL)
-
+        self.assertEqual(
+            url,
+            '<a href="%s/agent/tickets/1234" target="_blank">1234</a>'
+            % settings.ZENDESK_URL
+        )
