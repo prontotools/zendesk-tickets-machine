@@ -12,7 +12,7 @@ from .views import (
 
 urlpatterns = [
     url(r'^$', login_required(BoardView.as_view()), name='boards'),
-    url(r'^edit_once/$', BoardSingleView.edit_once, name='edit_requster_once'),
+    url(r'^edit_once/$', BoardSingleView.edit_once, name='edit_once'),
     url(r'^(?P<slug>[\w-]+)/$',
         login_required(BoardSingleView.as_view()), name='board_single'),
     url(r'^(?P<slug>[\w-]+)/requesters/reset/$',

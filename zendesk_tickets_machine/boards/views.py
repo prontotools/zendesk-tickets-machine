@@ -10,12 +10,12 @@ from django.views.generic import TemplateView, View
 
 from .models import Board, BoardGroup
 from requesters.models import Requester
-from tickets.forms import TicketForm, TicketUpdateOnce
+from tickets.forms import TicketForm, TicketUpdateOnceForm
 from tickets.models import Ticket
+from tickets.services import TicketServices
 from tickets.tables import TicketTable
 from zendesk.api import User as ZendeskRequester
 from zendesk.api import Ticket as ZendeskTicket
-from django.utils.timezone import utc
 
 
 class BoardView(TemplateView):
@@ -58,7 +58,7 @@ class BoardSingleView(TemplateView):
             'board': board.id
         }
         form = TicketForm(initial=initial)
-        ticketUpdateOnceForm = TicketUpdateOnce()
+        ticketUpdateOnceForm = TicketUpdateOnceForm()
         tickets = TicketTable(Ticket.objects.filter(board__slug=slug, is_active=True))
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
@@ -111,16 +111,9 @@ class BoardSingleView(TemplateView):
         edit_due_at = self.POST.get('edit_due_at')
         edit_assignee = self.POST.get('edit_assignee')
 
-        if edit_tags:
-            Ticket.objects.filter(pk__in=id_list).update(tags=edit_tags)
-        if edit_subject:
-            Ticket.objects.filter(pk__in=id_list).update(subject=edit_subject)
-        if edit_due_at:
-            Ticket.objects.filter(pk__in=id_list).update(
-                due_at=datetime.datetime.strptime(edit_due_at, "%m/%d/%Y").replace(
-                tzinfo=utc))
-        if edit_assignee:
-            Ticket.objects.filter(pk__in=id_list).update(assignee=edit_assignee)
+        ticketServices = TicketServices()
+
+        ticketServices.edit_ticket_once(id_list, edit_tags, edit_subject, edit_due_at, edit_assignee)
 
         return HttpResponse(content_type="application/json")
 

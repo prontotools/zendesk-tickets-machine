@@ -839,7 +839,6 @@ class BoardSingleViewTest(TestCase):
             )
             self.assertRedirects(response, '/login/?next=/pre-production/')
 
-
 class BoardRequestersResetViewTest(TestCase):
     def setUp(self):
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
