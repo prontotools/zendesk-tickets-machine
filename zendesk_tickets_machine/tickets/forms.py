@@ -105,15 +105,29 @@ class TicketForm(forms.ModelForm):
 
         return ticket
 
+
 class TicketUpdateOnceForm(forms.Form):
-    subject = forms.CharField(widget=forms.TextInput(attrs={'id': 'edit_subject'}))
-    tags = forms.CharField(widget=forms.TextInput(attrs={'id': 'edit_tags'}))
-    due_at = forms.CharField(widget=widgets.AdminDateWidget(
-                attrs={
-                    'class': 'datepicker',
-                    'id': 'edit_due_at'
-                }))
+    subject = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'id': 'edit_subject'}
+        )
+    )
+    tags = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'id': 'edit_tags'}
+        )
+    )
+    due_at = forms.CharField(
+        widget=widgets.AdminDateWidget(
+            attrs={
+                'class': 'datepicker',
+                'id': 'edit_due_at'
+            }
+        )
+    )
     assignee = forms.ModelChoiceField(
         queryset=Agent.objects.all(),
-        widget=forms.Select(attrs={'id': 'edit_assignee'}))
-
+        widget=forms.Select(
+            attrs={'id': 'edit_assignee'}
+        )
+    )

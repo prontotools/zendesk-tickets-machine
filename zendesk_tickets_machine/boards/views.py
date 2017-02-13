@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime, time
+import time
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -59,7 +59,11 @@ class BoardSingleView(TemplateView):
         }
         form = TicketForm(initial=initial)
         ticketUpdateOnceForm = TicketUpdateOnceForm()
-        tickets = TicketTable(Ticket.objects.filter(board__slug=slug, is_active=True))
+        tickets = TicketTable(
+            Ticket.objects.filter(
+                board__slug=slug, is_active=True
+            )
+        )
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
@@ -89,7 +93,11 @@ class BoardSingleView(TemplateView):
         form = TicketForm(request.POST)
         form.save()
 
-        tickets = TicketTable(Ticket.objects.filter(board__slug=slug, is_active=True))
+        tickets = TicketTable(
+            Ticket.objects.filter(
+                board__slug=slug, is_active=True
+            )
+        )
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
@@ -113,9 +121,16 @@ class BoardSingleView(TemplateView):
 
         ticketServices = TicketServices()
 
-        ticketServices.edit_ticket_once(id_list, edit_tags, edit_subject, edit_due_at, edit_assignee)
+        ticketServices.edit_ticket_once(
+            id_list,
+            edit_tags,
+            edit_subject,
+            edit_due_at,
+            edit_assignee
+        )
 
         return HttpResponse(content_type="application/json")
+
 
 class BoardRequestersResetView(View):
     def get(self, request, slug):

@@ -433,7 +433,7 @@ class BoardSingleViewTest(TestCase):
                     kwargs={'ticket_id': self.first_ticket.id}
                 ),
                 settings.ZENDESK_URL + '/agent/tickets/24328'
-            ) 
+            )
         self.assertContains(response, expected, status_code=200)
 
         expected = '<tr class="even">' \
@@ -730,22 +730,22 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<td class="check">' \
-                '<input type="checkbox" name="check" value="1"/>' \
-                '</td><td class="edit"><a href="%s">Edit</a></td>' \
-                '<td class="delete"><a href="%s">Delete</a></td>' \
-                '<td class="subject">Ticket 1</td>' \
-                '<td class="comment">Comment 1</td>' \
-                '<td class="requester">client@hisotech.com</td>' \
-                '<td class="created_by">Natty</td>' \
-                '<td class="assignee">Natty</td>' \
-                '<td class="group">Development</td>' \
-                '<td class="ticket_type">Question</td>' \
-                '<td class="due_at">-</td>' \
-                '<td class="priority">Urgent</td>' \
-                '<td class="tags">welcome</td>' \
-                '<td class="private_comment">Private comment</td>' \
-                '<td class="zendesk_ticket_id">' \
-                '<a href="%s" target="_blank">24328</a></td>' % (
+            '<input type="checkbox" name="check" value="1"/>' \
+            '</td><td class="edit"><a href="%s">Edit</a></td>' \
+            '<td class="delete"><a href="%s">Delete</a></td>' \
+            '<td class="subject">Ticket 1</td>' \
+            '<td class="comment">Comment 1</td>' \
+            '<td class="requester">client@hisotech.com</td>' \
+            '<td class="created_by">Natty</td>' \
+            '<td class="assignee">Natty</td>' \
+            '<td class="group">Development</td>' \
+            '<td class="ticket_type">Question</td>' \
+            '<td class="due_at">-</td>' \
+            '<td class="priority">Urgent</td>' \
+            '<td class="tags">welcome</td>' \
+            '<td class="private_comment">Private comment</td>' \
+            '<td class="zendesk_ticket_id">' \
+            '<a href="%s" target="_blank">24328</a></td>' % (
                 reverse(
                     'ticket_edit',
                     kwargs={'ticket_id': self.first_ticket.id}
@@ -759,22 +759,22 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<td class="check">' \
-                '<input type="checkbox" name="check" value="4"/></td>' \
-                '<td class="edit"><a href="%s">Edit</a></td>' \
-                '<td class="delete"><a href="%s">Delete</a></td>' \
-                '<td class="subject">Welcome to Pronto Service</td>' \
-                '<td class="comment">This is a comment.</td>' \
-                '<td class="requester">client@hisotech.com</td>' \
-                '<td class="created_by">Natty</td>' \
-                '<td class="assignee">Natty</td>' \
-                '<td class="group">Development</td>' \
-                '<td class="ticket_type">Question</td>' \
-                '<td class="due_at">-</td>' \
-                '<td class="priority">Urgent</td>' \
-                '<td class="tags">welcome</td>' \
-                '<td class="private_comment">Private comment</td>' \
-                '<td class="zendesk_ticket_id">' \
-                '<a href="%s" target="_blank">24328</a></td>' % (
+            '<input type="checkbox" name="check" value="4"/></td>' \
+            '<td class="edit"><a href="%s">Edit</a></td>' \
+            '<td class="delete"><a href="%s">Delete</a></td>' \
+            '<td class="subject">Welcome to Pronto Service</td>' \
+            '<td class="comment">This is a comment.</td>' \
+            '<td class="requester">client@hisotech.com</td>' \
+            '<td class="created_by">Natty</td>' \
+            '<td class="assignee">Natty</td>' \
+            '<td class="group">Development</td>' \
+            '<td class="ticket_type">Question</td>' \
+            '<td class="due_at">-</td>' \
+            '<td class="priority">Urgent</td>' \
+            '<td class="tags">welcome</td>' \
+            '<td class="private_comment">Private comment</td>' \
+            '<td class="zendesk_ticket_id">' \
+            '<a href="%s" target="_blank">24328</a></td>' % (
                 reverse(
                     'ticket_edit',
                     kwargs={'ticket_id': ticket.id}
@@ -838,6 +838,7 @@ class BoardSingleViewTest(TestCase):
                 reverse('board_single', kwargs={'slug': self.board.slug})
             )
             self.assertRedirects(response, '/login/?next=/pre-production/')
+
 
 class BoardRequestersResetViewTest(TestCase):
     def setUp(self):

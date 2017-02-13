@@ -5,7 +5,6 @@ from .models import Ticket
 
 
 class TicketServices():
-
     def edit_ticket_once(
         self,
         id_list,
@@ -15,9 +14,13 @@ class TicketServices():
         edit_assignee
     ):
         if edit_tags:
-                Ticket.objects.filter(pk__in=id_list).update(tags=edit_tags)
+            Ticket.objects.filter(
+                pk__in=id_list
+            ).update(tags=edit_tags)
         if edit_subject:
-            Ticket.objects.filter(pk__in=id_list).update(subject=edit_subject)
+            Ticket.objects.filter(
+                pk__in=id_list
+            ).update(subject=edit_subject)
         if edit_due_at:
             Ticket.objects.filter(
                 pk__in=id_list
