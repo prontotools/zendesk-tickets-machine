@@ -71,7 +71,8 @@ $("#button_edit_once_form").click(function(event){
                   'edit_tags': $('#edit_tags').val(),
                   'edit_subject': $('#edit_subject').val(),
                   'edit_due_at': $('#edit_due_at').val(),
-                  'edit_assignee': $('#edit_assignee').val()
+                  'edit_assignee': $('#edit_assignee').val(),
+                  'edit_requester': $('#edit_requester').val(),
                 },
         success: location.reload()
     });

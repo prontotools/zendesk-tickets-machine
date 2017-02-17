@@ -8,6 +8,7 @@ from ..services import TicketServices
 from boards.models import Board
 from agents.models import Agent
 from agent_groups.models import AgentGroup
+from requesters.models import Requester
 
 
 class TicketServicesTest(TestCase):
@@ -48,10 +49,14 @@ class TicketServicesTest(TestCase):
 
     def test_edit_ticket_once_edit_subject_and_tags_if_select_all(self):
         agent = Agent.objects.create(name='Natty', zendesk_user_id='456')
+        requester = Requester.objects.create(
+            email='customer@test.com', zendesk_user_id='123'
+        )
         ticketServices = TicketServices()
         ticketServices.edit_ticket_once(
             [self.first_ticket.id, self.second_ticket.id],
             'aa bb',
+            requester.email,
             'New Subject',
             '01/31/2017',
             agent)
@@ -63,6 +68,14 @@ class TicketServicesTest(TestCase):
         self.assertEqual(
             Ticket.objects.get(id=self.second_ticket.id).tags,
             'aa bb'
+            )
+        self.assertEqual(
+            Ticket.objects.get(id=self.first_ticket.id).requester,
+            requester.email
+            )
+        self.assertEqual(
+            Ticket.objects.get(id=self.second_ticket.id).requester,
+            requester.email
             )
         self.assertEqual(
             Ticket.objects.get(id=self.first_ticket.id).subject,
@@ -93,10 +106,14 @@ class TicketServicesTest(TestCase):
 
     def test_edit_ticket_once_if_select_one(self):
         agent = Agent.objects.create(name='Natty', zendesk_user_id='456')
+        requester = Requester.objects.create(
+            email='customer@test.com', zendesk_user_id='123'
+        )
         ticketServices = TicketServices()
         ticketServices.edit_ticket_once(
             [self.first_ticket.id],
             'aa bb',
+            requester.email,
             'New Subject',
             '01/31/2017',
             agent)
@@ -108,6 +125,14 @@ class TicketServicesTest(TestCase):
         self.assertNotEqual(
             Ticket.objects.get(id=self.second_ticket.id).tags,
             'aa bb'
+            )
+        self.assertEqual(
+            Ticket.objects.get(id=self.first_ticket.id).requester,
+            requester.email
+            )
+        self.assertNotEqual(
+            Ticket.objects.get(id=self.second_ticket.id).requester,
+            requester.email
             )
         self.assertEqual(
             Ticket.objects.get(id=self.first_ticket.id).subject,

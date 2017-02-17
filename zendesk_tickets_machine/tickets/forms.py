@@ -112,6 +112,11 @@ class TicketUpdateOnceForm(forms.Form):
             attrs={'id': 'edit_subject'}
         )
     )
+    requester = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'id': 'edit_requester'}
+            )
+        )
     tags = forms.CharField(
         widget=forms.TextInput(
             attrs={'id': 'edit_tags'}

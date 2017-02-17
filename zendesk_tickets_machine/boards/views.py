@@ -118,6 +118,7 @@ class BoardSingleView(TemplateView):
         edit_subject = self.POST.get('edit_subject')
         edit_due_at = self.POST.get('edit_due_at')
         edit_assignee = self.POST.get('edit_assignee')
+        edit_requester = self.POST.get('edit_requester')
 
         ticketServices = TicketServices()
 
@@ -126,7 +127,8 @@ class BoardSingleView(TemplateView):
             edit_tags,
             edit_subject,
             edit_due_at,
-            edit_assignee
+            edit_assignee,
+            edit_requester
         )
 
         return HttpResponse(content_type="application/json")

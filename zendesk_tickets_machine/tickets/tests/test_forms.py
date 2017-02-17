@@ -113,6 +113,7 @@ class TicketUpdateOnceFormTest(TestCase):
 
         expected_fields = [
             'subject',
+            'requester',
             'tags',
             'due_at',
             'assignee',
@@ -120,13 +121,17 @@ class TicketUpdateOnceFormTest(TestCase):
         for each in expected_fields:
             self.assertTrue(each in form.fields)
 
-        self.assertEqual(len(form.fields), 4)
+        self.assertEqual(len(form.fields), 5)
 
     def test_ticket_update_once_form_should_have_defined_attributes(self):
         form = TicketUpdateOnceForm()
         self.assertEqual(
             form.fields['subject'].widget.attrs,
             {'id': 'edit_subject'}
+        )
+        self.assertEqual(
+            form.fields['requester'].widget.attrs,
+            {'id': 'edit_requester'}
         )
         self.assertEqual(
             form.fields['tags'].widget.attrs,

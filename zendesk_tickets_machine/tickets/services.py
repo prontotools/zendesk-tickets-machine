@@ -9,6 +9,7 @@ class TicketServices():
         self,
         id_list,
         edit_tags,
+        edit_requester,
         edit_subject,
         edit_due_at,
         edit_assignee
@@ -21,6 +22,10 @@ class TicketServices():
             Ticket.objects.filter(
                 pk__in=id_list
             ).update(subject=edit_subject)
+        if edit_requester:
+            Ticket.objects.filter(
+                pk__in=id_list
+            ).update(requester=edit_requester)
         if edit_due_at:
             Ticket.objects.filter(
                 pk__in=id_list
