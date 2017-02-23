@@ -1,4 +1,4 @@
-FROM python:3.5.2
+FROM python:3.6.0
 
 RUN pip install Django==1.10.4 \
                 psycopg2==2.6.2 \
