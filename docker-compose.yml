@@ -18,6 +18,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./zendesk_tickets_machine/staticfiles:/app/zendesk_tickets_machine/staticfiles
+    env_file:
+      - .env
     depends_on:
       - db
 
