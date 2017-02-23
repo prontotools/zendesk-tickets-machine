@@ -2,6 +2,7 @@ version: '2'
 
 services:
   nginx:
+    image: prontotools/ztm-nginx
     build:
       context: nginx/
       dockerfile: Dockerfile
@@ -10,9 +11,10 @@ services:
     volumes:
       - ./zendesk_tickets_machine/staticfiles:/static
     depends_on:
-      - ztm
+      - app
 
-  ztm:
+  app:
+    image: prontotools/ztm-app
     build:
       context: .
       dockerfile: Dockerfile
