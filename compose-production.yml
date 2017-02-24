@@ -4,7 +4,7 @@ services:
   nginx:
     image: prontotools/ztm-nginx
     ports:
-      - 8080:80
+      - 80:80
     volumes:
       - ./zendesk_tickets_machine/staticfiles:/static
     depends_on:
