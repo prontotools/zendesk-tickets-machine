@@ -2,12 +2,13 @@ from fabric.api import (
     cd,
     env,
     put,
+    run,
     sudo,
     task
 )
 
 
-PRODUCTION_IP = ''
+PRODUCTION_IP = '54.154.235.243'
 PROJECT_DIRECTORY = '/home/ubuntu/ztm/'
 COMPOSE_FILE = 'compose-production.yml'
 
@@ -21,7 +22,7 @@ def production():
 
 
 def create_project_directory():
-    env.run('mkdir -p ' + PROJECT_DIRECTORY)
+    run('mkdir -p ' + PROJECT_DIRECTORY)
 
 
 def update_compose_file():
