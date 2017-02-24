@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fabric.api import (
     cd,
     env,
@@ -10,6 +12,7 @@ from fabric.api import (
 
 PRODUCTION_IP = '54.154.235.243'
 PROJECT_DIRECTORY = '/home/ubuntu/ztm/'
+BACKUP_DIRECTORY = '/home/ubuntu/backup/'
 COMPOSE_FILE = 'compose-production.yml'
 
 
@@ -27,6 +30,19 @@ def create_project_directory():
 
 def update_compose_file():
     put('./' + COMPOSE_FILE, PROJECT_DIRECTORY)
+
+
+@task
+def do_backup():
+    backup_time = datetime.now().strftime('%Y-%m-%d_%H%M')
+    with cd(BACKUP_DIRECTORY):
+        command = 'tar -cjvf ztm-' + backup_time + \
+            '.tar.bz2 ' + PROJECT_DIRECTORY
+        env.run(command)
+
+    command = 's3cmd sync ' + BACKUP_DIRECTORY + ' ' \
+        's3://zendesk-tickets-machine'
+    run(command)
 
 
 @task
