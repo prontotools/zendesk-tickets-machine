@@ -3,6 +3,7 @@ from datetime import datetime
 from fabric.api import (
     cd,
     env,
+    local,
     put,
     run,
     sudo,
@@ -33,7 +34,7 @@ def update_compose_file():
 
 
 @task
-def do_backup():
+def backup():
     backup_time = datetime.now().strftime('%Y-%m-%d_%H%M')
     with cd(BACKUP_DIRECTORY):
         command = 'tar -cjvf ztm-' + backup_time + \
@@ -45,8 +46,19 @@ def do_backup():
     run(command)
 
 
+def build():
+    local('docker build -t prontotools/ztm-app .')
+
+
+def push():
+    local('docker login')
+    local('docker push prontotools/ztm-app')
+
+
 @task
 def deploy():
+    build()
+    push()
     create_project_directory()
     update_compose_file()
     with cd(PROJECT_DIRECTORY):
