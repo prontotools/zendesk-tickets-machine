@@ -62,7 +62,7 @@ class BoardSingleView(TemplateView):
         tickets = TicketTable(
             Ticket.objects.filter(
                 board__slug=slug, is_active=True
-            )
+            ).order_by('id')
         )
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
@@ -76,7 +76,6 @@ class BoardSingleView(TemplateView):
                 'tickets': tickets,
                 'ticketUpdateOnceForm': ticketUpdateOnceForm,
                 'zendesk_ticket_url': zendesk_ticket_url
-
             }
         )
 
@@ -96,7 +95,7 @@ class BoardSingleView(TemplateView):
         tickets = TicketTable(
             Ticket.objects.filter(
                 board__slug=slug, is_active=True
-            )
+            ).order_by('id')
         )
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 

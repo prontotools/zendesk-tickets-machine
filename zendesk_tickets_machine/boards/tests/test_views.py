@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import datetime
-
 from unittest.mock import call, patch
 
 from django.conf import settings
@@ -480,6 +479,47 @@ class BoardSingleViewTest(TestCase):
                 self.second_ticket.id
             )
         self.assertNotContains(response, expected, status_code=200)
+
+    @patch('boards.views.Ticket')
+    def test_board_single_view_with_get_should_order_by_id_in_ascending_order(
+        self,
+        mock
+    ):
+        mock.objects.filter.return_value.order_by.return_value = []
+
+        self.login()
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+        mock.objects.filter.return_value.order_by.assert_called_once_with('id')
+
+    @patch('boards.views.Ticket')
+    def test_board_single_view_with_post_should_order_by_id_in_ascending_order(
+        self,
+        mock
+    ):
+        mock.objects.filter.return_value.order_by.return_value = []
+
+        self.login()
+        data = {
+            'subject': 'Welcome to Pronto Service',
+            'comment': 'This is a comment.',
+            'requester': 'client@hisotech.com',
+            'created_by': self.agent.id,
+            'assignee': self.agent.id,
+            'group': self.agent_group.id,
+            'ticket_type': 'question',
+            'priority': 'urgent',
+            'tags': 'welcome',
+            'private_comment': 'Private comment',
+            'zendesk_ticket_id': '24328',
+            'board': self.board.id
+        }
+        response = self.client.post(
+            reverse('board_single', kwargs={'slug': self.board.slug}),
+            data=data
+        )
+        mock.objects.filter.return_value.order_by.assert_called_once_with('id')
 
     def test_board_single_view_should_have_date_format(self):
         self.login()
