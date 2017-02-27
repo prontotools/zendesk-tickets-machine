@@ -488,7 +488,7 @@ class BoardSingleViewTest(TestCase):
         mock.objects.filter.return_value.order_by.return_value = []
 
         self.login()
-        response = self.client.get(
+        self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
         mock.objects.filter.return_value.order_by.assert_called_once_with('id')
@@ -515,7 +515,7 @@ class BoardSingleViewTest(TestCase):
             'zendesk_ticket_id': '24328',
             'board': self.board.id
         }
-        response = self.client.post(
+        self.client.post(
             reverse('board_single', kwargs={'slug': self.board.slug}),
             data=data
         )
