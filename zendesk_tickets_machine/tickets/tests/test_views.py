@@ -45,8 +45,54 @@ class TicketEditViewTest(TestCase):
 
     def test_ticket_edit_view_should_redirect_to_home_if_not_exist(self):
         self.login()
+
         response = self.client.get(
             reverse('ticket_edit', kwargs={'ticket_id': 999}),
+            follow=True
+        )
+
+        messages = list(response.context['messages'])
+        self.assertEqual(len(messages), 1)
+
+        expected_message = 'Oops! The ticket you are looking for ' \
+            'no longer exists..'
+        self.assertEqual(messages[0].level, MSG.ERROR)
+        self.assertEqual(messages[0].message, expected_message)
+
+        self.assertRedirects(
+            response,
+            reverse('boards'),
+            status_code=302,
+            target_status_code=200
+        )
+
+        expected = '<h5 class="alert alert-danger">' \
+            '%s</h5>' % expected_message
+        self.assertContains(response, expected, status_code=200)
+
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        agent_group = AgentGroup.objects.create(
+            name='Development',
+            zendesk_group_id='123'
+        )
+
+        data = {
+            'subject': 'Welcome to Pronto Service',
+            'comment': 'This is a comment.',
+            'requester': 'client@hisotech.com',
+            'created_by': agent.id,
+            'assignee': agent.id,
+            'group': agent_group.id,
+            'ticket_type': 'question',
+            'priority': 'urgent',
+            'tags': 'welcome',
+            'private_comment': 'Private comment',
+            'zendesk_ticket_id': '24328',
+            'board': self.board.id
+        }
+        response = self.client.post(
+            reverse('ticket_edit', kwargs={'ticket_id': 999}),
+            data=data,
             follow=True
         )
 
@@ -91,19 +137,23 @@ class TicketEditViewTest(TestCase):
             'table-hover">'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<th width="7%"></th>' \
-            '<th>Subject</th>' \
-            '<th>Comment</th>' \
-            '<th>Requester</th>' \
-            '<th>Created By</th>' \
-            '<th>Assignee</th>' \
-            '<th>Group</th>' \
-            '<th>Ticket Type</th>' \
-            '<th>Due Date</th>' \
-            '<th>Priority</th>' \
-            '<th>Tags</th>' \
-            '<th>Private Comment</th>' \
-            '<th>Zendesk Ticket ID</th>'
+        expected = '<th class="check">' \
+            '<input type="checkbox" name="select_all"/></th>' \
+            '<th class="edit">Edit</th>' \
+            '<th class="delete">Delete</th>' \
+            '<th class="subject">Subject</th>' \
+            '<th class="comment">Comment</th>' \
+            '<th class="requester">Requester</th>' \
+            '<th class="created_by">Created By</th>' \
+            '<th class="assignee">Assignee</th>' \
+            '<th class="group">Group</th>' \
+            '<th class="ticket_type">Ticket Type</th>' \
+            '<th class="due_at">Due Date</th>' \
+            '<th class="priority">Priority</th>' \
+            '<th class="tags">Tags</th>' \
+            '<th class="private_comment">Private Comment</th>' \
+            '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>'
+
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_render_ticket_form(self):

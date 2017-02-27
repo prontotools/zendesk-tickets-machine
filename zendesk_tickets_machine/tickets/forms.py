@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.admin import widgets
 
 from .models import Ticket
+from agents.models import Agent
 
 
 class TicketForm(forms.ModelForm):
@@ -103,3 +104,35 @@ class TicketForm(forms.ModelForm):
             ticket.save()
 
         return ticket
+
+
+class TicketUpdateOnceForm(forms.Form):
+    subject = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'id': 'edit_subject'}
+        )
+    )
+    requester = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'id': 'edit_requester'}
+            )
+        )
+    tags = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'id': 'edit_tags'}
+        )
+    )
+    due_at = forms.CharField(
+        widget=widgets.AdminDateWidget(
+            attrs={
+                'class': 'datepicker',
+                'id': 'edit_due_at'
+            }
+        )
+    )
+    assignee = forms.ModelChoiceField(
+        queryset=Agent.objects.all(),
+        widget=forms.Select(
+            attrs={'id': 'edit_assignee'}
+        )
+    )

@@ -1,16 +1,19 @@
+# -*- coding: utf-8 -*-
 import time
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
 from .models import Board, BoardGroup
 from requesters.models import Requester
-from tickets.forms import TicketForm
+from tickets.forms import TicketForm, TicketUpdateOnceForm
 from tickets.models import Ticket
+from tickets.services import TicketServices
+from tickets.tables import TicketTable
 from zendesk.api import User as ZendeskRequester
 from zendesk.api import Ticket as ZendeskTicket
 
@@ -55,7 +58,12 @@ class BoardSingleView(TemplateView):
             'board': board.id
         }
         form = TicketForm(initial=initial)
-        tickets = Ticket.objects.filter(board__slug=slug, is_active=True)
+        ticketUpdateOnceForm = TicketUpdateOnceForm()
+        tickets = TicketTable(
+            Ticket.objects.filter(
+                board__slug=slug, is_active=True
+            ).order_by('id')
+        )
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
@@ -66,18 +74,29 @@ class BoardSingleView(TemplateView):
                 'board_slug': board.slug,
                 'form': form,
                 'tickets': tickets,
+                'ticketUpdateOnceForm': ticketUpdateOnceForm,
                 'zendesk_ticket_url': zendesk_ticket_url
-
             }
         )
 
     def post(self, request, slug):
-        board = Board.objects.get(slug=slug)
+        try:
+            board = Board.objects.get(slug=slug)
+        except Board.DoesNotExist:
+            text = 'Oops! The board you are looking for ' \
+                'no longer exists..'
+            messages.error(request, text)
+
+            return HttpResponseRedirect(reverse('boards'))
 
         form = TicketForm(request.POST)
         form.save()
 
-        tickets = Ticket.objects.filter(board__slug=slug, is_active=True)
+        tickets = TicketTable(
+            Ticket.objects.filter(
+                board__slug=slug, is_active=True
+            ).order_by('id')
+        )
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
@@ -91,6 +110,27 @@ class BoardSingleView(TemplateView):
                 'zendesk_ticket_url': zendesk_ticket_url
             }
         )
+
+    def edit_once(self):
+        id_list = self.POST.getlist('id_list[]')
+        edit_tags = self.POST.get('edit_tags')
+        edit_subject = self.POST.get('edit_subject')
+        edit_due_at = self.POST.get('edit_due_at')
+        edit_assignee = self.POST.get('edit_assignee')
+        edit_requester = self.POST.get('edit_requester')
+
+        ticketServices = TicketServices()
+
+        ticketServices.edit_ticket_once(
+            id_list,
+            edit_tags,
+            edit_requester,
+            edit_subject,
+            edit_due_at,
+            edit_assignee
+        )
+
+        return HttpResponse(content_type="application/json")
 
 
 class BoardRequestersResetView(View):

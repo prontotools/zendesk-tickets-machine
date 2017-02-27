@@ -3,11 +3,8 @@ version: '2'
 services:
   nginx:
     image: prontotools/ztm-nginx
-    build:
-      context: nginx/
-      dockerfile: Dockerfile
     ports:
-      - 8080:80
+      - 80:80
     volumes:
       - ./zendesk_tickets_machine/staticfiles:/static
     depends_on:
@@ -15,9 +12,6 @@ services:
 
   app:
     image: prontotools/ztm-app
-    build:
-      context: .
-      dockerfile: Dockerfile
     volumes:
       - ./zendesk_tickets_machine/staticfiles:/app/zendesk_tickets_machine/staticfiles
     env_file:

@@ -6,3 +6,16 @@ Dockerfile*
 **/*.sqlite3
 **/*/__pycache__
 **/*.pyc
+nginx
+postgres-data
+tox.ini
+ztm-heroku.ini
+runtime.txt
+Procfile
+docker-compose.yml
+venv
+ENV
+.env
+.travis.yml
+.DS_Store
+.editorconfig
