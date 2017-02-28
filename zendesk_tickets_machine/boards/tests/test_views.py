@@ -481,7 +481,7 @@ class BoardSingleViewTest(TestCase):
         self.assertNotContains(response, expected, status_code=200)
 
     @patch('boards.views.Ticket')
-    def test_view_with_get_should_order_tickets_by_requester_alphabetically(
+    def test_board_single_view_with_get_should_order_by_id_in_ascending_order(
         self,
         mock
     ):
@@ -491,12 +491,10 @@ class BoardSingleViewTest(TestCase):
         self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-        mock.objects.filter.return_value.order_by.assert_called_once_with(
-            'requester'
-        )
+        mock.objects.filter.return_value.order_by.assert_called_once_with('id')
 
     @patch('boards.views.Ticket')
-    def test_view_with_post_should_order_tickets_by_requester_alphabetically(
+    def test_board_single_view_with_post_should_order_by_id_in_ascending_order(
         self,
         mock
     ):
@@ -521,9 +519,7 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug}),
             data=data
         )
-        mock.objects.filter.return_value.order_by.assert_called_once_with(
-            'requester'
-        )
+        mock.objects.filter.return_value.order_by.assert_called_once_with('id')
 
     def test_board_single_view_should_have_date_format(self):
         self.login()
