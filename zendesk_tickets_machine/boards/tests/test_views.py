@@ -370,7 +370,7 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<a href="%s" class="btn btn-warning pull-right" ' \
+        expected = '<a href="%s" class="btn btn-danger pull-right" ' \
             'style="margin-right: 5px;">Reset Requesters</a>' % reverse(
                 'board_requesters_reset',
                 kwargs={'slug': self.board.slug}
