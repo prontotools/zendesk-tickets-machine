@@ -17,6 +17,8 @@ from tickets.tables import TicketTable
 from zendesk.api import User as ZendeskRequester
 from zendesk.api import Ticket as ZendeskTicket
 
+from django_tables2 import RequestConfig
+
 
 class BoardView(TemplateView):
     template_name = 'boards.html'
@@ -64,6 +66,7 @@ class BoardSingleView(TemplateView):
                 board__slug=slug, is_active=True
             ).order_by('id')
         )
+        RequestConfig(request).configure(tickets)
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(

@@ -338,7 +338,8 @@ class BoardSingleViewTest(TestCase):
             '<th class="delete">Delete</th>' \
             '<th class="subject">Subject</th>' \
             '<th class="comment">Comment</th>' \
-            '<th class="requester">Requester</th>' \
+            '<th class="orderable requester">' \
+            '<a href="?sort=requester">Requester</a></th>' \
             '<th class="created_by">Created By</th>' \
             '<th class="assignee">Assignee</th>' \
             '<th class="group">Group</th>' \
