@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/bulma.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script type="text/javascript" src="table_script.js"></script>
+  <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<title></title>
+</head>
+<body>
+  <!-- Navigation bar-->
+  <nav class="nav has-shadow" id="top">
+    <div class="container">
+      <div class="nav-left">
+        <a class="nav-item" href="/">
+          <img src="images/pronto-logo-header.png" alt="pronto-logo">
+        </a>
+      </div>
+      <div class="nav-right">
+        <strong class="nav-item">prontotools@prontomarketing.com</strong>
+        <a href="#" class="nav-item">
+          <span>Log out</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+  <!--end Navigation bar -->
+
+  <!-- Content -->
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-12">
+          <section class="section">
+            <div class="nav menu">
+              <div class="container">
+                <h4 class="title is-4">Pre Production Startup (Trello-era) - ConnectWise(1 ticket)</h4>
+                  <div class="nav-right is-hidden-mobile">
+                    <div class="block">
+                      <a class="button modal-button" data-target="#modal-add-ticket">
+                        <span class="icon"><i class="fa fa-plus"></i></span>&nbsp;&nbsp;
+                        Add New Ticket
+                      </a>
+                      <a class="button is-success is-outlined">
+                        Create Tickets
+                      </a>
+                      <a class="button is-danger is-outlined">
+                        Reset Requesters
+                      </a>
+                      <a class="button is-danger is-outlined">
+                        Reset Tickets
+                      </a>
+                    </div>
+                    <hr>
+                  </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="box">
+            <article class="media">
+              <input class="input" type="text" placeholder="Subject">
+              <input class="input" type="text" placeholder="Requester">
+              <input class="input" type="text" placeholder="Tags">
+              <span class="select">
+                <select>
+                  <option value="" selected="">Select Assignee</option>
+                  <option value="1">Natty</option>
+                  <option value="2">Nid</option>
+                  <option value="3">Adam Selley</option>
+                  <option value="4">Ake Kaewakson</option>
+                  <option value="5">Bank Limsumangkalakul</option>
+                  <option value="6">Bell Vathunyu</option>
+                  <option value="7">Boat Jaiboon</option>
+                  <option value="8">Chamy Chankaew</option>
+                  <option value="9">Cory Brown</option>
+                  <option value="10">Dan Thitisukpuri</option>
+                  <option value="11">Derek Brown</option>
+                  <option value="12">Donut Boonsert</option>
+                  <option value="13">Etiopia Changjongpradit</option>
+                  <option value="14">Eui Sawangket</option>
+                  <option value="15">Eve Jones</option>
+                  <option value="16">Finance Team</option>
+                  <option value="17">Gib Tumsan</option>
+                  <option value="18">Gunn Aramwit</option>
+                  <option value="19">Ham Jungchansat</option>
+                  <option value="20">James Liew</option>
+                  <option value="21">Jibb Otida</option>
+                  <option value="22">Ken Sooksaewee</option>
+                  <option value="23">Kit Boonpetch</option>
+                  <option value="24">Max Ratanathanasaet</option>
+                  <option value="25">Maybe Akkarawinwarah</option>
+                  <option value="26">Melissa Farnworth</option>
+                  <option value="27">Michael Keetaluck</option>
+                  <option value="28">Mini Sangthong</option>
+                  <option value="29">Mo Taesuwan</option>
+                  <option value="30">Nan Sanphol</option>
+                  <option value="31">Nart Nilpruek</option>
+                  <option value="32">Non Piyasil</option>
+                  <option value="33">Nut Bunluthangthum</option>
+                  <option value="34">Nut Prasongphonchai</option>
+                  <option value="35">Oat Archanaiyanunt</option>
+                  <option value="36">Oat Yodthiputhai</option>
+                  <option value="37">Onn Hinthong</option>
+                  <option value="38">Oy Pramuksun</option>
+                  <option value="39">Pierre-Emmanuel Mol</option>
+                  <option value="40">Ping Nithisettakul</option>
+                  <option value="41">Pond Leosirikul</option>
+                  <option value="42">Ponpon Sukpatchaporn</option>
+                  <option value="43">Poon Burinwatthana</option>
+                  <option value="44">Prim Wangwongwiroj</option>
+                  <option value="45">Punya Chanprung</option>
+                  <option value="46">Ratna Narula</option>
+                  <option value="47">Saa Kosiri</option>
+                  <option value="48">Sine Tuangsubsin</option>
+                  <option value="49">Sundae Thamniyai</option>
+                  <option value="50">Tai Ampho</option>
+                  <option value="51">Tanya Ukositkul</option>
+                  <option value="52">Than Raskul</option>
+                  <option value="53">Tharin Thamkrongart</option>
+                  <option value="54">Tim Kelsey</option>
+                  <option value="55">Toey Kijpattanasin</option>
+                  <option value="56">Tong Poosri</option>
+                  <option value="57">Wai Pyo</option>
+                  <option value="58">Yui Pitak</option>
+                  <option value="59">Da Wechmongkhonkon</option>
+                  <option value="61">WP Team</option>
+                  <option value="62">Yam Kirawanich</option>
+                  <option value="63">Gam Jiratchanon</option>
+                  <option value="64">Scott Pressimone</option>
+                  <option value="65">DJ Jumchai</option>
+                  <option value="66">Sol Benigno</option>
+                  <option value="67">Martins Benkitis</option>
+                  <option value="68">Ryan Farley</option>
+                  <option value="69">Milly Ngamrungsiri</option>
+                  <option value="70">Cartoon Harindech</option>
+                  <option value="71">Chris Thomson</option>
+                  <option value="72">Mikael Svensson</option>
+                  <option value="73">Auey Palahong</option>
+                  <option value="74">Karn Rujiwarangkul</option>
+                  <option value="75">New Nattawuth</option>
+                  <option value="76">Dan Thitisukpuri</option>
+                  <option value="77">Chamy Chankaew</option>
+                </select>
+              </span>
+              <a class="button is-focused">Edit rows</a>
+            </article>
+          </div>
+            
+          <div class="box">
+            <div class="table-container">
+              <table class="table table-bordered table-condensed table-hover">
+                <thead>
+                  <tr>
+                    <th class="check_col"><input type="checkbox" name="select_all"></th> 
+                    <th class="subject_col">Subject</th>
+                    <th class="comment_col">Comment</th>
+                    <th class="orderable requester_col">Requester</th>
+                    <th class="created_by_col">Created By</th>
+                    <th class="assignee_col">Assignee</th>
+                    <th class="group_col">Group</th>
+                    <th class="ticket_type_col">Ticket Type</th>
+                    <th class="due_at_col">Due Date</th>
+                    <th class="priority_col">Priority</th>
+                    <th class="tags_col">Tags</th>
+                    <th class="private_comment_col">Private Comment</th>
+                    <th class="zendesk_ticket_id_col">Zendesk Ticket Id</th>
+                    <th class="edit_col">Manage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="even">
+                    <td class="check"><input type="checkbox" name="check" value="173"></td>
+                    <td id="subject1">Test SSL on ZTM</td>
+                    <td id="comment1">Test SSL</td>
+                    <td id="requester1">-</td>
+                    <td id="created_by1">Natty</td>
+                    <td id="assignee1">Natty</td>
+                    <td id="group1">R&amp;D</td>
+                    <td id="ticket_type1">Question</td>
+                    <td id="due_at1">-</td>
+                    <td id="priority1">High</td>
+                    <td id="tags1">pk</td>
+                    <td id="private_comment1">Please close this ticket anytime. ;)Thanks!</td>
+                    <td id="zendesk_ticket_id1"></td>
+                    <td class="edit">
+                      <a href="#"><i class="fa fa-pencil modal-button" data-target="#modal-edit-ticket"></i></a>
+                      <a href="#"><i class="fa fa-trash-o"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="modal-edit-ticket" class="modal" >
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Edit Ticket</p>
+      </header>
+      <section class="modal-card-body">
+        <form method="post" action="#">
+          <div class="field">
+            <label class="label">Subject</label>
+            <p class="control">
+              <input class="input" type="text" placeholder="Subject" value="Test SSL on ZTM">
+            </p>
+          </div>
+          <div class="field">
+            <label class="label">Comment</label>
+            <p class="control"><input class="textarea" type="textarea" placeholder="Comment" value="Test SSL"></p>
+          </div>
+          <div class="field">
+            <label class="label">Requester</label>
+            <p class="control">
+              <input class="input" type="text" placeholder="Requester" value="-">
+            </p>
+          </div>
+          <label class="label">Created By</label>
+          <span class="select">
+            <select name="created_by" class="select" id="id_created_by">
+              <option value="">---------</option>
+              <option value="1" selected="">Natty</option>
+              <option value="2">Nid</option>
+              <option value="3">Adam Selley</option>
+              <option value="4">Ake Kaewakson</option>
+              <option value="5">Bank Limsumangkalakul</option>
+              <option value="6">Bell Vathunyu</option>
+              <option value="7">Boat Jaiboon</option>
+              <option value="8">Chamy Chankaew</option>
+              <option value="9">Cory Brown</option>
+              <option value="10">Dan Thitisukpuri</option>
+              <option value="11">Derek Brown</option>
+              <option value="12">Donut Boonsert</option>
+              <option value="13">Etiopia Changjongpradit</option>
+              <option value="14">Eui Sawangket</option>
+              <option value="15">Eve Jones</option>
+              <option value="16">Finance Team</option>
+              <option value="17">Gib Tumsan</option>
+              <option value="18">Gunn Aramwit</option>
+              <option value="19">Ham Jungchansat</option>
+              <option value="20">James Liew</option>
+              <option value="21">Jibb Otida</option>
+              <option value="22">Ken Sooksaewee</option>
+              <option value="23">Kit Boonpetch</option>
+              <option value="24">Max Ratanathanasaet</option>
+              <option value="25">Maybe Akkarawinwarah</option>
+              <option value="26">Melissa Farnworth</option>
+              <option value="27">Michael Keetaluck</option>
+              <option value="28">Mini Sangthong</option>
+              <option value="29">Mo Taesuwan</option>
+              <option value="30">Nan Sanphol</option>
+              <option value="31">Nart Nilpruek</option>
+              <option value="32">Non Piyasil</option>
+              <option value="33">Nut Bunluthangthum</option>
+              <option value="34">Nut Prasongphonchai</option>
+              <option value="35">Oat Archanaiyanunt</option>
+              <option value="36">Oat Yodthiputhai</option>
+              <option value="37">Onn Hinthong</option>
+              <option value="38">Oy Pramuksun</option>
+              <option value="39">Pierre-Emmanuel Mol</option>
+              <option value="40">Ping Nithisettakul</option>
+              <option value="41">Pond Leosirikul</option>
+              <option value="42">Ponpon Sukpatchaporn</option>
+              <option value="43">Poon Burinwatthana</option>
+              <option value="44">Prim Wangwongwiroj</option>
+              <option value="45">Punya Chanprung</option>
+              <option value="46">Ratna Narula</option>
+              <option value="47">Saa Kosiri</option>
+              <option value="48">Sine Tuangsubsin</option>
+              <option value="49">Sundae Thamniyai</option>
+              <option value="50">Tai Ampho</option>
+              <option value="51">Tanya Ukositkul</option>
+              <option value="52">Than Raskul</option>
+              <option value="53">Tharin Thamkrongart</option>
+              <option value="54">Tim Kelsey</option>
+              <option value="55">Toey Kijpattanasin</option>
+              <option value="56">Tong Poosri</option>
+              <option value="57">Wai Pyo</option>
+              <option value="58">Yui Pitak</option>
+              <option value="59">Da Wechmongkhonkon</option>
+              <option value="61">WP Team</option>
+              <option value="62">Yam Kirawanich</option>
+              <option value="63">Gam Jiratchanon</option>
+              <option value="64">Scott Pressimone</option>
+              <option value="65">DJ Jumchai</option>
+              <option value="66">Sol Benigno</option>
+              <option value="67">Martins Benkitis</option>
+              <option value="68">Ryan Farley</option>
+              <option value="69">Milly Ngamrungsiri</option>
+              <option value="70">Cartoon Harindech</option>
+              <option value="71">Chris Thomson</option>
+              <option value="72">Mikael Svensson</option>
+              <option value="73">Auey Palahong</option>
+              <option value="74">Karn Rujiwarangkul</option>
+              <option value="75">New Nattawuth</option>
+              <option value="76">Dan Thitisukpuri</option>
+              <option value="77">Chamy Chankaew</option>
+            </select>
+           </span>
+
+          <label class="label">Assignee</label>
+          <span class="select">
+            <select name="assignee" class="select" id="id_assignee">
+              <option value="" selected="">---------</option>
+              <option value="1" selected="">Natty</option>
+              <option value="2">Nid</option>
+              <option value="3">Adam Selley</option>
+              <option value="4">Ake Kaewakson</option>
+              <option value="5">Bank Limsumangkalakul</option>
+              <option value="6">Bell Vathunyu</option>
+              <option value="7">Boat Jaiboon</option>
+              <option value="8">Chamy Chankaew</option>
+              <option value="9">Cory Brown</option>
+              <option value="10">Dan Thitisukpuri</option>
+              <option value="11">Derek Brown</option>
+              <option value="12">Donut Boonsert</option>
+              <option value="13">Etiopia Changjongpradit</option>
+              <option value="14">Eui Sawangket</option>
+              <option value="15">Eve Jones</option>
+              <option value="16">Finance Team</option>
+              <option value="17">Gib Tumsan</option>
+              <option value="18">Gunn Aramwit</option>
+              <option value="19">Ham Jungchansat</option>
+              <option value="20">James Liew</option>
+              <option value="21">Jibb Otida</option>
+              <option value="22">Ken Sooksaewee</option>
+              <option value="23">Kit Boonpetch</option>
+              <option value="24">Max Ratanathanasaet</option>
+              <option value="25">Maybe Akkarawinwarah</option>
+              <option value="26">Melissa Farnworth</option>
+              <option value="27">Michael Keetaluck</option>
+              <option value="28">Mini Sangthong</option>
+              <option value="29">Mo Taesuwan</option>
+              <option value="30">Nan Sanphol</option>
+              <option value="31">Nart Nilpruek</option>
+              <option value="32">Non Piyasil</option>
+              <option value="33">Nut Bunluthangthum</option>
+              <option value="34">Nut Prasongphonchai</option>
+              <option value="35">Oat Archanaiyanunt</option>
+              <option value="36">Oat Yodthiputhai</option>
+              <option value="37">Onn Hinthong</option>
+              <option value="38">Oy Pramuksun</option>
+              <option value="39">Pierre-Emmanuel Mol</option>
+              <option value="40">Ping Nithisettakul</option>
+              <option value="41">Pond Leosirikul</option>
+              <option value="42">Ponpon Sukpatchaporn</option>
+              <option value="43">Poon Burinwatthana</option>
+              <option value="44">Prim Wangwongwiroj</option>
+              <option value="45">Punya Chanprung</option>
+              <option value="46">Ratna Narula</option>
+              <option value="47">Saa Kosiri</option>
+              <option value="48">Sine Tuangsubsin</option>
+              <option value="49">Sundae Thamniyai</option>
+              <option value="50">Tai Ampho</option>
+              <option value="51">Tanya Ukositkul</option>
+              <option value="52">Than Raskul</option>
+              <option value="53">Tharin Thamkrongart</option>
+              <option value="54">Tim Kelsey</option>
+              <option value="55">Toey Kijpattanasin</option>
+              <option value="56">Tong Poosri</option>
+              <option value="57">Wai Pyo</option>
+              <option value="58">Yui Pitak</option>
+              <option value="59">Da Wechmongkhonkon</option>
+              <option value="61">WP Team</option>
+              <option value="62">Yam Kirawanich</option>
+              <option value="63">Gam Jiratchanon</option>
+              <option value="64">Scott Pressimone</option>
+              <option value="65">DJ Jumchai</option>
+              <option value="66">Sol Benigno</option>
+              <option value="67">Martins Benkitis</option>
+              <option value="68">Ryan Farley</option>
+              <option value="69">Milly Ngamrungsiri</option>
+              <option value="70">Cartoon Harindech</option>
+              <option value="71">Chris Thomson</option>
+              <option value="72">Mikael Svensson</option>
+              <option value="73">Auey Palahong</option>
+              <option value="74">Karn Rujiwarangkul</option>
+              <option value="75">New Nattawuth</option>
+              <option value="76">Dan Thitisukpuri</option>
+              <option value="77">Chamy Chankaew</option>
+            </select>
+          </span>
+          <label class="label">Group</label>
+          <span class="select">
+            <select name="group" class="select" required="" id="id_group">
+              <option value="">---------</option>
+              <option value="1">Development</option>
+              <option value="2">Content</option>
+              <option value="3">Design</option>
+              <option value="4">Editorial</option>
+              <option value="5">Newsletter</option>
+              <option value="6">Marketing</option>
+              <option value="7">PM - Production (Brandy)</option>
+              <option value="8">PM - Support (Mezcal)</option>
+              <option value="9">PM - Support (Talkers)</option>
+              <option value="10">Search &amp; Advertising</option>
+              <option value="11">Finance</option>
+              <option value="12">Marketing Services</option>
+              <option value="13">PM - Support (Shifters)</option>
+              <option value="14">Pronto Tools (Test)</option>
+              <option value="15">PM - Production (Cognac)</option>
+              <option value="16">PM - Production (Whiskey)</option>
+              <option value="17" selected="">R&amp;D</option>
+              <option value="18">Sales</option>
+            </select>
+          </span>
+          <label class="label">Ticket Type</label>
+          <span class="select">
+            <select name="ticket_type" class="select" onchange="check_ticket_type()" id="id_ticket_type">
+              <option value="" selected="">---------</option>
+              <option value="question" selected="">Question</option>
+              <option value="incident">Incident</option>
+              <option value="problem">Problem</option>
+              <option value="task">Task</option>
+            </select>
+          </span>
+
+          <label class="label">Due Date</label>
+          <input type="date" name="due_at" class="input" size="10" id="datepicker" value="-">
+
+          <label class="label">Priority</label>
+          <span class="select">
+            <select name="priority" class="select" required="" id="id_priority">
+              <option value="">---------</option>
+              <option value="high" selected="">High</option>
+              <option value="urgent">Urgent</option>
+              <option value="normal">Normal</option>
+              <option value="low">Low</option>
+            </select>
+          </span>
+
+          <label class="label">Tags</label>
+          <input type="text" name="tags" class="input" id="tags" value="pk">
+
+          <label class="label">Private Comment</label>
+          <textarea name="private_comment" cols="40" rows="13" placeholder="Private Comment" class="textarea" id="id_private_comment" value="Please close this ticket anytime. ;)Thanks!"></textarea>
+          
+          <label class="label">Zendesk Ticket Id</label>
+          <input type="text" name="zendeskTicketId" class="input" id="zendeskTicketId">
+        </form>
+      </section>             
+      <footer class="modal-card-foot">
+        <a class="button is-success">Save changes</a>
+        <a class="button">Cancel</a>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    jQuery(document).ready(function($) {
+      $(".modal-button").click(function() {
+        var target = $(this).data("target");
+        $(target).addClass("is-active");
+      });
+
+      $(".modal-background, .modal-close").click(function() {
+        $(this).parent().removeClass("is-active");
+      });
+
+      $(".modal-card-head .delete, .modal-card-foot .button").click(function() {
+        $("#modal-add-ticket").removeClass("is-active");
+        $("#modal-edit-ticket").removeClass("is-active");
+      });
+    });
+  </script>
+
+  <div id="modal-add-ticket" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Add New Ticket</p>
+      </header>
+      <section class="modal-card-body">
+        <form method="post" action="#">
+          <div class="field">
+            <label class="label">Subject</label>
+              <p class="control">
+                <input class="input" type="text" placeholder="Subject">
+              </p>
+          </div>
+          <div class="field">
+            <label class="label">Comment</label>
+            <p class="control"><input class="textarea" type="textarea" placeholder="Comment">
+            </p>
+          </div>
+          <div class="field">
+            <label class="label">Requester</label>
+            <p class="control">
+              <input class="input" type="text" placeholder="Requester">
+            </p>
+          </div>
+          <label class="label">Created By</label>
+          <span class="select">
+            <select name="created_by" class="select" id="id_created_by">
+              <option value="" selected="">---------</option>
+              <option value="1">Natty</option>
+              <option value="2">Nid</option>
+              <option value="3">Adam Selley</option>
+              <option value="4">Ake Kaewakson</option>
+              <option value="5">Bank Limsumangkalakul</option>
+              <option value="6">Bell Vathunyu</option>
+              <option value="7">Boat Jaiboon</option>
+              <option value="8">Chamy Chankaew</option>
+              <option value="9">Cory Brown</option>
+              <option value="10">Dan Thitisukpuri</option>
+              <option value="11">Derek Brown</option>
+              <option value="12">Donut Boonsert</option>
+              <option value="13">Etiopia Changjongpradit</option>
+              <option value="14">Eui Sawangket</option>
+              <option value="15">Eve Jones</option>
+              <option value="16">Finance Team</option>
+              <option value="17">Gib Tumsan</option>
+              <option value="18">Gunn Aramwit</option>
+              <option value="19">Ham Jungchansat</option>
+              <option value="20">James Liew</option>
+              <option value="21">Jibb Otida</option>
+              <option value="22">Ken Sooksaewee</option>
+              <option value="23">Kit Boonpetch</option>
+              <option value="24">Max Ratanathanasaet</option>
+              <option value="25">Maybe Akkarawinwarah</option>
+              <option value="26">Melissa Farnworth</option>
+              <option value="27">Michael Keetaluck</option>
+              <option value="28">Mini Sangthong</option>
+              <option value="29">Mo Taesuwan</option>
+              <option value="30">Nan Sanphol</option>
+              <option value="31">Nart Nilpruek</option>
+              <option value="32">Non Piyasil</option>
+              <option value="33">Nut Bunluthangthum</option>
+              <option value="34">Nut Prasongphonchai</option>
+              <option value="35">Oat Archanaiyanunt</option>
+              <option value="36">Oat Yodthiputhai</option>
+              <option value="37">Onn Hinthong</option>
+              <option value="38">Oy Pramuksun</option>
+              <option value="39">Pierre-Emmanuel Mol</option>
+              <option value="40">Ping Nithisettakul</option>
+              <option value="41">Pond Leosirikul</option>
+              <option value="42">Ponpon Sukpatchaporn</option>
+              <option value="43">Poon Burinwatthana</option>
+              <option value="44">Prim Wangwongwiroj</option>
+              <option value="45">Punya Chanprung</option>
+              <option value="46">Ratna Narula</option>
+              <option value="47">Saa Kosiri</option>
+              <option value="48">Sine Tuangsubsin</option>
+              <option value="49">Sundae Thamniyai</option>
+              <option value="50">Tai Ampho</option>
+              <option value="51">Tanya Ukositkul</option>
+              <option value="52">Than Raskul</option>
+              <option value="53">Tharin Thamkrongart</option>
+              <option value="54">Tim Kelsey</option>
+              <option value="55">Toey Kijpattanasin</option>
+              <option value="56">Tong Poosri</option>
+              <option value="57">Wai Pyo</option>
+              <option value="58">Yui Pitak</option>
+              <option value="59">Da Wechmongkhonkon</option>
+              <option value="61">WP Team</option>
+              <option value="62">Yam Kirawanich</option>
+              <option value="63">Gam Jiratchanon</option>
+              <option value="64">Scott Pressimone</option>
+              <option value="65">DJ Jumchai</option>
+              <option value="66">Sol Benigno</option>
+              <option value="67">Martins Benkitis</option>
+              <option value="68">Ryan Farley</option>
+              <option value="69">Milly Ngamrungsiri</option>
+              <option value="70">Cartoon Harindech</option>
+              <option value="71">Chris Thomson</option>
+              <option value="72">Mikael Svensson</option>
+              <option value="73">Auey Palahong</option>
+              <option value="74">Karn Rujiwarangkul</option>
+              <option value="75">New Nattawuth</option>
+              <option value="76">Dan Thitisukpuri</option>
+              <option value="77">Chamy Chankaew</option>
+            </select>
+          </span>
+          
+          <label class="label">Assignee</label>
+          <span class="select">
+            <select name="assignee" class="select" id="id_assignee">
+              <option value="" selected="">---------</option>
+              <option value="1">Natty</option>
+              <option value="2">Nid</option>
+              <option value="3">Adam Selley</option>
+              <option value="4">Ake Kaewakson</option>
+              <option value="5">Bank Limsumangkalakul</option>
+              <option value="6">Bell Vathunyu</option>
+              <option value="7">Boat Jaiboon</option>
+              <option value="8">Chamy Chankaew</option>
+              <option value="9">Cory Brown</option>
+              <option value="10">Dan Thitisukpuri</option>
+              <option value="11">Derek Brown</option>
+              <option value="12">Donut Boonsert</option>
+              <option value="13">Etiopia Changjongpradit</option>
+              <option value="14">Eui Sawangket</option>
+              <option value="15">Eve Jones</option>
+              <option value="16">Finance Team</option>
+              <option value="17">Gib Tumsan</option>
+              <option value="18">Gunn Aramwit</option>
+              <option value="19">Ham Jungchansat</option>
+              <option value="20">James Liew</option>
+              <option value="21">Jibb Otida</option>
+              <option value="22">Ken Sooksaewee</option>
+              <option value="23">Kit Boonpetch</option>
+              <option value="24">Max Ratanathanasaet</option>
+              <option value="25">Maybe Akkarawinwarah</option>
+              <option value="26">Melissa Farnworth</option>
+              <option value="27">Michael Keetaluck</option>
+              <option value="28">Mini Sangthong</option>
+              <option value="29">Mo Taesuwan</option>
+              <option value="30">Nan Sanphol</option>
+              <option value="31">Nart Nilpruek</option>
+              <option value="32">Non Piyasil</option>
+              <option value="33">Nut Bunluthangthum</option>
+              <option value="34">Nut Prasongphonchai</option>
+              <option value="35">Oat Archanaiyanunt</option>
+              <option value="36">Oat Yodthiputhai</option>
+              <option value="37">Onn Hinthong</option>
+              <option value="38">Oy Pramuksun</option>
+              <option value="39">Pierre-Emmanuel Mol</option>
+              <option value="40">Ping Nithisettakul</option>
+              <option value="41">Pond Leosirikul</option>
+              <option value="42">Ponpon Sukpatchaporn</option>
+              <option value="43">Poon Burinwatthana</option>
+              <option value="44">Prim Wangwongwiroj</option>
+              <option value="45">Punya Chanprung</option>
+              <option value="46">Ratna Narula</option>
+              <option value="47">Saa Kosiri</option>
+              <option value="48">Sine Tuangsubsin</option>
+              <option value="49">Sundae Thamniyai</option>
+              <option value="50">Tai Ampho</option>
+              <option value="51">Tanya Ukositkul</option>
+              <option value="52">Than Raskul</option>
+              <option value="53">Tharin Thamkrongart</option>
+              <option value="54">Tim Kelsey</option>
+              <option value="55">Toey Kijpattanasin</option>
+              <option value="56">Tong Poosri</option>
+              <option value="57">Wai Pyo</option>
+              <option value="58">Yui Pitak</option>
+              <option value="59">Da Wechmongkhonkon</option>
+              <option value="61">WP Team</option>
+              <option value="62">Yam Kirawanich</option>
+              <option value="63">Gam Jiratchanon</option>
+              <option value="64">Scott Pressimone</option>
+              <option value="65">DJ Jumchai</option>
+              <option value="66">Sol Benigno</option>
+              <option value="67">Martins Benkitis</option>
+              <option value="68">Ryan Farley</option>
+              <option value="69">Milly Ngamrungsiri</option>
+              <option value="70">Cartoon Harindech</option>
+              <option value="71">Chris Thomson</option>
+              <option value="72">Mikael Svensson</option>
+              <option value="73">Auey Palahong</option>
+              <option value="74">Karn Rujiwarangkul</option>
+              <option value="75">New Nattawuth</option>
+              <option value="76">Dan Thitisukpuri</option>
+              <option value="77">Chamy Chankaew</option>
+            </select>
+          </span>
+
+          <label class="label">Group</label>
+          <span class="select">
+            <select name="group" class="select" required="" id="id_group">
+              <option value="" selected="">---------</option>
+              <option value="1">Development</option>
+              <option value="2">Content</option>
+              <option value="3">Design</option>
+              <option value="4">Editorial</option>
+              <option value="5">Newsletter</option>
+              <option value="6">Marketing</option>
+              <option value="7">PM - Production (Brandy)</option>
+              <option value="8">PM - Support (Mezcal)</option>
+              <option value="9">PM - Support (Talkers)</option>
+              <option value="10">Search &amp; Advertising</option>
+              <option value="11">Finance</option>
+              <option value="12">Marketing Services</option>
+              <option value="13">PM - Support (Shifters)</option>
+              <option value="14">Pronto Tools (Test)</option>
+              <option value="15">PM - Production (Cognac)</option>
+              <option value="16">PM - Production (Whiskey)</option>
+              <option value="17">R&amp;D</option>
+              <option value="18">Sales</option>
+            </select>
+          </span>
+
+          <label class="label">Ticket Type</label>
+          <span class="select">
+            <select name="ticket_type" class="select" onchange="check_ticket_type()" id="id_ticket_type">
+              <option value="" selected="">---------</option>
+              <option value="question">Question</option>
+              <option value="incident">Incident</option>
+              <option value="problem">Problem</option>
+              <option value="task">Task</option>
+            </select>
+          </span>
+
+          <label class="label">Due Date</label>
+          <input type="date" name="due_at" class="input" size="10" id="datepicker">
+
+          <label class="label">Priority</label>
+          <span class="select">
+            <select name="priority" class="select" required="" id="id_priority">
+              <option value="" selected="">---------</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+              <option value="normal">Normal</option>
+              <option value="low">Low</option>
+            </select>
+          </span>
+
+          <label class="label">Tags</label>
+          <input type="text" name="tags" class="input" id="tags">
+          
+          <label class="label">Private Comment</label>
+          <textarea name="private_comment" cols="40" rows="13" placeholder="Private Comment" class="textarea" id="id_private_comment"></textarea>
+          
+          <label class="label">Zendesk Ticket Id</label>
+          <input type="text" name="zendeskTicketId" class="input" id="zendeskTicketId">
+        </form>
+      </section>
+      <footer class="modal-card-foot">
+        <a class="button is-success">Save changes</a>
+        <a class="button">Cancel</a>
+      </footer>
+    </div>
+  </div>
+            
+</body>
+</html>
+
