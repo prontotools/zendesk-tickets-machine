@@ -81,7 +81,7 @@ class TicketTableTest(TestCase):
         ticketTable = TicketTable(Ticket.objects.all())
 
         expected_fields = [
-            '<input type="checkbox" name="check" value="1"/>',
+            f'<input type="checkbox" name="check" value="{ticket.id}"/>',
             'Edit',
             'Delete',
             'Welcome to Pronto Service',
@@ -99,7 +99,6 @@ class TicketTableTest(TestCase):
             'Private comment',
             '24328'
         ]
-
         for each in expected_fields:
             self.assertTrue(each in ticketTable.as_values()[1])
 

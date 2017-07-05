@@ -11,8 +11,8 @@ from boards.models import Board
 
 class TicketEditViewTest(TestCase):
     def setUp(self):
-        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
-        agent_group = AgentGroup.objects.create(
+        self.agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        self.agent_group = AgentGroup.objects.create(
             name='Development',
             zendesk_group_id='123'
         )
@@ -21,9 +21,9 @@ class TicketEditViewTest(TestCase):
             subject='Ticket 1',
             comment='Comment 1',
             requester='client@hisotech.com',
-            created_by=agent,
-            assignee=agent,
-            group=agent_group,
+            created_by=self.agent,
+            assignee=self.agent,
+            group=self.agent_group,
             ticket_type='question',
             priority='urgent',
             tags='welcome',
@@ -188,21 +188,21 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="created_by" class="form-control" ' \
-            'id="id_created_by">'
-        self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1" selected>Kan</option>'
+            'id="id_created_by">\n  <option value="">---------' \
+            f'</option>\n\n  <option value="{self.agent.id}" ' \
+            'selected>Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="assignee" class="form-control" ' \
-            'id="id_assignee">'
-        self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1" selected>Kan</option>'
+            'id="id_assignee">\n  <option value="">---------</option>\n\n  ' \
+            f'<option value="{self.agent.id}" selected>Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="group" class="form-control" ' \
             'required id="id_group">'
         self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1" selected>Development</option>'
+        expected = f'<option value="{self.agent_group.id}" '\
+            'selected>Development</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="ticket_type" class="form-control" ' \
@@ -312,7 +312,10 @@ class TicketEditViewTest(TestCase):
                 reverse('ticket_edit',
                         kwargs={'ticket_id': self.ticket.id})
             )
-            self.assertRedirects(response, '/login/?next=/tickets/1/')
+            self.assertRedirects(
+                response,
+                f'/login/?next=/tickets/{self.ticket.id}/'
+            )
 
 
 class TicketDeleteViewTest(TestCase):

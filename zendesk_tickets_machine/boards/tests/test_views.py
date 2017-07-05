@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import datetime
 from unittest.mock import call, patch
 
 from django.conf import settings
@@ -8,7 +7,6 @@ from django.contrib.messages import constants as MSG
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.utils.timezone import utc
 
 from ..models import Board, BoardGroup
 from agents.models import Agent
@@ -253,9 +251,9 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="created_by" class="form-control" ' \
-            'id="id_created_by">'
-        self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1">Natty</option>'
+            'id="id_created_by">\n  <option value="" selected>---------' \
+            f'</option>\n\n  <option value="{self.agent.id}">' \
+            f'{self.agent.name}</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<textarea name="comment" cols="40" rows="6" ' \
@@ -268,15 +266,17 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="assignee" class="form-control" ' \
-            'id="id_assignee">'
-        self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1">Natty</option>'
+            'id="id_assignee">\n  <option value="" selected>---------' \
+            f'</option>\n\n  <option value="{self.agent.id}">' \
+            f'{self.agent.name}</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="group" class="form-control" ' \
             'required id="id_group">'
         self.assertContains(response, expected, status_code=200)
-        expected = '<option value="1">Development</option>'
+
+        expected = f'<option value="{self.agent_group.id}">' \
+            f'{self.agent_group.name}</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="ticket_type" class="form-control" ' \
@@ -383,231 +383,12 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-
         expected = '<a href="%s" class="btn btn-warning pull-right">' \
             'Reset Tickets</a>' % reverse(
                 'board_reset',
                 kwargs={'slug': self.board.slug}
             )
         self.assertContains(response, expected, count=1, status_code=200)
-
-    def test_board_single_view_should_have_board_name(self):
-        self.login()
-        response = self.client.get(
-            reverse('board_single', kwargs={'slug': self.board.slug})
-        )
-
-        expected = '<h1>%s</h1>' % self.board.name
-        self.assertContains(response, expected, status_code=200)
-
-    def test_board_single_view_should_show_active_ticket_list(self):
-        self.login()
-        response = self.client.get(
-            reverse('board_single', kwargs={'slug': self.board.slug})
-        )
-
-        expected = '<tr class="even">' \
-            '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/></td>' \
-            '<td class="edit"><a href="%s">Edit</a></td>' \
-            '<td class="delete"><a href="%s">Delete</a></td>' \
-            '<td class="subject">Ticket 1</td>' \
-            '<td class="comment">Comment 1</td>' \
-            '<td class="requester">client@hisotech.com</td>' \
-            '<td class="created_by">Natty</td>' \
-            '<td class="assignee">Natty</td>' \
-            '<td class="group">Development</td>' \
-            '<td class="ticket_type">Question</td>' \
-            '<td class="due_at">-</td>' \
-            '<td class="priority">Urgent</td>' \
-            '<td class="tags">welcome</td>' \
-            '<td class="private_comment">Private comment</td>' \
-            '<td class="zendesk_ticket_id">' \
-            '<a href="%s" target="_blank">24328</a></td></tr>' % (
-                reverse(
-                    'ticket_edit',
-                    kwargs={'ticket_id': self.first_ticket.id}
-                ),
-                reverse(
-                    'ticket_delete',
-                    kwargs={'ticket_id': self.first_ticket.id}
-                ),
-                settings.ZENDESK_URL + '/agent/tickets/24328'
-            )
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<tr class="even">' \
-            '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/></td>' \
-            '<td class="edit"><a href="%s">Edit</a></td>' \
-            '<td class="delete"><a href="%s">Delete</a></td>' \
-            '<td class="subject">Ticket (Deleted)</td>' \
-            '<td class="comment">Comment 1</td>' \
-            '<td class="requester">client@hisotech.com</td>' \
-            '<td class="created_by">Natty</td>' \
-            '<td class="assignee">Natty</td>' \
-            '<td class="group">Development</td>' \
-            '<td class="ticket_type">Question</td>' \
-            '<td class="due_at">-</td>' \
-            '<td class="priority">Urgent</td>' \
-            '<td class="tags">welcome</td>' \
-            '<td class="private_comment">Private comment</td>' \
-            '<td class="zendesk_ticket_id">' \
-            '<a href="%s" target="_blank">24328</a></td></tr>' % (
-                reverse(
-                    'ticket_edit',
-                    kwargs={'ticket_id': self.deleted_ticket.id}
-                ),
-                reverse(
-                    'ticket_delete',
-                    kwargs={'ticket_id': self.deleted_ticket.id}
-                ),
-                settings.ZENDESK_URL + '/agent/tickets/24330'
-            )
-        self.assertNotContains(response, expected, status_code=200)
-
-        expected = '<tr><td><a href="/%s/">Edit</a> | ' \
-            '<a href="/%s/delete/">Delete</a></td>' \
-            '<td>Ticket 2</td><td>Comment 2</td>' \
-            '<td>client+another@hisotech.com</td><td>1095195474</td>' \
-            '<td>Natty</td>' \
-            '<td>Natty</td><td>Development</td>' \
-            '<td>question</td><td>None</td>' \
-            '<td>urgent</td><td>welcome internal</td>' \
-            '<td>Private comment</td>' \
-            '<td></td></tr>' % (
-                self.second_ticket.id,
-                self.second_ticket.id
-            )
-        self.assertNotContains(response, expected, status_code=200)
-
-    @patch('boards.views.Ticket')
-    def test_board_single_view_with_get_should_order_by_id_in_ascending_order(
-        self,
-        mock
-    ):
-        mock.objects.filter.return_value.order_by.return_value = []
-
-        self.login()
-        self.client.get(
-            reverse('board_single', kwargs={'slug': self.board.slug})
-        )
-        mock.objects.filter.return_value.order_by.assert_called_once_with('id')
-
-    @patch('boards.views.Ticket')
-    def test_board_single_view_with_post_should_order_by_id_in_ascending_order(
-        self,
-        mock
-    ):
-        mock.objects.filter.return_value.order_by.return_value = []
-
-        self.login()
-        data = {
-            'subject': 'Welcome to Pronto Service',
-            'comment': 'This is a comment.',
-            'requester': 'client@hisotech.com',
-            'created_by': self.agent.id,
-            'assignee': self.agent.id,
-            'group': self.agent_group.id,
-            'ticket_type': 'question',
-            'priority': 'urgent',
-            'tags': 'welcome',
-            'private_comment': 'Private comment',
-            'zendesk_ticket_id': '24328',
-            'board': self.board.id
-        }
-        self.client.post(
-            reverse('board_single', kwargs={'slug': self.board.slug}),
-            data=data
-        )
-        mock.objects.filter.return_value.order_by.assert_called_once_with('id')
-
-    def test_board_single_view_should_have_date_format(self):
-        self.login()
-        due_at = datetime.datetime(2017, 1, 1, 12, 30, 59, 0).replace(
-            tzinfo=utc
-        )
-        Ticket.objects.create(
-            subject='Ticket 1',
-            comment='Comment 1',
-            requester='client@hisotech.com',
-            created_by=self.agent,
-            assignee=self.agent,
-            group=self.agent_group,
-            ticket_type='question',
-            due_at=due_at,
-            priority='urgent',
-            tags='welcome',
-            private_comment='Private comment',
-            zendesk_ticket_id='24328',
-            board=self.board
-        )
-        response = self.client.get(
-            reverse('board_single', kwargs={'slug': self.board.slug})
-        )
-        expected = '<td class="due_at">Jan 01, 2017</td>'
-        self.assertContains(response, expected, status_code=200)
-
-    def test_board_single_view_should_show_ticket_type_as_dashes_if_no_value(
-        self
-    ):
-        self.login()
-        self.first_ticket.ticket_type = None
-        self.first_ticket.save()
-
-        response = self.client.get(
-            reverse('board_single', kwargs={'slug': self.board.slug})
-        )
-
-        expected = '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/>' \
-            '</td><td class="edit"><a href="%s">Edit</a></td>' \
-            '<td class="delete"><a href="%s">Delete</a></td>' \
-            '<td class="subject">Ticket 1</td>' \
-            '<td class="comment">Comment 1</td>' \
-            '<td class="requester">client@hisotech.com</td>' \
-            '<td class="created_by">Natty</td>' \
-            '<td class="assignee">Natty</td>' \
-            '<td class="group">Development</td>' \
-            '<td class="ticket_type">-</td>' \
-            '<td class="due_at">-</td>' \
-            '<td class="priority">Urgent</td>' \
-            '<td class="tags">welcome</td>' \
-            '<td class="private_comment">Private comment</td>' \
-            '<td class="zendesk_ticket_id">' \
-            '<a href="%s" target="_blank">24328</a></td>' % (
-                reverse(
-                    'ticket_edit',
-                    kwargs={'ticket_id': self.first_ticket.id}
-                ),
-                reverse(
-                    'ticket_delete',
-                    kwargs={'ticket_id': self.first_ticket.id}
-                ),
-                settings.ZENDESK_URL + '/agent/tickets/24328'
-            )
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/>' \
-            '</td><td class="edit"><a href="%s">Edit</a></td>' \
-            '<td class="delete"><a href="%s">Delete</a></td>' \
-            '<td class="subject">Ticket 2</td>' \
-            '<td class="comment">Comment 2</td>' \
-            '<td class="requester">client+another@hisotech.com</td>' \
-            '<td class="created_by">1095195474</td>' \
-            '<td class="assignee">Natty</td>' \
-            '<td class="group">Development</td>' \
-            '<td class="ticket_type">question</td>' \
-            '<td class="due_at">-</td>' \
-            '<td class="priority">urgent</td>' \
-            '<td class="tags">welcome internal</td>' \
-            '<td class="private_comment">Private comment</td>' \
-            '<td class="zendesk_ticket_id">-</td>' % (
-                self.second_ticket.id,
-                self.second_ticket.id
-            )
-        self.assertNotContains(response, expected, status_code=200)
 
     def test_board_single_view_should_show_assignee_as_dashes_if_no_value(
         self
@@ -621,7 +402,8 @@ class BoardSingleViewTest(TestCase):
         )
 
         expected = '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/>' \
+            '<input type="checkbox" name="check" ' \
+            f'value="{self.first_ticket.id}"/>' \
             '</td><td class="edit"><a href="%s">Edit</a></td>' \
             '<td class="delete"><a href="%s">Delete</a></td>' \
             '<td class="subject">Ticket 1</td>' \
@@ -650,7 +432,8 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/>' \
+            '<input type="checkbox" name="check" '\
+            f'value="{self.second_ticket.id}"/>' \
             '</td><td class="edit"><a href="%s">Edit</a></td>' \
             '<td class="delete"><a href="%s">Delete</a></td>' \
             '<td class="subject">Ticket 2</td>' \
@@ -682,7 +465,8 @@ class BoardSingleViewTest(TestCase):
         )
 
         expected = '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/>' \
+            '<input type="checkbox" name="check" '\
+            f'value="{self.first_ticket.id}"/>' \
             '</td><td class="edit"><a href="%s">Edit</a></td>' \
             '<td class="delete"><a href="%s">Delete</a></td>' \
             '<td class="subject">Ticket 1</td>' \
@@ -711,7 +495,8 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/>' \
+            '<input type="checkbox" name="check" '\
+            f'value="{self.second_ticket.id}"/>' \
             '</td><td class="edit"><a href="%s">Edit</a></td>' \
             '<td class="delete"><a href="%s">Delete</a></td>' \
             '<td class="subject">Ticket 2</td>' \
@@ -771,7 +556,8 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<td class="check">' \
-            '<input type="checkbox" name="check" value="1"/>' \
+            '<input type="checkbox" name="check" '\
+            f'value="{self.first_ticket.id}"/>' \
             '</td><td class="edit"><a href="%s">Edit</a></td>' \
             '<td class="delete"><a href="%s">Delete</a></td>' \
             '<td class="subject">Ticket 1</td>' \
@@ -798,9 +584,8 @@ class BoardSingleViewTest(TestCase):
                 settings.ZENDESK_URL + '/agent/tickets/24328'
             )
         self.assertContains(response, expected, status_code=200)
-
         expected = '<td class="check">' \
-            '<input type="checkbox" name="check" value="4"/></td>' \
+            f'<input type="checkbox" name="check" value="{ticket.id}"/></td>' \
             '<td class="edit"><a href="%s">Edit</a></td>' \
             '<td class="delete"><a href="%s">Delete</a></td>' \
             '<td class="subject">Welcome to Pronto Service</td>' \
@@ -1211,6 +996,22 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         ticket_calls = [
             call({
                 'ticket': {
+                    'subject': 'Ticket 2',
+                    'comment': {
+                        'body': 'Comment 2',
+                        'author_id': '123'
+                    },
+                    'requester_id': '2',
+                    'assignee_id': '123',
+                    'group_id': '123',
+                    'type': 'question',
+                    'due_at': '',
+                    'priority': 'low',
+                    'tags': ['welcome']
+                }
+            }),
+            call({
+                'ticket': {
                     'subject': 'Ticket 1',
                     'comment': {
                         'body': 'Comment 1',
@@ -1225,22 +1026,6 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                     'tags': ['welcome']
                 }
             }),
-            call({
-                'ticket': {
-                    'subject': 'Ticket 2',
-                    'comment': {
-                        'body': 'Comment 2',
-                        'author_id': '123'
-                    },
-                    'requester_id': '2',
-                    'assignee_id': '123',
-                    'group_id': '123',
-                    'type': 'question',
-                    'due_at': '',
-                    'priority': 'low',
-                    'tags': ['welcome']
-                }
-            })
         ]
         mock_ticket.return_value.create.assert_has_calls(ticket_calls)
 
