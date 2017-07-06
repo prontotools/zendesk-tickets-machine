@@ -6,6 +6,7 @@
       <h5 class="alert alert-danger">{{ message }}</h5>
     {% endif %}
   {% endfor %}
+<<<<<<< HEAD
   {% spaceless %}
   <section class="section">
     <div class="container">
@@ -29,4 +30,23 @@
     </div>
   </section>
   {% endspaceless %}
+=======
+  <h1>Boards</h1>
+  <ul>
+    {% for board_group, boards_in_group in boards %}
+      <li>{{ board_group.name }}</li>
+      <ul>
+      {% for board in boards_in_group %}
+        <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
+      {% endfor %}
+      </ul>
+    {% endfor %}
+    <li>Undefined Group</li>
+    <ul>
+      {% for board in ungrouped_boards %}
+        <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </ul>
+>>>>>>> a39d4838ff06f15dbcf6ec8d31741a7c9c6af894
 {% endblock %}
