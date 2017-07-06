@@ -1,26 +1,32 @@
 {% extends "base.html" %}
+
 {% block body %}
   {% for message in messages %}
     {% if message.level == 40 %}
       <h5 class="alert alert-danger">{{ message }}</h5>
     {% endif %}
   {% endfor %}
-  <h1>Boards</h1>
-  <ul>
-    {% for board_group, boards_in_group in boards %}
-      <li>{{ board_group.name }}</li>
-      <ul>
-      {% for board in boards_in_group %}
-        <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
-      {% endfor %}
-      </ul>
-    {% endfor %}
-    <li>Undefined Group</li>
-    <ul>
-      {% for board in ungrouped_boards %}
-        <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
-      {% endfor %}
-    </ul>
-  </ul>
-  <a href="{% url 'logout' %}">logout</a>
+  {% spaceless %}
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-3">
+          <p class="title">Boards</p>
+            <aside class="menu is-info">
+              <ul class="menu-list">
+                {% for board_group, boards_in_group in boards %}
+                  <li><a href="#">{{ board_group.name }}</a></li>
+                {% endfor %}
+                <li><a href="#">Undefined Group</a></li>
+              </ul>
+            </aside>
+        </div>
+        <div class="column is-9">
+          <div class="box">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endspaceless %}
 {% endblock %}
