@@ -27,6 +27,27 @@ class BoardViewTest(TestCase):
         expected = '<title>Pronto Zendesk Tickets Machine</title>'
         self.assertContains(response, expected, status_code=200)
 
+    def test_board_view_should_have_bulma_css(self):
+        self.login()
+        response = self.client.get(reverse('boards'))
+
+        expected = '<link href="/static/css/bulma.css" ' \
+            'rel="stylesheet" type="text/css"/>'
+        self.assertContains(response, expected, status_code=200)
+
+    def test_board_view_should_have_nav_bar(self):
+        self.login()
+        response = self.client.get(reverse('boards'))
+
+        expected = '<nav class="nav has-shadow" id="top">' \
+            '<div class="nav-left"><a class="nav-item" href="/">' \
+            '<img src="/static/img/pronto-logo-header.png" ' \
+            'alt="pronto-logo"></a></div><div class="nav-right">' \
+            '<strong class="nav-item">natty</strong>' \
+            '<a href="%s" class="nav-item"><span>Log Out</span>' \
+            '</a></div></nav>' % reverse('logout')
+        self.assertContains(response, expected, status_code=200)
+
     def test_board_view_should_show_boards_in_board_group(self):
         self.login()
         board_group = BoardGroup.objects.create(name='CP Production')
@@ -81,15 +102,6 @@ class BoardViewTest(TestCase):
             ),
             board.name
         )
-        self.assertContains(response, expected, status_code=200)
-
-    def test_board_view_should_have_logout(self):
-        self.login()
-        Board.objects.create(name='Pre-Production')
-
-        response = self.client.get(reverse('boards'))
-
-        expected = '<a href="/logout/">logout</a>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_required_login(self):

@@ -23,5 +23,4 @@ urlpatterns = [
     url(r'^(?P<slug>[\w-]+)/tickets/$',
         login_required(BoardZendeskTicketsCreateView.as_view()),
         name='board_tickets_create'),
-
 ]

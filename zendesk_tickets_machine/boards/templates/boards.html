@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block body %}
   {% for message in messages %}
     {% if message.level == 40 %}
@@ -22,5 +23,4 @@
       {% endfor %}
     </ul>
   </ul>
-  <a href="{% url 'logout' %}">logout</a>
 {% endblock %}
