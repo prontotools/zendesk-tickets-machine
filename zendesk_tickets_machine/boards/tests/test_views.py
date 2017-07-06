@@ -27,69 +27,48 @@ class BoardViewTest(TestCase):
         expected = '<title>Pronto Zendesk Tickets Machine</title>'
         self.assertContains(response, expected, status_code=200)
 
-    def test_board_view_should_show_boards_in_board_group(self):
+    def test_board_view_should_have_bulma_css(self):
         self.login()
-        board_group = BoardGroup.objects.create(name='CP Production')
-        first_board = Board.objects.create(
-            name='Pre-Production',
-            board_group=board_group
-        )
-        second_board = Board.objects.create(
-            name='Monthly Newsletter',
-            board_group=board_group
-        )
-
         response = self.client.get(reverse('boards'))
 
-        expected = '<h1>Boards</h1>'
+        expected = '<link href="/static/css/bulma.css" ' \
+            'rel="stylesheet" type="text/css"/>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<li>CP Production</li>'
+    def test_board_view_should_have_nav_bar(self):
+        self.login()
+        response = self.client.get(reverse('boards'))
+
+        expected = '<nav class="nav has-shadow" id="top">' \
+            '<div class="nav-left"><a class="nav-item" href="/">' \
+            '<img src="/static/img/pronto-logo-header.png" ' \
+            'alt="Pronto Logo"></a></div><div class="nav-right">' \
+            '<strong class="nav-item">natty</strong>' \
+            '<a href="%s" class="nav-item"><span>Log Out</span>' \
+            '</a></div></nav>' % reverse('logout')
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<li><a href="%s">%s</a></li>' % (
-            reverse(
-                'board_single', kwargs={'slug': first_board.slug}
-            ),
-            first_board.name
-        )
+    def test_board_view_should_show_boards_in_board_group(self):
+        self.login()
+        BoardGroup.objects.create(name='CP Production')
+        response = self.client.get(reverse('boards'))
+
+        expected = '<p class="title">Boards</p>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<li><a href="%s">%s</a></li>' % (
-            reverse(
-                'board_single', kwargs={'slug': second_board.slug}
-            ),
-            second_board.name
-        )
+        expected = '<aside class="menu is-info"><ul class="menu-list">' \
+            '<li><a href="#">CP Production</a></li>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_ungrouped_boards(self):
         self.login()
-        board = Board.objects.create(name='Pre-Production')
-
-        response = self.client.get(reverse('boards'))
-
-        expected = '<h1>Boards</h1>'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<li>Undefined Group</li>'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<li><a href="%s">%s</a></li>' % (
-            reverse(
-                'board_single', kwargs={'slug': board.slug}
-            ),
-            board.name
-        )
-        self.assertContains(response, expected, status_code=200)
-
-    def test_board_view_should_have_logout(self):
-        self.login()
         Board.objects.create(name='Pre-Production')
-
         response = self.client.get(reverse('boards'))
 
-        expected = '<a href="/logout/">logout</a>'
+        expected = '<p class="title">Boards</p>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<li><a href="#">Undefined Group</a></li>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_required_login(self):
