@@ -49,7 +49,7 @@ class BoardViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_board_groups(self):
-        BoardGroup.objects.create(name='CP Production')
+        first_board_group = BoardGroup.objects.create(name='CP Production')
 
         self.login()
         response = self.client.get(reverse('boards'))
@@ -57,9 +57,11 @@ class BoardViewTest(TestCase):
         expected = '<p class="title">Boards</p>'
         self.assertContains(response, expected, status_code=200)
 
+        first_url = reverse('boards') + f'?board_group={first_board_group.id}'
+        second_url = reverse('boards') + f'?board_group=-1'
         expected = '<aside class="menu is-info"><ul class="menu-list">' \
-            '<li><a href="#">CP Production</a></li>' \
-            '<li><a href="#">Undefined Group</a></li>'
+            f'<li><a href="{first_url}">CP Production</a></li>' \
+            f'<li><a href="{second_url}">Undefined Group</a></li>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_boards(self):
@@ -80,19 +82,22 @@ class BoardViewTest(TestCase):
         self.login()
         response = self.client.get(reverse('boards'))
 
-        expected = f'<li><a href="#">{first_board_group.name}</a></li>'
+        url = reverse('boards') + f'?board_group={first_board_group.id}'
+        expected = f'<li><a href="{url}">{first_board_group.name}</a></li>'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = f'<a href="#">{first_board.name}</a>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = f'<li><a href="#">{second_board_group.name}</a></li>'
+        url = reverse('boards') + f'?board_group={second_board_group.id}'
+        expected = f'<li><a href="{url}">{second_board_group.name}</a></li>'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = f'<a href="#">{second_board.name}</a>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = f'<li><a href="#">Undefined Group</a></li>'
+        url = reverse('boards') + '?board_group=-1'
+        expected = f'<li><a href="{url}">Undefined Group</a></li>'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = f'<a href="#">{third_board.name}</a>'
@@ -119,17 +124,23 @@ class BoardViewTest(TestCase):
         url = reverse('boards') + f'?board_group={first_board_group.id}'
         response = self.client.get(url)
 
-        expected = f'<li><a href="#">{first_board_group.name}</a></li>'
+        url = reverse('boards') + f'?board_group={first_board_group.id}'
+        expected = f'<li><a href="{url}">{first_board_group.name}</a></li>'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = f'<a href="#">{first_board.name}</a>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = f'<li><a href="#">{second_board_group.name}</a></li>'
+        url = reverse('boards') + f'?board_group={second_board_group.id}'
+        expected = f'<li><a href="{url}">{second_board_group.name}</a></li>'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = f'<a href="#">{second_board.name}</a>'
         self.assertNotContains(response, expected, status_code=200)
+
+        url = reverse('boards') + '?board_group=-1'
+        expected = f'<li><a href="{url}">Undefined Group</a></li>'
+        self.assertContains(response, expected, count=1, status_code=200)
 
         expected = f'<a href="#">{third_board.name}</a>'
         self.assertNotContains(response, expected, status_code=200)

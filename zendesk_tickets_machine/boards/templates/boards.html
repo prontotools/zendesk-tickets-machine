@@ -15,10 +15,9 @@
             <aside class="menu is-info">
               <ul class="menu-list">
                 {% for board_group in board_groups %}
-                   <li><a href="#">{{ board_group.name }}</a></li>
-
+                   <li><a href="{% url 'boards' %}?board_group={{board_group.id}}">{{ board_group.name }}</a></li>
                 {% endfor %}
-                <li><a href="#">Undefined Group</a></li>
+                <li><a href="{% url 'boards' %}?board_group=-1">Undefined Group</a></li>
               </ul>
             </aside>
         </div>
@@ -40,3 +39,4 @@
   </section>
   {% endspaceless %}
 {% endblock %}
+
