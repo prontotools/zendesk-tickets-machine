@@ -48,7 +48,7 @@ class BoardViewTest(TestCase):
             '</a></div></nav>' % reverse('logout')
         self.assertContains(response, expected, status_code=200)
 
-    def test_board_view_should_show_boards_in_board_group(self):
+    def test_board_view_should_show_board_groups(self):
         BoardGroup.objects.create(name='CP Production')
 
         self.login()
@@ -58,19 +58,8 @@ class BoardViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<aside class="menu is-info"><ul class="menu-list">' \
-            '<li><a href="#">CP Production</a></li>'
-        self.assertContains(response, expected, status_code=200)
-
-    def test_board_view_should_show_ungrouped_boards(self):
-        Board.objects.create(name='Pre-Production')
-
-        self.login()
-        response = self.client.get(reverse('boards'))
-
-        expected = '<p class="title">Boards</p>'
-        self.assertContains(response, expected, status_code=200)
-
-        expected = '<li><a href="#">Undefined Group</a></li>'
+            '<li><a href="#">CP Production</a></li>' \
+            '<li><a href="#">Undefined Group</a></li>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_required_login(self):
