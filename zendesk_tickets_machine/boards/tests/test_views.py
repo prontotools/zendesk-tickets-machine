@@ -49,8 +49,9 @@ class BoardViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_boards_in_board_group(self):
-        self.login()
         BoardGroup.objects.create(name='CP Production')
+
+        self.login()
         response = self.client.get(reverse('boards'))
 
         expected = '<p class="title">Boards</p>'
@@ -61,8 +62,9 @@ class BoardViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
     def test_board_view_should_show_ungrouped_boards(self):
-        self.login()
         Board.objects.create(name='Pre-Production')
+
+        self.login()
         response = self.client.get(reverse('boards'))
 
         expected = '<p class="title">Boards</p>'
