@@ -14,7 +14,7 @@
           <p class="title">Boards</p>
             <aside class="menu is-info">
               <ul class="menu-list">
-                {% for board_group, boards_in_group in boards %}
+                {% for board_group in board_groups %}
                   <li><a href="#">{{ board_group.name }}</a></li>
                 {% endfor %}
                 <li><a href="#">Undefined Group</a></li>
@@ -23,6 +23,15 @@
         </div>
         <div class="column is-9">
           <div class="box">
+          {% for board  in boards  %}
+            <div class="box">
+              <article class="media">
+                <div class="media-content">
+                  <p><a href="#">{{ board.name }}</a></p>
+                </div>
+              </article>
+            </div>
+          {% endfor %}
           </div>
         </div>
       </div>

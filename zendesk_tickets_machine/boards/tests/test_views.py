@@ -62,6 +62,42 @@ class BoardViewTest(TestCase):
             '<li><a href="#">Undefined Group</a></li>'
         self.assertContains(response, expected, status_code=200)
 
+    def test_board_view_should_show_boards(self):
+        first_board_group = BoardGroup.objects.create(name='CP Production')
+        first_board = Board.objects.create(
+            name='Pre-Production',
+            board_group=first_board_group
+        )
+        second_board_group = BoardGroup.objects.create(name='WP Team')
+        second_board = Board.objects.create(
+             name='Monthly Newsletter',
+             board_group=second_board_group
+        )
+        third_board = Board.objects.create(
+             name='Undefined Taskboard'
+        )
+
+        self.login()
+        response = self.client.get(reverse('boards'))
+
+        expected = f'<li><a href="#">{first_board_group.name}</a></li>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = f'<a href="#">{first_board.name}</a>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = f'<li><a href="#">{second_board_group.name}</a></li>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = f'<a href="#">{second_board.name}</a>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = f'<li><a href="#">Undefined Group</a></li>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = f'<a href="#">{third_board.name}</a>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
     def test_board_view_should_required_login(self):
         with self.settings(LOGIN_URL=reverse('login')):
             response = self.client.get('/')
