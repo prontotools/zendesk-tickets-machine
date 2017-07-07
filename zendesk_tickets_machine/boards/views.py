@@ -24,8 +24,13 @@ class BoardView(TemplateView):
     template_name = 'boards.html'
 
     def get(self, request):
+        board_group_id = request.GET.get('board_group')
+        if board_group_id:
+            boards = Board.objects.filter(board_group=board_group_id)
+        else:
+            boards = Board.objects.all()
+
         board_groups = BoardGroup.objects.all()
-        boards = Board.objects.all()
 
         return render(
             request,
