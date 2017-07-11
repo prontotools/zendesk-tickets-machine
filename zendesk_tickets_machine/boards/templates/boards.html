@@ -15,9 +15,17 @@
             <aside class="menu is-info">
               <ul class="menu-list">
                 {% for board_group in board_groups %}
-                   <li><a href="{% url 'boards' %}?board_group={{board_group.id}}">{{ board_group.name }}</a></li>
+                  {% if board_group_id == board_group.id %}
+                    <li><a href="{% url 'boards' %}?board_group={{ board_group.id }}" class="is-active">{{ board_group.name }}</a></li>
+                  {% else %}
+                    <li><a href="{% url 'boards' %}?board_group={{ board_group.id }}">{{ board_group.name }}</a></li>
+                  {% endif %}
                 {% endfor %}
-                <li><a href="{% url 'boards' %}?board_group=-1">Undefined Group</a></li>
+                {% if board_group_id == -1 %}
+                  <li><a href="{% url 'boards' %}?board_group=-1" class="is-active">Undefined Group</a></li>
+                {% else %}
+                  <li><a href="{% url 'boards' %}?board_group=-1">Undefined Group</a></li>
+                {% endif %}
               </ul>
             </aside>
         </div>
@@ -27,7 +35,7 @@
             <div class="box">
               <article class="media">
                 <div class="media-content">
-                  <p><a href="#">{{ board.name }}</a></p>
+                  <p><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></p>
                 </div>
               </article>
             </div>

@@ -26,6 +26,7 @@ class BoardView(TemplateView):
     def get(self, request):
         board_group_id = request.GET.get('board_group')
         if board_group_id:
+            board_group_id = int(board_group_id)
             boards = Board.objects.filter(board_group=board_group_id)
         else:
             boards = Board.objects.all()
@@ -36,6 +37,7 @@ class BoardView(TemplateView):
             request,
             self.template_name,
             {
+                'board_group_id': board_group_id,
                 'board_groups': board_groups,
                 'boards': boards,
             }
