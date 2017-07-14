@@ -47,7 +47,6 @@
       </div>
     </div>
   </section>
-{% endspaceless %}
   <div id="modal-add-ticket" class="modal">
     <div class="modal-background"></div>    
       <div class="modal-card">
@@ -113,7 +112,7 @@
             <div class="row">
               <div class="col-md-12">
                 <button type="submit" class="btn btn-default button is-success">Add New Ticket</button>
-                <a class="button button-cancle">Cancel</a>
+                <a class="button button-cancel">Cancel</a>
               </div>
             </div>
           </section>
@@ -121,6 +120,7 @@
         </form>
       </div>  
   </div>
+{% endspaceless %}
 {% endblock %}
 {% block javascript %}
 <script>
@@ -134,7 +134,7 @@
       $(this).parent().removeClass("is-active");
     });
 
-    $(".modal-card-head .delete, .modal-card-foot, .button-cancle").click(function() {
+    $(".modal-card-head .delete, .modal-card-foot, .button-cancel").click(function() {
       $("#modal-add-ticket").removeClass("is-active");
       $("#modal-edit-ticket").removeClass("is-active");
     });

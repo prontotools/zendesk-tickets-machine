@@ -316,6 +316,14 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
+        expected = '<div id="modal-add-ticket" class="modal">' \
+            '<div class="modal-background"></div>' \
+            '<div class="modal-card">' \
+            '<header class="modal-card-head">' \
+            '<p class="modal-card-title">Add New Ticket</p>' \
+            '</header>'
+        self.assertContains(response, expected, status_code=200)
+
         expected = '<form method="post">'
         self.assertContains(response, expected, status_code=200)
 
@@ -332,14 +340,14 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="created_by" class="form-control" ' \
-            'id="id_created_by">\n  <option value="" selected>---------' \
-            f'</option>\n\n  <option value="{self.agent.id}">' \
+            'id="id_created_by"><option value="" selected>---------' \
+            f'</option><option value="{self.agent.id}">' \
             f'{self.agent.name}</option>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<textarea name="comment" cols="40" rows="6" ' \
             'placeholder="Comment" class="form-control" required ' \
-            'id="id_comment">\n</textarea>'
+            'id="id_comment"></textarea>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input type="text" name="tags" placeholder="Tags" ' \
@@ -347,8 +355,8 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="assignee" class="form-control" ' \
-            'id="id_assignee">\n  <option value="" selected>---------' \
-            f'</option>\n\n  <option value="{self.agent.id}">' \
+            'id="id_assignee"><option value="" selected>---------' \
+            f'</option><option value="{self.agent.id}">' \
             f'{self.agent.name}</option>'
         self.assertContains(response, expected, status_code=200)
 
