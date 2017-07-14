@@ -1,8 +1,15 @@
-{% extends "base.html" %}
 {% load staticfiles %}
-{% block title %}Login | {% endblock %}
-{% block logo %}{% endblock %}
-{% block style %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <meta charset="utf-8" />
+  <title>Login | Pronto Zendesk Tickets Machine</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="{% static 'css/bulma.css' %}" rel="stylesheet" type="text/css"/>
+  <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
   <style>
     body {
       padding-top: 120px;
@@ -68,19 +75,23 @@
       text-align: center;
     }
   </style>
-{% endblock %}
-{% block body %}
-<div class="container">
-  <form class="form-signin" method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <div class="form-signin-heading"><img src="{% static 'img/pronto-logo-header.png' %}" width="150px"></div>
-    {% if form.errors %}
-      <div class="text-center alert alert-danger">Incorrect username or password.</div>
-    {% endif %}
-    <input type="text" class="form-control" placeholder="Username" required="" autofocus="" maxlength="254" id="id_username" name="username">
-    <input type="password" class="form-control" placeholder="Password" required="" id="id_password" name="password">
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
-    <input type="hidden" name="next" value="{{ next }}" />
-  </form>
-</div>
-{% endblock %}
+</head>
+<body>
+  {% spaceless %}
+  <div class="container">
+    <form class="form-signin" method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <div class="form-signin-heading"><img src="{% static 'img/pronto-logo-header.png' %}" width="150px"></div>
+      {% if form.errors %}
+        <div class="text-center alert alert-danger">Incorrect username or password.</div>
+      {% endif %}
+      <input type="text" class="form-control" placeholder="Username" required="" autofocus="" maxlength="254" id="id_username" name="username">
+      <input type="password" class="form-control" placeholder="Password" required="" id="id_password" name="password">
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+  </div>
+  {% endspaceless %}
+</body>
+</html>
+
