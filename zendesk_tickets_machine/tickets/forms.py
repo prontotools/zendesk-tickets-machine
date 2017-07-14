@@ -109,30 +109,48 @@ class TicketForm(forms.ModelForm):
 class TicketUpdateOnceForm(forms.Form):
     subject = forms.CharField(
         widget=forms.TextInput(
-            attrs={'id': 'edit_subject'}
-        )
+            attrs={
+                'id': 'edit_subject',
+                'class': 'input',
+                'placeholder': 'Subject'
+            }
+        ), required=False
     )
     requester = forms.CharField(
         widget=forms.TextInput(
-            attrs={'id': 'edit_requester'}
-            )
-        )
+            attrs={
+                'id': 'edit_requester',
+                'class': 'input',
+                'placeholder': 'Requester'
+            }
+        ), required=False
+    )
     tags = forms.CharField(
         widget=forms.TextInput(
-            attrs={'id': 'edit_tags'}
-        )
+            attrs={
+                'id': 'edit_tags',
+                'class': 'input',
+                'placeholder': 'Tags'
+            }
+        ), required=False
     )
     due_at = forms.CharField(
-        widget=widgets.AdminDateWidget(
+        widget=forms.TextInput(
             attrs={
-                'class': 'datepicker',
-                'id': 'edit_due_at'
+                'id': 'edit_due_at',
+                'type': 'input',
+                'placeholder': 'mm/dd/yyyy',
+                'class': 'input'
             }
-        )
+        ), required=False
     )
     assignee = forms.ModelChoiceField(
         queryset=Agent.objects.all(),
         widget=forms.Select(
-            attrs={'id': 'edit_assignee'}
-        )
+            attrs={
+                'id': 'edit_assignee',
+                'placeholder': 'Select Assignee'
+            }
+        ), required=False,
+        empty_label='Select Assignee'
     )

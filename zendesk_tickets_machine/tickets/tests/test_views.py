@@ -132,15 +132,12 @@ class TicketEditViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-
-        expected = '<table class="table table-bordered table-condensed ' \
-            'table-hover">'
+        expected = '<table class="table table-bordered ' \
+            'table-condensed table-hover">'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<th class="check">' \
             '<input type="checkbox" name="select_all"/></th>' \
-            '<th class="edit">Edit</th>' \
-            '<th class="delete">Delete</th>' \
             '<th class="subject">Subject</th>' \
             '<th class="comment">Comment</th>' \
             '<th class="orderable requester">' \
@@ -153,8 +150,8 @@ class TicketEditViewTest(TestCase):
             '<th class="priority">Priority</th>' \
             '<th class="tags">Tags</th>' \
             '<th class="private_comment">Private Comment</th>' \
-            '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>'
-
+            '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>' \
+            '<th class="manage">Manage</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_render_ticket_form(self):

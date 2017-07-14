@@ -398,9 +398,8 @@ class BoardSingleViewTest(TestCase):
         expected = '<input type="hidden" name="board" value="%s" ' \
             'id="id_board" />' % self.board.id
         self.assertContains(response, expected, status_code=200)
-
-        expected = '<button type="submit" class="btn btn-default">' \
-            'Add New Ticket</button>'
+        expected = '<button type="submit" class="btn btn-default ' \
+            'button is-success">Add New Ticket</button>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_table_header(self):
@@ -408,15 +407,12 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-
         expected = '<table class="table table-bordered table-condensed ' \
             'table-hover">'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<th class="check">' \
             '<input type="checkbox" name="select_all"/></th>' \
-            '<th class="edit">Edit</th>' \
-            '<th class="delete">Delete</th>' \
             '<th class="subject">Subject</th>' \
             '<th class="comment">Comment</th>' \
             '<th class="orderable requester">' \
@@ -429,8 +425,8 @@ class BoardSingleViewTest(TestCase):
             '<th class="priority">Priority</th>' \
             '<th class="tags">Tags</th>' \
             '<th class="private_comment">Private Comment</th>' \
-            '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>'
-
+            '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>' \
+            '<th class="manage">Manage</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_create_tickets_button(self):
@@ -438,9 +434,8 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-
-        expected = '<a href="%s" class="btn btn-success" ' \
-            'style="margin-bottom: 10px;">Create Tickets</a>' % reverse(
+        expected = '<a href="%s" class="button is-success is-outlined">' \
+            'Create Tickets</a>' % reverse(
                 'board_tickets_create',
                 kwargs={'slug': self.board.slug}
             )
@@ -452,8 +447,8 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<a href="%s" class="btn btn-danger pull-right" ' \
-            'style="margin-right: 5px;">Reset Requesters</a>' % reverse(
+        expected = '<a href="%s" class="button is-danger is-outlined"' \
+            '>Reset Requesters</a>' % reverse(
                 'board_requesters_reset',
                 kwargs={'slug': self.board.slug}
             )
@@ -464,8 +459,8 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-        expected = '<a href="%s" class="btn btn-warning pull-right">' \
-            'Reset Tickets</a>' % reverse(
+        expected = '<a href="%s" class="button is-danger is-outlined">' \
+            'Reset Tickets </a>' % reverse(
                 'board_reset',
                 kwargs={'slug': self.board.slug}
             )
@@ -484,9 +479,7 @@ class BoardSingleViewTest(TestCase):
 
         expected = '<td class="check">' \
             '<input type="checkbox" name="check" ' \
-            f'value="{self.first_ticket.id}"/>' \
-            '</td><td class="edit"><a href="%s">Edit</a></td>' \
-            '<td class="delete"><a href="%s">Delete</a></td>' \
+            f'value="{self.first_ticket.id}"/></td>' \
             '<td class="subject">Ticket 1</td>' \
             '<td class="comment">Comment 1</td>' \
             '<td class="requester">client@hisotech.com</td>' \
@@ -499,7 +492,13 @@ class BoardSingleViewTest(TestCase):
             '<td class="tags">welcome</td>' \
             '<td class="private_comment">Private comment</td>' \
             '<td class="zendesk_ticket_id">' \
-            '<a href="%s" target="_blank">24328</a></td>' % (
+            '<a href="%s" target="_blank">24328</a></td>' \
+            '<td class="manage"><a href="%s" class="tbl_icon edit">' \
+            '<i class="fa fa-pencil modal-button" ' \
+            'data-target="#modal-edit-ticket"></i></a>&nbsp;' \
+            '<a href="%s" class="tbl_icon_delete">' \
+            '<i class="fa fa-trash-o"></i></a></td>' % (
+                settings.ZENDESK_URL + '/agent/tickets/24328',
                 reverse(
                     'ticket_edit',
                     kwargs={'ticket_id': self.first_ticket.id}
@@ -508,7 +507,7 @@ class BoardSingleViewTest(TestCase):
                     'ticket_delete',
                     kwargs={'ticket_id': self.first_ticket.id}
                 ),
-                settings.ZENDESK_URL + '/agent/tickets/24328'
+
             )
         self.assertContains(response, expected, status_code=200)
 
@@ -547,9 +546,7 @@ class BoardSingleViewTest(TestCase):
 
         expected = '<td class="check">' \
             '<input type="checkbox" name="check" '\
-            f'value="{self.first_ticket.id}"/>' \
-            '</td><td class="edit"><a href="%s">Edit</a></td>' \
-            '<td class="delete"><a href="%s">Delete</a></td>' \
+            f'value="{self.first_ticket.id}"/></td>' \
             '<td class="subject">Ticket 1</td>' \
             '<td class="comment">Comment 1</td>' \
             '<td class="requester">client@hisotech.com</td>' \
@@ -562,7 +559,13 @@ class BoardSingleViewTest(TestCase):
             '<td class="tags">welcome</td>' \
             '<td class="private_comment">Private comment</td>' \
             '<td class="zendesk_ticket_id">' \
-            '<a href="%s" target="_blank">24328</a></td>' % (
+            '<a href="%s" target="_blank">24328</a></td>' \
+            '<td class="manage"><a href="%s" class="tbl_icon edit">' \
+            '<i class="fa fa-pencil modal-button" '\
+            'data-target="#modal-edit-ticket">' \
+            '</i></a>&nbsp;<a href="%s" class="tbl_icon_delete">' \
+            '<i class="fa fa-trash-o"></i></a></td>' % (
+                settings.ZENDESK_URL + '/agent/tickets/24328',
                 reverse(
                     'ticket_edit',
                     kwargs={'ticket_id': self.first_ticket.id}
@@ -571,7 +574,6 @@ class BoardSingleViewTest(TestCase):
                     'ticket_delete',
                     kwargs={'ticket_id': self.first_ticket.id}
                 ),
-                settings.ZENDESK_URL + '/agent/tickets/24328'
             )
         self.assertContains(response, expected, status_code=200)
 
@@ -633,14 +635,12 @@ class BoardSingleViewTest(TestCase):
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
 
-        expected = '<h1>%s</h1>' % self.board.name
+        expected = '<h4 class="title is-4">%s</h4>' % self.board.name
         self.assertContains(response, expected, status_code=200)
 
         expected = '<td class="check">' \
-            '<input type="checkbox" name="check" '\
-            f'value="{self.first_ticket.id}"/>' \
-            '</td><td class="edit"><a href="%s">Edit</a></td>' \
-            '<td class="delete"><a href="%s">Delete</a></td>' \
+            '<input type="checkbox" name="check" ' \
+            f'value="{self.first_ticket.id}"/></td>' \
             '<td class="subject">Ticket 1</td>' \
             '<td class="comment">Comment 1</td>' \
             '<td class="requester">client@hisotech.com</td>' \
@@ -653,7 +653,13 @@ class BoardSingleViewTest(TestCase):
             '<td class="tags">welcome</td>' \
             '<td class="private_comment">Private comment</td>' \
             '<td class="zendesk_ticket_id">' \
-            '<a href="%s" target="_blank">24328</a></td>' % (
+            '<a href="%s" target="_blank">24328</a></td>' \
+            '<td class="manage"><a href="%s" class="tbl_icon edit">' \
+            '<i class="fa fa-pencil modal-button" ' \
+            'data-target="#modal-edit-ticket">' \
+            '</i></a>&nbsp;<a href="%s" class="tbl_icon_delete">' \
+            '<i class="fa fa-trash-o"></i></a></td>' % (
+                settings.ZENDESK_URL + '/agent/tickets/24328',
                 reverse(
                     'ticket_edit',
                     kwargs={'ticket_id': self.first_ticket.id}
@@ -662,13 +668,12 @@ class BoardSingleViewTest(TestCase):
                     'ticket_delete',
                     kwargs={'ticket_id': self.first_ticket.id}
                 ),
-                settings.ZENDESK_URL + '/agent/tickets/24328'
+
             )
         self.assertContains(response, expected, status_code=200)
+
         expected = '<td class="check">' \
             f'<input type="checkbox" name="check" value="{ticket.id}"/></td>' \
-            '<td class="edit"><a href="%s">Edit</a></td>' \
-            '<td class="delete"><a href="%s">Delete</a></td>' \
             '<td class="subject">Welcome to Pronto Service</td>' \
             '<td class="comment">This is a comment.</td>' \
             '<td class="requester">client@hisotech.com</td>' \
@@ -681,7 +686,13 @@ class BoardSingleViewTest(TestCase):
             '<td class="tags">welcome</td>' \
             '<td class="private_comment">Private comment</td>' \
             '<td class="zendesk_ticket_id">' \
-            '<a href="%s" target="_blank">24328</a></td>' % (
+            '<a href="%s" target="_blank">24328</a></td>' \
+            '<td class="manage"><a href="%s" class="tbl_icon edit">' \
+            '<i class="fa fa-pencil modal-button" ' \
+            'data-target="#modal-edit-ticket"></i></a>&nbsp;' \
+            '<a href="%s" class="tbl_icon_delete">' \
+            '<i class="fa fa-trash-o"></i></a></td>' % (
+                settings.ZENDESK_URL + '/agent/tickets/24328',
                 reverse(
                     'ticket_edit',
                     kwargs={'ticket_id': ticket.id}
@@ -690,7 +701,6 @@ class BoardSingleViewTest(TestCase):
                     'ticket_delete',
                     kwargs={'ticket_id': ticket.id}
                 ),
-                settings.ZENDESK_URL + '/agent/tickets/24328'
             )
         self.assertContains(response, expected, status_code=200)
 
@@ -736,7 +746,9 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-        expected = '<a href="/logout/">logout</a>'
+
+        expected = '<a href="/logout/" class="nav-item">' \
+            '<span>Log Out</span></a>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_required_login(self):

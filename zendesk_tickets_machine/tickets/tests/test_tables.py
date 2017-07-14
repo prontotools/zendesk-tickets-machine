@@ -39,8 +39,6 @@ class TicketTableTest(TestCase):
         ticketTable = TicketTable(Ticket.objects.all())
         expected_fields = [
             '<input type="checkbox" name="select_all"/>',
-            'Edit',
-            'Delete',
             'Subject',
             'Comment',
             'Requester',
@@ -52,13 +50,14 @@ class TicketTableTest(TestCase):
             'Priority',
             'Tags',
             'Private Comment',
-            'Zendesk Ticket Id'
+            'Zendesk Ticket Id',
+            'Manage',
         ]
 
         for each in expected_fields:
             self.assertTrue(each in ticketTable.as_values()[0])
 
-        self.assertEqual(len(ticketTable.as_values()[0]), 15)
+        self.assertEqual(len(ticketTable.as_values()[0]), 14)
 
     def test_ticket_table_should_show_dash_if_empty_and_set_default(self):
         agent_group = AgentGroup.objects.create(name='Development')
@@ -82,8 +81,6 @@ class TicketTableTest(TestCase):
 
         expected_fields = [
             f'<input type="checkbox" name="check" value="{ticket.id}"/>',
-            'Edit',
-            'Delete',
             'Welcome to Pronto Service',
             'Thank you for signing up with us! '
             'Currently we are sorting out the info and will '
@@ -97,12 +94,13 @@ class TicketTableTest(TestCase):
             'Urgent',
             '-',
             'Private comment',
-            '24328'
+            '24328',
+            '-',
         ]
         for each in expected_fields:
             self.assertTrue(each in ticketTable.as_values()[1])
 
-        self.assertEqual(len(ticketTable.as_values()[1]), 15)
+        self.assertEqual(len(ticketTable.as_values()[1]), 14)
 
     def test_ticket_table_render_zendesk_id_should_return_correctly(self):
         ticketTable = TicketTable({'test': 'test'})

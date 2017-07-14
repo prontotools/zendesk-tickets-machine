@@ -61,13 +61,15 @@ class BoardSingleView(TemplateView):
             'board': board.id
         }
         form = TicketForm(initial=initial)
-        ticketUpdateOnceForm = TicketUpdateOnceForm()
+        ticket_update_once_form = TicketUpdateOnceForm()
+
         tickets = TicketTable(
             Ticket.objects.filter(
                 board__slug=slug, is_active=True
             ).order_by('id')
         )
         RequestConfig(request).configure(tickets)
+
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
 
         return render(
@@ -77,8 +79,8 @@ class BoardSingleView(TemplateView):
                 'board_name': board.name,
                 'board_slug': board.slug,
                 'form': form,
+                'ticket_update_once_form': ticket_update_once_form,
                 'tickets': tickets,
-                'ticketUpdateOnceForm': ticketUpdateOnceForm,
                 'zendesk_ticket_url': zendesk_ticket_url
             }
         )
@@ -96,6 +98,8 @@ class BoardSingleView(TemplateView):
         form = TicketForm(request.POST)
         form.save()
 
+        ticket_update_once_form = TicketUpdateOnceForm()
+
         tickets = TicketTable(
             Ticket.objects.filter(
                 board__slug=slug, is_active=True
@@ -110,6 +114,7 @@ class BoardSingleView(TemplateView):
                 'board_name': board.name,
                 'board_slug': board.slug,
                 'form': form,
+                'ticket_update_once_form': ticket_update_once_form,
                 'tickets': tickets,
                 'zendesk_ticket_url': zendesk_ticket_url
             }
