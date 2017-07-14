@@ -121,10 +121,13 @@ class TicketEditViewTest(TestCase):
             reverse('ticket_edit', kwargs={'ticket_id': self.ticket.id})
         )
 
-        expected = '<a href="%s">Back</a>' % reverse(
-            'board_single',
-            kwargs={'slug': self.ticket.board.slug}
-        )
+        expected = '<a href="%s" ' \
+            'class="button is-primary is-outlined">' \
+            '<i class="fa fa-backward" aria-hidden="true">' \
+            '</i>&nbsp;\n          Back</a>' % reverse(
+                'board_single',
+                kwargs={'slug': self.ticket.board.slug}
+            )
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_ticket_edit_view_should_have_table_header(self):
@@ -132,8 +135,7 @@ class TicketEditViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-        expected = '<table class="table table-bordered ' \
-            'table-condensed table-hover">'
+        expected = '<table class="table  table-hover">'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<th class="check">' \
@@ -185,13 +187,15 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="created_by" class="form-control" ' \
-            'id="id_created_by">\n  <option value="">---------' \
-            f'</option>\n\n  <option value="{self.agent.id}" ' \
-            'selected>Kan</option>'
+            'id="id_created_by">'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select name="assignee" class="form-control" ' \
-            'id="id_assignee">\n  <option value="">---------</option>\n\n  ' \
+        expected = f'<option value="{self.agent.id}" selected>Kan</option>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<select name="assignee" ' \
+            'class="form-control" id="id_assignee">' \
+            '<option value="">---------</option>' \
             f'<option value="{self.agent.id}" selected>Kan</option>'
         self.assertContains(response, expected, status_code=200)
 
@@ -250,7 +254,7 @@ class TicketEditViewTest(TestCase):
             'id="id_board" />' % self.board.id
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input type="submit" class="btn btn-default" />'
+        expected = '<input type="submit" class="button is-primary" />'
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_edit_view_should_save_data_and_redirect_to_its_board(self):

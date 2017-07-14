@@ -46,7 +46,7 @@ class TicketTable(tables.Table):
         model = Ticket
         sequence = ('check',)
         exclude = ('id', 'board', 'is_active')
-        attrs = {'class': 'table table-bordered table-condensed table-hover'}
+        attrs = {'class': 'table  table-hover'}
 
     def render_zendesk_ticket_id(self, value):
         url = '<a href="%s/agent/tickets/%s" target="_blank">%s</a>' \
