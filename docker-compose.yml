@@ -1,33 +1,20 @@
 version: '2'
 
 services:
-  nginx:
-    image: prontotools/ztm-nginx
-    build:
-      context: nginx/
-      dockerfile: Dockerfile
-    ports:
-      - 8080:80
-    volumes:
-      - ./zendesk_tickets_machine/staticfiles:/static
-    depends_on:
-      - app
-
   app:
     image: prontotools/ztm-app
+    volumes:
+      - ./:/app
     build:
       context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./zendesk_tickets_machine/staticfiles:/app/zendesk_tickets_machine/staticfiles
+      dockerfile: ./compose/django/Dockerfile-local
     env_file:
       - .env
-    depends_on:
-      - db
+    ports:
+      - 8090:8000
+    entrypoint: /entrypoint.sh
 
   db:
     image: postgres:9.6.1-alpine
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=ztm

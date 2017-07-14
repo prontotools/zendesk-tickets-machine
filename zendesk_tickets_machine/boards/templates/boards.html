@@ -1,26 +1,50 @@
 {% extends "base.html" %}
+
 {% block body %}
   {% for message in messages %}
     {% if message.level == 40 %}
       <h5 class="alert alert-danger">{{ message }}</h5>
     {% endif %}
   {% endfor %}
-  <h1>Boards</h1>
-  <ul>
-    {% for board_group, boards_in_group in boards %}
-      <li>{{ board_group.name }}</li>
-      <ul>
-      {% for board in boards_in_group %}
-        <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
-      {% endfor %}
-      </ul>
-    {% endfor %}
-    <li>Undefined Group</li>
-    <ul>
-      {% for board in ungrouped_boards %}
-        <li><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></li>
-      {% endfor %}
-    </ul>
-  </ul>
-  <a href="{% url 'logout' %}">logout</a>
+  {% spaceless %}
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <div class="column is-3">
+          <p class="title">Boards</p>
+            <aside class="menu is-info">
+              <ul class="menu-list">
+                {% for board_group in board_groups %}
+                  {% if board_group_id == board_group.id %}
+                    <li><a href="{% url 'boards' %}?board_group={{ board_group.id }}" class="is-active">{{ board_group.name }}</a></li>
+                  {% else %}
+                    <li><a href="{% url 'boards' %}?board_group={{ board_group.id }}">{{ board_group.name }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if board_group_id == -1 %}
+                  <li><a href="{% url 'boards' %}?board_group=-1" class="is-active">Undefined Group</a></li>
+                {% else %}
+                  <li><a href="{% url 'boards' %}?board_group=-1">Undefined Group</a></li>
+                {% endif %}
+              </ul>
+            </aside>
+        </div>
+        <div class="column is-9">
+          <div class="box">
+          {% for board  in boards  %}
+            <div class="box">
+              <article class="media">
+                <div class="media-content">
+                  <p><a href="{% url 'board_single' board.slug %}">{{ board.name }}</a></p>
+                </div>
+              </article>
+            </div>
+          {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endspaceless %}
 {% endblock %}
+
