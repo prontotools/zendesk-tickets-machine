@@ -18,6 +18,7 @@ services:
       - .env
     depends_on:
       - db
+    entrypoint: /entrypoint.sh
 
   db:
     image: postgres:9.6.1-alpine

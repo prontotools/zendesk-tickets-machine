@@ -47,7 +47,7 @@ def backup():
 
 
 def build():
-    local('docker build -t prontotools/ztm-app .')
+    local('docker build -t prontotools/ztm-app -f ./compose/django/Dockerfile .')
 
 
 def push():
