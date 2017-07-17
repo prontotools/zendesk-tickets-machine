@@ -2,10 +2,15 @@
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
-from django_tables2.utils import A
 import django_tables2 as tables
 
 from .models import Ticket
+
+TEMPLATE = '<a href="{% url "ticket_edit" record.id %}" ' \
+    'class="tbl_icon edit"><i class="fa fa-pencil modal-button" ' \
+    'data-target="#modal-edit-ticket"></i></a>&nbsp;' \
+    '<a href="{% url "ticket_delete" record.id %}" ' \
+    'class="tbl_icon_delete"><i class="fa fa-trash-o"></i></a>'
 
 
 class TicketTable(tables.Table):
@@ -18,18 +23,6 @@ class TicketTable(tables.Table):
                 'name': 'select_all'
                 }
             }
-        )
-    edit = tables.LinkColumn(
-        'ticket_edit',
-        text='Edit',
-        args=[A('pk')],
-        orderable=False
-    )
-    delete = tables.LinkColumn(
-        'ticket_delete',
-        text='Delete',
-        args=[A('pk')],
-        orderable=False
     )
     subject = tables.Column(orderable=False)
     comment = tables.Column(orderable=False)
@@ -47,12 +40,13 @@ class TicketTable(tables.Table):
     tags = tables.Column(default='-', orderable=False)
     private_comment = tables.Column(default='-', orderable=False)
     zendesk_ticket_id = tables.Column(default='-', orderable=False)
+    manage = tables.TemplateColumn(TEMPLATE, orderable=False)
 
     class Meta:
         model = Ticket
-        sequence = ('check', 'edit', 'delete')
+        sequence = ('check',)
         exclude = ('id', 'board', 'is_active')
-        attrs = {'class': 'table table-bordered table-condensed table-hover'}
+        attrs = {'class': 'table  table-hover'}
 
     def render_zendesk_ticket_id(self, value):
         url = '<a href="%s/agent/tickets/%s" target="_blank">%s</a>' \

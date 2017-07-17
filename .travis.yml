@@ -1,14 +1,19 @@
 language: python
 
 python:
-- 3.6
+  - 3.6
+
+services: postgresql
 
 install:
-- pip install -r requirements/local.txt
+  - pip install -r requirements/local.txt
+
+before_script: 
+  - psql -c "CREATE DATABASE travisdb;" -U postgres 
 
 script:
-- flake8
-- cd zendesk_tickets_machine && python manage.py test
+  - flake8
+  - cd zendesk_tickets_machine && python manage.py test
 
 notifications:
   slack:

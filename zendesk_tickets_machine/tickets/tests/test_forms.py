@@ -127,25 +127,40 @@ class TicketUpdateOnceFormTest(TestCase):
         form = TicketUpdateOnceForm()
         self.assertEqual(
             form.fields['subject'].widget.attrs,
-            {'id': 'edit_subject'}
+            {
+                'id': 'edit_subject',
+                'class': 'input',
+                'placeholder': 'Subject'
+            }
         )
         self.assertEqual(
             form.fields['requester'].widget.attrs,
-            {'id': 'edit_requester'}
+            {
+                'id': 'edit_requester',
+                'class': 'input',
+                'placeholder': 'Requester'
+            }
         )
         self.assertEqual(
             form.fields['tags'].widget.attrs,
-            {'id': 'edit_tags'}
+            {
+                'id': 'edit_tags',
+                'class': 'input',
+                'placeholder': 'Tags'
+            }
         )
         self.assertEqual(
             form.fields['due_at'].widget.attrs,
             {
-                'class': 'datepicker',
                 'id': 'edit_due_at',
-                'size': '10'
+                'placeholder': 'mm/dd/yyyy',
+                'class': 'input'
             }
         )
         self.assertEqual(
             form.fields['assignee'].widget.attrs,
-            {'id': 'edit_assignee'}
+            {
+                'id': 'edit_assignee',
+                'placeholder': 'Select Assignee'
+            }
         )
