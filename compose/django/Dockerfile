@@ -11,10 +11,9 @@ RUN pip install Django==1.11a1 \
 ENV APPLICATION_ROOT /app/
 
 RUN mkdir $APPLICATION_ROOT
-ADD . $APPLICATION_ROOT
+COPY . $APPLICATION_ROOT
+COPY ./compose/django/entrypoint.sh /entrypoint.sh
+COPY ./compose/django/ztm.ini $APPLICATION_ROOT\ztm.ini
+RUN chmod +x /entrypoint.sh
 WORKDIR $APPLICATION_ROOT
-
 RUN pip install -r requirements.txt
-
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ["./entrypoint.sh"]
