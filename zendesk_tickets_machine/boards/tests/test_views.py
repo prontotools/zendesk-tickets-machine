@@ -415,7 +415,7 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-        expected = '<table class="table  table-hover">'
+        expected = '<table class="table table-hover">'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<th class="check">' \

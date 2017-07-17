@@ -36,19 +36,17 @@
               <button id="button_edit_once_form" type="submit" class="button is-focused" onclick="edit_once();">Edit rows</button>
             </article>
           </div>
-          <div class="box">
-            <div class="table-container">
+          <div class="box" style="overflow: auto;">
             {% spaceless %}
               {% render_table tickets %}
             {% endspaceless %}
-            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
   <div id="modal-add-ticket" class="modal">
-    <div class="modal-background"></div>    
+    <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">Add New Ticket</p>
@@ -118,7 +116,7 @@
           </section>
           {{ form.board }}
         </form>
-      </div>  
+      </div>
   </div>
 {% endspaceless %}
 {% endblock %}
