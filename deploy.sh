@@ -14,6 +14,7 @@ if [ $TRAVIS_BRANCH == "master" ] ; then
   pip install fabric
   fab production deploy
 else
+  pip install fabric
   fab production -- pwd
   echo "Not deploying, since this branch isn't master."
 fi
