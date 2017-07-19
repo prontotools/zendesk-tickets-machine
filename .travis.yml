@@ -14,7 +14,7 @@ before_script:
 
 script:
   - flake8
-  - python zendesk_tickets_machine/manage.py test
+  - cd zendesk_tickets_machine && python manage.py test && cd ..
 
 notifications:
   slack:
