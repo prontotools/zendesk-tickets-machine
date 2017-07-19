@@ -3,11 +3,10 @@ language: python
 
 services:
   - docker
+  - postgresql
 
 python:
   - 3.6
-
-services: postgresql
 
 install:
   - pip install -r requirements/local.txt
