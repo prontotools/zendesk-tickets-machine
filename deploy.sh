@@ -11,10 +11,10 @@ chmod 400 deploy-key
 mv deploy-key ~/.ssh/id_rsa
 
 if [ $TRAVIS_BRANCH == "master" ] ; then
-  pip install fabric
+  pip2.7 install fabric
   fab production deploy
 else
-  pip install fabric
+  pip2.7 install fabric
   fab production -- pwd
   echo "Not deploying, since this branch isn't master."
 fi
