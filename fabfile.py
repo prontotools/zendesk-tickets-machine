@@ -25,10 +25,12 @@ def production():
     ]
 
 
+@task
 def create_project_directory():
     run('mkdir -p ' + PROJECT_DIRECTORY)
 
 
+@task
 def update_compose_file():
     put('./' + COMPOSE_FILE, PROJECT_DIRECTORY)
 
@@ -46,15 +48,28 @@ def backup():
     run(command)
 
 
+@task
 def build():
     command = 'docker build -t prontotools/ztm-app ' \
         '-f ./compose/django/Dockerfile .'
     local(command)
 
 
-def push():
-    local('docker login')
+@task
+def push(username=None, password=None):
+    if username and password:
+        local('docker login -u "' + username + '" -p "' + password + '"')
+    else:
+        local('docker login')
+
     local('docker push prontotools/ztm-app')
+
+
+@task
+def compose_up():
+    with cd(PROJECT_DIRECTORY):
+        env.run('docker-compose -f ' + COMPOSE_FILE + ' pull')
+        env.run('docker-compose -f ' + COMPOSE_FILE + ' up -d')
 
 
 @task
@@ -63,6 +78,4 @@ def deploy():
     push()
     create_project_directory()
     update_compose_file()
-    with cd(PROJECT_DIRECTORY):
-        env.run('docker-compose -f ' + COMPOSE_FILE + ' pull')
-        env.run('docker-compose -f ' + COMPOSE_FILE + ' up -d')
+    compose_up()
