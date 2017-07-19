@@ -12,9 +12,12 @@ mv deploy-key ~/.ssh/id_rsa
 
 if [ $TRAVIS_BRANCH == "master" ] ; then
   pip2.7 install fabric
-  fab production deploy
+  fab production build
+  fab production push:username=$DOCKER_USERNAME,password=$DOCKER_PASSWORD
+  fab production create_project_directory
+  fab production update_compose_file
+  fab production compose_up
 else
-  pip2.7 install fabric
-  fab production -- pwd
-  echo "Not deploying, since this branch isn't master."
+  echo "Not deploying since this branch isn't master."
+  exit 0
 fi
