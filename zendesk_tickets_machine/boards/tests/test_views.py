@@ -43,6 +43,7 @@ class BoardViewTest(TestCase):
             '<div class="nav-left"><a class="nav-item" href="/">' \
             '<img src="/static/img/pronto-logo-header.png" ' \
             'alt="Pronto Logo"></a></div><div class="nav-right">' \
+            '<div id="presenceDiv" class="nav-item"></div>' \
             '<strong class="nav-item">natty</strong>' \
             '<a href="%s" class="nav-item"><span>Log Out</span>' \
             '</a></div></nav>' % reverse('logout')
@@ -308,6 +309,140 @@ class BoardSingleViewTest(TestCase):
         )
         expected = '<title>%s | Pronto Zendesk Tickets Machine' \
             '</title>' % self.board.name
+        self.assertContains(response, expected, status_code=200)
+
+    @override_settings(FIREBASE_MESSAGING_SENDER_ID='6')
+    @override_settings(FIREBASE_STORAGE_BUCKET='5')
+    @override_settings(FIREBASE_PROJECT_ID='4')
+    @override_settings(FIREBASE_DATABASE_URL='3')
+    @override_settings(FIREBASE_AUTH_DOMAIN='2')
+    @override_settings(FIREBASE_API_KEY='1')
+    def test_board_single_view_should_have_presence_system_using_firebase(
+        self
+    ):
+        self.login()
+
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '#presenceDiv img {'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<div id="presenceDiv" class="nav-item"></div>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<script src="/static/js/firebase.js"></script>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<script src="/static/js/presence.js"></script>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = 'const config = {\n    ' \
+            'apiKey: "1",\n    ' \
+            'authDomain: "2",\n    ' \
+            'databaseURL: "3",\n    ' \
+            'projectId: "4",\n    ' \
+            'storageBucket: "5",\n    ' \
+            'messagingSenderId: "6"\n  }\n  ' \
+            'firebase.initializeApp(config)'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = 'const name = "natty"\n\n  ' \
+            'var userListRef = firebase.database().' \
+            'ref("users_online/pre-production")\n  ' \
+            'var myUserRef = userListRef.push()\n\n  ' \
+            'var connectedRef = firebase.database().' \
+            'ref(".info/connected")\n  ' \
+            'connectedRef.on("value", function(snapshot) {\n    ' \
+            'if (snapshot.val()) {\n      ' \
+            '// If we lose network then remove this user from the ' \
+            'list\n      myUserRef.onDisconnect().remove()\n      ' \
+            'myUserRef.set({name: name});\n    }\n  })\n\n  ' \
+            'userListRef.on("child_added", function(snapshot) {\n    ' \
+            'const user = snapshot.val()\n    ' \
+            'const iconId = Math.floor(Math.random() * icons.length)\n    ' \
+            'const backgroundColorId = Math.floor(Math.random() * ' \
+            'backgroundColor.length)\n    ' \
+            'const img = "<img class=\'img-presence\' ' \
+            'src=\'/static/img/icons/" + icons[iconId] + "\' title=\'" + ' \
+            'user.name + "\' alt=\'" + user.name + "\' ' \
+            'style=\'background-color: " + ' \
+            'backgroundColor[backgroundColorId] + ";\' />"\n    ' \
+            '$("#presenceDiv").append($(img).attr("id", user.name))\n    ' \
+            '$("#" + user.name).text(user.name)\n  })\n\n  ' \
+            'userListRef.on("child_removed", function(snapshot) {\n    ' \
+            'const user = snapshot.val()\n    ' \
+            '$("#" + user.name).remove()\n  })'
+        self.assertContains(response, expected, status_code=200)
+
+        data = {
+            'subject': 'Welcome to Pronto Service',
+            'comment': 'This is a comment.',
+            'requester': 'client@hisotech.com',
+            'created_by': self.agent.id,
+            'assignee': self.agent.id,
+            'group': self.agent_group.id,
+            'ticket_type': 'question',
+            'priority': 'urgent',
+            'tags': 'welcome',
+            'private_comment': 'Private comment',
+            'zendesk_ticket_id': '24328',
+            'board': self.board.id
+        }
+        response = self.client.post(
+            reverse('board_single', kwargs={'slug': self.board.slug}),
+            data=data
+        )
+
+        expected = '#presenceDiv img {'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<div id="presenceDiv" class="nav-item"></div>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<script src="/static/js/firebase.js"></script>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = '<script src="/static/js/presence.js"></script>'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = 'const config = {\n    ' \
+            'apiKey: "1",\n    ' \
+            'authDomain: "2",\n    ' \
+            'databaseURL: "3",\n    ' \
+            'projectId: "4",\n    ' \
+            'storageBucket: "5",\n    ' \
+            'messagingSenderId: "6"\n  }\n  ' \
+            'firebase.initializeApp(config)'
+        self.assertContains(response, expected, status_code=200)
+
+        expected = 'const name = "natty"\n\n  ' \
+            'var userListRef = firebase.database().' \
+            'ref("users_online/pre-production")\n  ' \
+            'var myUserRef = userListRef.push()\n\n  ' \
+            'var connectedRef = firebase.database().' \
+            'ref(".info/connected")\n  ' \
+            'connectedRef.on("value", function(snapshot) {\n    ' \
+            'if (snapshot.val()) {\n      ' \
+            '// If we lose network then remove this user from the ' \
+            'list\n      myUserRef.onDisconnect().remove()\n      ' \
+            'myUserRef.set({name: name});\n    }\n  })\n\n  ' \
+            'userListRef.on("child_added", function(snapshot) {\n    ' \
+            'const user = snapshot.val()\n    ' \
+            'const iconId = Math.floor(Math.random() * icons.length)\n    ' \
+            'const backgroundColorId = Math.floor(Math.random() * ' \
+            'backgroundColor.length)\n    ' \
+            'const img = "<img class=\'img-presence\' ' \
+            'src=\'/static/img/icons/" + icons[iconId] + "\' title=\'" + ' \
+            'user.name + "\' alt=\'" + user.name + "\' ' \
+            'style=\'background-color: " + ' \
+            'backgroundColor[backgroundColorId] + ";\' />"\n    ' \
+            '$("#presenceDiv").append($(img).attr("id", user.name))\n    ' \
+            '$("#" + user.name).text(user.name)\n  })\n\n  ' \
+            'userListRef.on("child_removed", function(snapshot) {\n    ' \
+            'const user = snapshot.val()\n    ' \
+            '$("#" + user.name).remove()\n  })'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_render_ticket_form(self):

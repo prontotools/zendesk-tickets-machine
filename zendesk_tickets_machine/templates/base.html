@@ -24,6 +24,7 @@
       <a class="nav-item" href="/"><img src="{% static 'img/pronto-logo-header.png' %}" alt="Pronto Logo"></a>
     </div>
     <div class="nav-right">
+      <div id="presenceDiv" class="nav-item"></div>
       <strong class="nav-item">{{ request.user.username }}</strong>
       <a href="/logout/" class="nav-item">
         <span>Log Out</span>
