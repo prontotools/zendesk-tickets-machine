@@ -71,6 +71,7 @@ class BoardSingleView(TemplateView):
         RequestConfig(request).configure(tickets)
 
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
+        firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
 
         return render(
             request,
@@ -81,7 +82,13 @@ class BoardSingleView(TemplateView):
                 'form': form,
                 'ticket_update_once_form': ticket_update_once_form,
                 'tickets': tickets,
-                'zendesk_ticket_url': zendesk_ticket_url
+                'zendesk_ticket_url': zendesk_ticket_url,
+                'firebase_api_key': settings.FIREBASE_API_KEY,
+                'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
+                'firebase_database_url': settings.FIREBASE_DATABASE_URL,
+                'firebase_project_id': settings.FIREBASE_PROJECT_ID,
+                'firebase_storage_bucket': settings.FIREBASE_STORAGE_BUCKET,
+                'firebase_messaging_sender_id': firebase_messaging_sender_id
             }
         )
 
@@ -106,6 +113,7 @@ class BoardSingleView(TemplateView):
             ).order_by('id')
         )
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
+        firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
 
         return render(
             request,
@@ -116,7 +124,13 @@ class BoardSingleView(TemplateView):
                 'form': form,
                 'ticket_update_once_form': ticket_update_once_form,
                 'tickets': tickets,
-                'zendesk_ticket_url': zendesk_ticket_url
+                'zendesk_ticket_url': zendesk_ticket_url,
+                'firebase_api_key': settings.FIREBASE_API_KEY,
+                'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
+                'firebase_database_url': settings.FIREBASE_DATABASE_URL,
+                'firebase_project_id': settings.FIREBASE_PROJECT_ID,
+                'firebase_storage_bucket': settings.FIREBASE_STORAGE_BUCKET,
+                'firebase_messaging_sender_id': firebase_messaging_sender_id
             }
         )
 

@@ -2,6 +2,13 @@
 {% load staticfiles %}
 {% load render_table from django_tables2 %}
 {% block title %}{{ board_name }} | {% endblock %}
+{% block style %}
+  #presenceDiv img {
+    width: 30px;
+    height: 30px;
+    margin-right: 2px;
+  }
+{% endblock %}
 {% block body %}
 {% spaceless %}
   <section class="section">
@@ -121,7 +128,47 @@
 {% endspaceless %}
 {% endblock %}
 {% block javascript %}
+<script src="{% static 'js/firebase.js' %}"></script>
+<script src="{% static 'js/presence.js' %}"></script>
 <script>
+  const config = {
+    apiKey: "{{ firebase_api_key }}",
+    authDomain: "{{ firebase_auth_domain }}",
+    databaseURL: "{{ firebase_database_url }}",
+    projectId: "{{ firebase_project_id }}",
+    storageBucket: "{{ firebase_storage_bucket }}",
+    messagingSenderId: "{{ firebase_messaging_sender_id }}"
+  }
+  firebase.initializeApp(config)
+
+  const name = "{{ request.user.username }}"
+
+  var userListRef = firebase.database().ref("users_online/{{ board_slug }}")
+  var myUserRef = userListRef.push()
+
+  var connectedRef = firebase.database().ref(".info/connected")
+  connectedRef.on("value", function(snapshot) {
+    if (snapshot.val()) {
+      // If we lose network then remove this user from the list
+      myUserRef.onDisconnect().remove()
+      myUserRef.set({name: name});
+    }
+  })
+
+  userListRef.on("child_added", function(snapshot) {
+    const user = snapshot.val()
+    const iconId = Math.floor(Math.random() * icons.length)
+    const backgroundColorId = Math.floor(Math.random() * backgroundColor.length)
+    const img = "<img class='img-presence' src='{% static 'img' %}/icons/" + icons[iconId] + "' title='" + user.name + "' alt='" + user.name + "' style='background-color: " + backgroundColor[backgroundColorId] + ";' />"
+    $("#presenceDiv").append($(img).attr("id", user.name))
+    $("#" + user.name).text(user.name)
+  })
+
+  userListRef.on("child_removed", function(snapshot) {
+    const user = snapshot.val()
+    $("#" + user.name).remove()
+  })
+
   jQuery(document).ready(function($) {
     $(".modal-button").click(function() {
       var target = $(this).data("target");
