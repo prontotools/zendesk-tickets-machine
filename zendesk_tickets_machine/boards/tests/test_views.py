@@ -1125,12 +1125,14 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             )
 
     @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_send_data_to_create_zendesk_ticket(
         self,
         mock_requester,
-        mock_ticket
+        mock_ticket,
+        mock_organization,
     ):
         self.login()
         ticket = Ticket.objects.get(id=self.ticket.id)
@@ -1147,6 +1149,12 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'id': '2',
                 'organization_id': 69969,
             }]
+        }
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
         }
 
         self.client.get(
@@ -1169,6 +1177,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'tags': ['welcome', 'pronto_marketing']
             }
         }
+        mock_ticket.return_value.create.assert_called_once_with(data)
 
         comment = {
             'ticket': {
@@ -1179,22 +1188,29 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 }
             }
         }
-        mock_ticket.return_value.create.assert_called_once_with(data)
         mock_ticket.return_value.create_comment.assert_called_once_with(
             comment,
             1
         )
 
+        mock_requester.return_value.search.assert_called_once_with(
+            'client@hisotech.com'
+        )
+
+        mock_organization.return_value.show.assert_called_once_with(69969)
+
         requester = Requester.objects.last()
         self.assertEqual(requester.zendesk_user_id, '2')
 
     @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_create_two_tickets_if_there_are_two(
         self,
         mock_requester,
-        mock_ticket
+        mock_ticket,
+        mock_organization,
     ):
         self.login()
         mock_ticket.return_value.create.return_value = {
@@ -1202,14 +1218,18 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'id': 1
             }
         }
-
         mock_requester.return_value.search.return_value = {
             'users': [{
                 'id': '2',
                 'organization_id': 69969,
             }]
         }
-
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
+        }
         mock_ticket.return_value.create_comment.return_value = {
             'audit': {
                 'events': [{
@@ -1303,12 +1323,14 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.assertEqual(requester.zendesk_user_id, '2')
 
     @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_create_only_tickets_in_their_board(
         self,
         mock_requester,
-        mock_ticket
+        mock_ticket,
+        mock_organization,
     ):
         self.login()
         mock_ticket.return_value.create.return_value = {
@@ -1316,14 +1338,18 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'id': 1
             }
         }
-
         mock_requester.return_value.search.return_value = {
             'users': [{
                 'id': '2',
                 'organization_id': 69969,
             }]
         }
-
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
+        }
         mock_ticket.return_value.create_comment.return_value = {
             'audit': {
                 'events': [{
@@ -1393,12 +1419,14 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.assertEqual(requester.zendesk_user_id, '2')
 
     @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_redirect_to_board(
         self,
         mock_requester,
-        mock_ticket
+        mock_ticket,
+        mock_organization,
     ):
         self.login()
         mock_requester.return_value.search.return_value = {
@@ -1410,6 +1438,12 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
+            }
+        }
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
             }
         }
 
@@ -1428,12 +1462,14 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.assertEqual(requester.zendesk_user_id, '1095195473')
 
     @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
     def test_ticket_create_view_should_set_zendesk_ticket_id_to_ticket(
         self,
         mock_requester,
-        mock_ticket
+        mock_ticket,
+        mock_organization,
     ):
         self.login()
         self.assertIsNone(self.ticket.zendesk_ticket_id)
@@ -1473,6 +1509,13 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
                 'id': '1095195473',
                 'organization_id': 69969,
             }]
+        }
+
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
         }
 
         self.client.get(
@@ -1483,12 +1526,14 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.assertEqual(ticket.zendesk_ticket_id, '16')
 
     @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
-    def test_ticket_create_view_should_set_requester_id_to_ticket(
+    def test_ticket_create_view_should_save_requester_id_requester(
         self,
         mock_requester,
-        mock_ticket
+        mock_ticket,
+        mock_organization,
     ):
         self.login()
         self.assertIsNone(self.ticket.zendesk_ticket_id)
@@ -1530,12 +1575,83 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             }]
         }
 
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
+        }
+
         self.client.get(
             reverse('board_tickets_create', kwargs={'slug': self.board.slug})
         )
 
         requester = Requester.objects.last()
         self.assertEqual(requester.zendesk_user_id, '1095195473')
+
+    @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
+    @patch('boards.views.ZendeskTicket')
+    @patch('boards.views.ZendeskRequester')
+    def test_ticket_create_view_should_set_organization_to_ticket(
+        self,
+        mock_requester,
+        mock_ticket,
+        mock_organization,
+    ):
+        self.login()
+        self.assertIsNone(self.ticket.zendesk_ticket_id)
+
+        ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
+            'tickets/16.json'
+        result = {
+            'ticket': {
+                'subject': 'Hello',
+                'submitter_id': 1095195473,
+                'priority': None,
+                'raw_subject': 'Hello',
+                'id': 16,
+                'url': ticket_url,
+                'group_id': 23338833,
+                'tags': ['welcome'],
+                'assignee_id': 1095195243,
+                'via': {
+                    'channel': 'api',
+                    'source': {
+                        'from': {}, 'to': {}, 'rel': None
+                    }
+                },
+                'ticket_form_id': None,
+                'updated_at': '2016-12-11T13:27:12Z',
+                'created_at': '2016-12-11T13:27:12Z',
+                'description': 'yeah..',
+                'status': 'open',
+                'requester_id': 1095195473,
+                'forum_topic_id': None
+            }
+        }
+        mock_ticket.return_value.create.return_value = result
+
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '1095195473',
+                'organization_id': 69969,
+            }]
+        }
+
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
+        }
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
+
+        ticket = Ticket.objects.get(id=self.ticket.id)
+        self.assertEqual(ticket.organization, 'Pronto Tools')
 
     @patch('boards.views.ZendeskTicket')
     def test_create_view_should_not_create_if_zendesk_ticket_id_not_empty(
@@ -1554,12 +1670,14 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.assertEqual(mock.return_value.create.call_count, 0)
 
     @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
     def test_create_view_should_not_create_if_requester_id_is_empty(
         self,
         mock_requester,
-        mock_ticket
+        mock_ticket,
+        mock_organization,
     ):
         self.login()
         self.assertIsNone(self.ticket.zendesk_ticket_id)

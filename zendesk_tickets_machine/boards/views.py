@@ -16,8 +16,11 @@ from tickets.forms import TicketForm, TicketUpdateOnceForm
 from tickets.models import Ticket
 from tickets.services import TicketServices
 from tickets.tables import TicketTable
-from zendesk.api import User as ZendeskRequester
-from zendesk.api import Ticket as ZendeskTicket
+from zendesk.api import (
+    Organization as ZendeskOrganization,
+    User as ZendeskRequester,
+    Ticket as ZendeskTicket,
+)
 
 
 class BoardView(TemplateView):
@@ -178,6 +181,7 @@ class BoardZendeskTicketsCreateView(View):
     def get(self, request, slug):
         zendesk_ticket = ZendeskTicket()
         zendesk_user = ZendeskRequester()
+        zendesk_organization = ZendeskOrganization()
 
         tickets = Ticket.objects.filter(
             board__slug=slug,
@@ -190,14 +194,17 @@ class BoardZendeskTicketsCreateView(View):
                 continue
 
             requester_result = zendesk_user.search(each.requester)
+
             if each.due_at is not None:
                 due_at = each.due_at.isoformat()
             else:
                 due_at = ''
+
             if each.created_by is None:
                 created_by = each.assignee.zendesk_user_id
             else:
                 created_by = each.created_by.zendesk_user_id
+
             try:
                 requester_id = requester_result['users'][0]['id']
                 data = {
@@ -216,8 +223,17 @@ class BoardZendeskTicketsCreateView(View):
                         'tags': [tag.strip() for tag in each.tags.split(',')]
                     }
                 }
+
+                organization_id = requester_result['users'][0][
+                    'organization_id'
+                ]
+                organization_result = zendesk_organization.show(
+                    organization_id
+                )
+
                 result = zendesk_ticket.create(data)
                 each.zendesk_ticket_id = result['ticket']['id']
+                each.organization = organization_result['organization']['name']
                 each.save()
 
                 Requester.objects.get_or_create(
