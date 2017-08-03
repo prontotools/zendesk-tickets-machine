@@ -39,28 +39,31 @@ class TicketAdminTest(TestCase):
         expected = '<div class="text"><a href="?o=2">Comment</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=3">Requester</a></div>'
+        expected = '<div class="text"><a href="?o=3">Organization</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=4">Assignee</a></div>'
+        expected = '<div class="text"><a href="?o=4">Requester</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=5">Ticket type</a></div>'
+        expected = '<div class="text"><a href="?o=5">Assignee</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=6">Due at</a></div>'
+        expected = '<div class="text"><a href="?o=6">Ticket type</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=7">Priority</a></div>'
+        expected = '<div class="text"><a href="?o=7">Due at</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=8">Tags</a></div>'
+        expected = '<div class="text"><a href="?o=8">Priority</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=9">Board</a></div>'
+        expected = '<div class="text"><a href="?o=9">Tags</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=10">Is active</a></div>'
+        expected = '<div class="text"><a href="?o=10">Board</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<div class="text"><a href="?o=11">Is active</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_access_ticket_admin_should_have_board_filter(self):
