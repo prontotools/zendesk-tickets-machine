@@ -1133,7 +1133,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         }
         mock_requester.return_value.search.return_value = {
             'users': [{
-                'id': '2'
+                'id': '2',
+                'organization_id': 69969,
             }]
         }
 
@@ -1193,7 +1194,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         mock_requester.return_value.search.return_value = {
             'users': [{
-                'id': '2'
+                'id': '2',
+                'organization_id': 69969,
             }]
         }
 
@@ -1306,7 +1308,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         mock_requester.return_value.search.return_value = {
             'users': [{
-                'id': '2'
+                'id': '2',
+                'organization_id': 69969,
             }]
         }
 
@@ -1389,7 +1392,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         self.login()
         mock_requester.return_value.search.return_value = {
             'users': [{
-                'id': '1095195473'
+                'id': '1095195473',
+                'organization_id': 69969,
             }]
         }
         mock_ticket.return_value.create.return_value = {
@@ -1455,7 +1459,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         mock_requester.return_value.search.return_value = {
             'users': [{
-                'id': '1095195473'
+                'id': '1095195473',
+                'organization_id': 69969,
             }]
         }
 
