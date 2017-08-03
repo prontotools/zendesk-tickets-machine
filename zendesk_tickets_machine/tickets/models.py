@@ -25,6 +25,11 @@ class Ticket(models.Model):
 
     subject = models.CharField(max_length=300)
     comment = models.TextField()
+    organization = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True
+    )
     requester = models.CharField(max_length=100)
     created_by = models.ForeignKey(
         Agent, null=True, blank=True, related_name='created_by')

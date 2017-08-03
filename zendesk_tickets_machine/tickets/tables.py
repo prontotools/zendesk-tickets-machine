@@ -26,6 +26,7 @@ class TicketTable(tables.Table):
     )
     subject = tables.Column(orderable=False)
     comment = tables.Column(orderable=False)
+    organization = tables.Column(default='-', orderable=True)
     requester = tables.Column(default='-', orderable=True)
     created_by = tables.Column(default='-', orderable=False)
     assignee = tables.Column(default='-', orderable=False)

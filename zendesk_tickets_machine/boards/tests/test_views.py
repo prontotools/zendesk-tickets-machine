@@ -557,6 +557,8 @@ class BoardSingleViewTest(TestCase):
             '<input type="checkbox" name="select_all"/></th>' \
             '<th class="subject">Subject</th>' \
             '<th class="comment">Comment</th>' \
+            '<th class="orderable organization">' \
+            '<a href="?sort=organization">Organization</a></th>' \
             '<th class="orderable requester">' \
             '<a href="?sort=requester">Requester</a></th>' \
             '<th class="created_by">Created By</th>' \
@@ -624,6 +626,7 @@ class BoardSingleViewTest(TestCase):
             f'value="{self.first_ticket.id}"/></td>' \
             '<td class="subject">Ticket 1</td>' \
             '<td class="comment">Comment 1</td>' \
+            '<td class="organization">-</td>' \
             '<td class="requester">client@hisotech.com</td>' \
             '<td class="created_by">Natty</td>' \
             '<td class="assignee">-</td>' \
@@ -691,6 +694,7 @@ class BoardSingleViewTest(TestCase):
             f'value="{self.first_ticket.id}"/></td>' \
             '<td class="subject">Ticket 1</td>' \
             '<td class="comment">Comment 1</td>' \
+            '<td class="organization">-</td>' \
             '<td class="requester">client@hisotech.com</td>' \
             '<td class="created_by">-</td>' \
             '<td class="assignee">Natty</td>' \
@@ -785,6 +789,7 @@ class BoardSingleViewTest(TestCase):
             f'value="{self.first_ticket.id}"/></td>' \
             '<td class="subject">Ticket 1</td>' \
             '<td class="comment">Comment 1</td>' \
+            '<td class="organization">-</td>' \
             '<td class="requester">client@hisotech.com</td>' \
             '<td class="created_by">Natty</td>' \
             '<td class="assignee">Natty</td>' \
@@ -818,6 +823,7 @@ class BoardSingleViewTest(TestCase):
             f'<input type="checkbox" name="check" value="{ticket.id}"/></td>' \
             '<td class="subject">Welcome to Pronto Service</td>' \
             '<td class="comment">This is a comment.</td>' \
+            '<td class="organization">-</td>' \
             '<td class="requester">client@hisotech.com</td>' \
             '<td class="created_by">Natty</td>' \
             '<td class="assignee">Natty</td>' \

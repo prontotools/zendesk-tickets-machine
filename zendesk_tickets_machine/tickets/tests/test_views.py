@@ -142,6 +142,8 @@ class TicketEditViewTest(TestCase):
             '<input type="checkbox" name="select_all"/></th>' \
             '<th class="subject">Subject</th>' \
             '<th class="comment">Comment</th>' \
+            '<th class="orderable organization">' \
+            '<a href="?sort=organization">Organization</a></th>' \
             '<th class="orderable requester">' \
             '<a href="?sort=requester">Requester</a></th>' \
             '<th class="created_by">Created By</th>' \
