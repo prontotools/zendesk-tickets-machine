@@ -1111,13 +1111,18 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         User.objects.create_superuser('natty', 'natty@test', 'pass')
         self.client.login(username='natty', password='pass')
 
-    def test_create_view_should_required_login(self):
+    def test_create_view_should_require_login(self):
         with self.settings(LOGIN_URL=reverse('login')):
             response = self.client.get(
-                reverse('board_tickets_create',
-                        kwargs={'slug': self.board.slug})
+                reverse(
+                    'board_tickets_create',
+                    kwargs={'slug': self.board.slug}
+                )
             )
-            self.assertRedirects(response, '/login/?next=/production/tickets/')
+            self.assertRedirects(
+                response,
+                '/login/?next=/production/tickets/'
+            )
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
@@ -1425,7 +1430,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskTicket')
     @patch('boards.views.ZendeskRequester')
-    def test_it_should_set_zendesk_ticket_id_and_requester_id_to_ticket(
+    def test_ticket_create_view_should_set_zendesk_ticket_id_to_ticket(
         self,
         mock_requester,
         mock_ticket
@@ -1476,6 +1481,58 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.get(id=self.ticket.id)
         self.assertEqual(ticket.zendesk_ticket_id, '16')
+
+    @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskTicket')
+    @patch('boards.views.ZendeskRequester')
+    def test_ticket_create_view_should_set_requester_id_to_ticket(
+        self,
+        mock_requester,
+        mock_ticket
+    ):
+        self.login()
+        self.assertIsNone(self.ticket.zendesk_ticket_id)
+
+        ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
+            'tickets/16.json'
+        result = {
+            'ticket': {
+                'subject': 'Hello',
+                'submitter_id': 1095195473,
+                'priority': None,
+                'raw_subject': 'Hello',
+                'id': 16,
+                'url': ticket_url,
+                'group_id': 23338833,
+                'tags': ['welcome'],
+                'assignee_id': 1095195243,
+                'via': {
+                    'channel': 'api',
+                    'source': {
+                        'from': {}, 'to': {}, 'rel': None
+                    }
+                },
+                'ticket_form_id': None,
+                'updated_at': '2016-12-11T13:27:12Z',
+                'created_at': '2016-12-11T13:27:12Z',
+                'description': 'yeah..',
+                'status': 'open',
+                'requester_id': 1095195473,
+                'forum_topic_id': None
+            }
+        }
+        mock_ticket.return_value.create.return_value = result
+
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '1095195473',
+                'organization_id': 69969,
+            }]
+        }
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
 
         requester = Requester.objects.last()
         self.assertEqual(requester.zendesk_user_id, '1095195473')

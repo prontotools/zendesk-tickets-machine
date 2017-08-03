@@ -8,6 +8,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView, View
 
+from django_tables2 import RequestConfig
+
 from .models import Board, BoardGroup
 from requesters.models import Requester
 from tickets.forms import TicketForm, TicketUpdateOnceForm
@@ -16,8 +18,6 @@ from tickets.services import TicketServices
 from tickets.tables import TicketTable
 from zendesk.api import User as ZendeskRequester
 from zendesk.api import Ticket as ZendeskTicket
-
-from django_tables2 import RequestConfig
 
 
 class BoardView(TemplateView):
