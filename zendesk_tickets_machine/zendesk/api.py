@@ -52,3 +52,21 @@ class User(object):
             params=payload
         )
         return response.json()
+
+
+class Organization(object):
+    def __init__(self):
+        self.zendesk_api_url = settings.ZENDESK_API_URL
+        self.zendesk_api_user = settings.ZENDESK_API_USER
+        self.zendesk_api_token = settings.ZENDESK_API_TOKEN
+        self.headers = {'content-type': 'application/json'}
+
+    def show(self, organization_id):
+        url = self.zendesk_api_url + \
+            f'/api/v2/organizations/{organization_id}.json'
+        response = requests.get(
+            url,
+            auth=(self.zendesk_api_user, self.zendesk_api_token),
+            headers=self.headers,
+        )
+        return response.json()
