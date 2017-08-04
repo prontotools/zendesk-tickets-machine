@@ -942,6 +942,7 @@ class BoardRequestersResetViewTest(TestCase):
         self.first_ticket = Ticket.objects.create(
             subject='Ticket 1',
             comment='Comment 1',
+            organization='Hiso Tech 1',
             requester='client@hisotech.com',
             created_by=agent,
             assignee=agent,
@@ -957,6 +958,7 @@ class BoardRequestersResetViewTest(TestCase):
         self.second_ticket = Ticket.objects.create(
             subject='Ticket 2',
             comment='Comment 2',
+            organization='Hiso Tech 2',
             requester='client+another@hisotech.com',
             created_by=agent,
             assignee=agent,
@@ -1001,6 +1003,20 @@ class BoardRequestersResetViewTest(TestCase):
             second_ticket.requester,
             'client+another@hisotech.com'
         )
+
+    def test_requesters_reset_view_should_reset_organizations_in_tickets(
+        self
+    ):
+        self.login()
+        self.client.get(
+            reverse('board_requesters_reset', kwargs={'slug': self.board.slug})
+        )
+
+        first_ticket = Ticket.objects.get(id=self.first_ticket.id)
+        self.assertEqual(first_ticket.organization, '')
+
+        second_ticket = Ticket.objects.get(id=self.second_ticket.id)
+        self.assertEqual(second_ticket.organization, 'Hiso Tech 2')
 
     def test_requesters_reset_view_should_redirect_to_board(self):
         self.login()

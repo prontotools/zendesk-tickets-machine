@@ -161,7 +161,10 @@ class BoardSingleView(TemplateView):
 
 class BoardRequestersResetView(View):
     def get(self, request, slug):
-        Ticket.objects.filter(board__slug=slug).update(requester='')
+        Ticket.objects.filter(board__slug=slug).update(
+            requester='',
+            organization=''
+        )
 
         return HttpResponseRedirect(
             reverse('board_single', kwargs={'slug': slug})
