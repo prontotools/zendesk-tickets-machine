@@ -578,11 +578,35 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-        expected = '<a href="%s" class="button is-success is-outlined">' \
+        expected = '<a id="create-zendesk-tickets" href="%s" ' \
+            'class="button is-success is-outlined">' \
             'Create Tickets</a>' % reverse(
                 'board_tickets_create',
                 kwargs={'slug': self.board.slug}
             )
+        self.assertContains(response, expected, count=1, status_code=200)
+
+    def test_board_single_view_should_have_script_to_append_query_string(self):
+        self.login()
+        response = self.client.get(
+            reverse('board_single', kwargs={'slug': self.board.slug})
+        )
+
+        expected = '.btn-is-disabled {\n    pointer-events: none;'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '$(\'.check :checkbox\').click(function() {\n      ' \
+            'const checked = $(\'.check :checkbox:checked\')\n      ' \
+            'const ticket_ids = checked.map(function() {\n        ' \
+            'if (this.value !== \'on\') {\n          ' \
+            'return this.value\n        }\n      }).get()\n\n      ' \
+            'const original_href = \'/pre-production/tickets/\'\n      ' \
+            'if (ticket_ids.length > 0) {\n        ' \
+            '$(\'#create-zendesk-tickets\').attr(\'href\', ' \
+            'original_href + \'?tickets=\' + ' \
+            'ticket_ids.join(\',\'))\n      } else {\n        ' \
+            '$(\'#create-zendesk-tickets\').attr(\'href\', ' \
+            'original_href)\n      }\n    })\n  });'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_board_single_view_should_have_reset_requesters_button(self):
@@ -899,7 +923,7 @@ class BoardSingleViewTest(TestCase):
             '<span>Log Out</span></a>'
         self.assertContains(response, expected, status_code=200)
 
-    def test_board_single_view_should_required_login(self):
+    def test_board_single_view_should_require_login(self):
         with self.settings(LOGIN_URL=reverse('login')):
             response = self.client.get(
                 reverse('board_single', kwargs={'slug': self.board.slug})
