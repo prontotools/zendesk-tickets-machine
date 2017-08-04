@@ -11,6 +11,7 @@ class TicketAdmin(admin.ModelAdmin):
     list_display = (
         'subject',
         'comment',
+        'organization',
         'requester',
         'assignee',
         'ticket_type',

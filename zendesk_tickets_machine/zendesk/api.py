@@ -21,9 +21,7 @@ class Ticket(object):
         return response.json()
 
     def create_comment(self, data, ticket_id):
-        url = self.zendesk_api_url + '/api/v2/tickets/{}.json'.format(
-            ticket_id
-        )
+        url = self.zendesk_api_url + f'/api/v2/tickets/{ticket_id}.json'
         response = requests.put(
             url,
             auth=(self.zendesk_api_user, self.zendesk_api_token),
@@ -50,5 +48,23 @@ class User(object):
             auth=(self.zendesk_api_user, self.zendesk_api_token),
             headers=self.headers,
             params=payload
+        )
+        return response.json()
+
+
+class Organization(object):
+    def __init__(self):
+        self.zendesk_api_url = settings.ZENDESK_API_URL
+        self.zendesk_api_user = settings.ZENDESK_API_USER
+        self.zendesk_api_token = settings.ZENDESK_API_TOKEN
+        self.headers = {'content-type': 'application/json'}
+
+    def show(self, organization_id):
+        url = self.zendesk_api_url + \
+            f'/api/v2/organizations/{organization_id}.json'
+        response = requests.get(
+            url,
+            auth=(self.zendesk_api_user, self.zendesk_api_token),
+            headers=self.headers,
         )
         return response.json()

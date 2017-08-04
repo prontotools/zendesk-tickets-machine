@@ -3,7 +3,11 @@ from unittest.mock import patch
 from django.conf import settings
 from django.test import TestCase
 
-from ..api import Ticket, User
+from ..api import (
+    Organization,
+    Ticket,
+    User,
+)
 
 
 class TicketAPITest(TestCase):
@@ -124,5 +128,38 @@ class UserAPITest(TestCase):
         mock.return_value.json.return_value = {'key': 'value'}
 
         result = self.user.search('kan@prontomarketing.com')
+
+        self.assertEqual(result, {'key': 'value'})
+
+
+class OrganizationAPITest(TestCase):
+    def setUp(self):
+        self.zendesk_api_url = settings.ZENDESK_API_URL
+        self.zendesk_api_user = settings.ZENDESK_API_USER
+        self.zendesk_api_token = settings.ZENDESK_API_TOKEN
+        self.headers = {'content-type': 'application/json'}
+
+        self.organization = Organization()
+
+    @patch('zendesk.api.requests.get')
+    def test_show_organization_should_send_data_to_zendesk_correctly(
+        self,
+        mock
+    ):
+        url = self.zendesk_api_url + '/api/v2/organizations/18.json'
+
+        self.organization.show('18')
+
+        mock.assert_called_once_with(
+            url,
+            auth=(self.zendesk_api_user, self.zendesk_api_token),
+            headers=self.headers,
+        )
+
+    @patch('zendesk.api.requests.get')
+    def test_show_organization_should_return_json(self, mock):
+        mock.return_value.json.return_value = {'key': 'value'}
+
+        result = self.organization.show('18')
 
         self.assertEqual(result, {'key': 'value'})

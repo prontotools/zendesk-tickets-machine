@@ -5,9 +5,9 @@ from django.utils.timezone import utc
 
 from ..models import Ticket
 from ..services import TicketServices
-from boards.models import Board
 from agents.models import Agent
 from agent_groups.models import AgentGroup
+from boards.models import Board
 from requesters.models import Requester
 
 

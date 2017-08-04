@@ -6,6 +6,7 @@ import django_tables2 as tables
 
 from .models import Ticket
 
+
 TEMPLATE = '<a href="{% url "ticket_edit" record.id %}" ' \
     'class="tbl_icon edit"><i class="fa fa-pencil modal-button" ' \
     'data-target="#modal-edit-ticket"></i></a>&nbsp;' \
@@ -26,6 +27,7 @@ class TicketTable(tables.Table):
     )
     subject = tables.Column(orderable=False)
     comment = tables.Column(orderable=False)
+    organization = tables.Column(default='-', orderable=True)
     requester = tables.Column(default='-', orderable=True)
     created_by = tables.Column(default='-', orderable=False)
     assignee = tables.Column(default='-', orderable=False)
@@ -35,7 +37,8 @@ class TicketTable(tables.Table):
         default='-',
         format='M d, Y',
         orderable=False,
-        verbose_name=('Due Date'))
+        verbose_name=('Due Date')
+    )
     priority = tables.Column(orderable=False)
     tags = tables.Column(default='-', orderable=False)
     private_comment = tables.Column(default='-', orderable=False)
