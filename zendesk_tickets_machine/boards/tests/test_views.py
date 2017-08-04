@@ -1223,9 +1223,6 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         mock_organization.return_value.show.assert_called_once_with(69969)
 
-        requester = Requester.objects.last()
-        self.assertEqual(requester.zendesk_user_id, '2')
-
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
@@ -1343,9 +1340,6 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         ]
         mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
 
-        requester = Requester.objects.last()
-        self.assertEqual(requester.zendesk_user_id, '2')
-
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskOrganization')
     @patch('boards.views.ZendeskTicket')
@@ -1439,8 +1433,152 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         ]
         mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
 
-        requester = Requester.objects.last()
-        self.assertEqual(requester.zendesk_user_id, '2')
+    @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
+    @patch('boards.views.ZendeskTicket')
+    @patch('boards.views.ZendeskRequester')
+    def test_ticket_create_view_should_create_only_selected_tickets(
+        self,
+        mock_requester,
+        mock_ticket,
+        mock_organization,
+    ):
+        self.login()
+        mock_ticket.return_value.create.side_effect = [
+            {
+                'ticket': {
+                    'id': 1
+                }
+            },
+            {
+                'ticket': {
+                    'id': 2
+                }
+            },
+        ]
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '2',
+                'organization_id': 69969,
+            }]
+        }
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
+        }
+        mock_ticket.return_value.create_comment.return_value = {
+            'audit': {
+                'events': [{
+                    'public': False,
+                    'body': 'Private Comment',
+                    'author_id': '2'
+                }]
+            }
+        }
+
+        Ticket.objects.create(
+            subject='Ticket 2',
+            comment='Comment 2',
+            requester='client@hisotech.com',
+            created_by=self.agent,
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            priority='low',
+            tags='welcome',
+            private_comment='Private comment 2',
+            board=self.board
+        )
+
+        third_ticket = Ticket.objects.create(
+            subject='Ticket 3',
+            comment='Comment 3',
+            requester='client@hisotech.com',
+            created_by=self.agent,
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            priority='low',
+            tags='welcome',
+            private_comment='Private comment 3',
+            board=self.board
+        )
+
+        self.client.get(
+            reverse(
+                'board_tickets_create',
+                kwargs={'slug': self.board.slug}
+            ) + f'?tickets={self.ticket.id},{third_ticket.id}'
+        )
+
+        self.assertEqual(mock_ticket.return_value.create.call_count, 2)
+        self.assertEqual(mock_ticket.return_value.create_comment.call_count, 2)
+
+        ticket_calls = [
+            call({
+                'ticket': {
+                    'subject': 'Ticket 1',
+                    'comment': {
+                        'body': 'Comment 1',
+                        'author_id': '123'
+                    },
+                    'requester_id': '2',
+                    'assignee_id': '123',
+                    'group_id': '123',
+                    'type': 'question',
+                    'due_at': '',
+                    'priority': 'urgent',
+                    'tags': ['welcome']
+                }
+            }),
+            call({
+                'ticket': {
+                    'subject': 'Ticket 3',
+                    'comment': {
+                        'body': 'Comment 3',
+                        'author_id': '123'
+                    },
+                    'requester_id': '2',
+                    'assignee_id': '123',
+                    'group_id': '123',
+                    'type': 'question',
+                    'due_at': '',
+                    'priority': 'low',
+                    'tags': ['welcome']
+                }
+            }),
+        ]
+        mock_ticket.return_value.create.assert_has_calls(
+            ticket_calls,
+            any_order=True,
+        )
+
+        comment_calls = [
+            call({
+                'ticket': {
+                    'comment': {
+                        'author_id': '123',
+                        'body': 'Private comment 3',
+                        'public': False
+                    }
+                }
+            }, 1),
+            call({
+                'ticket': {
+                    'comment': {
+                        'author_id': '123',
+                        'body': 'Private comment',
+                        'public': False
+                    }
+                }
+            }, 2)
+        ]
+        mock_ticket.return_value.create_comment.assert_has_calls(
+            comment_calls,
+            any_order=True,
+        )
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskOrganization')
