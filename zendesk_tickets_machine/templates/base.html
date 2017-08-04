@@ -12,7 +12,13 @@
   <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"/>
   <style>
     .nav-item img {
-       max-height: 2.75rem;
+      max-height: 2.75rem;
+    }
+    .table-zendesk-tickets {
+      table-layout: fixed;
+    }
+    .table-zendesk-tickets td {
+      word-wrap: break-word;
     }
   {% block style %}{% endblock %}
   </style>

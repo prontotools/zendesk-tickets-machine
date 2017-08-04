@@ -161,7 +161,10 @@ class BoardSingleView(TemplateView):
 
 class BoardRequestersResetView(View):
     def get(self, request, slug):
-        Ticket.objects.filter(board__slug=slug).update(requester='')
+        Ticket.objects.filter(board__slug=slug).update(
+            requester='',
+            organization=''
+        )
 
         return HttpResponseRedirect(
             reverse('board_single', kwargs={'slug': slug})
@@ -183,12 +186,21 @@ class BoardZendeskTicketsCreateView(View):
         zendesk_user = ZendeskRequester()
         zendesk_organization = ZendeskOrganization()
 
-        tickets = Ticket.objects.filter(
-            board__slug=slug,
-            is_active=True
-        ).exclude(
-            zendesk_ticket_id__isnull=False
-        )
+        selected_tickets = request.GET.get('tickets')
+        if selected_tickets:
+            tickets = Ticket.objects.filter(
+                id__in=selected_tickets.split(','),
+                board__slug=slug,
+                is_active=True
+            )
+        else:
+            tickets = Ticket.objects.filter(
+                board__slug=slug,
+                is_active=True
+            )
+
+        tickets = tickets.exclude(zendesk_ticket_id__isnull=False)
+
         for each in tickets:
             if each.assignee is None or each.requester == '':
                 continue
@@ -254,7 +266,6 @@ class BoardZendeskTicketsCreateView(View):
                     data,
                     each.zendesk_ticket_id
                 )
-
             except IndexError:
                 pass
 

@@ -8,6 +8,9 @@
     height: 30px;
     margin-right: 2px;
   }
+  .btn-is-disabled {
+    pointer-events: none;
+  }
 {% endblock %}
 {% block body %}
 {% spaceless %}
@@ -22,7 +25,7 @@
                 <div class="nav-right is-hidden-mobile">
                   <div class="block">
                     <a class="button modal-button" data-target="#modal-add-ticket"> <span class="icon"><i class="fa fa-plus"></i></span>&nbsp;&nbsp;Add New Ticket</a>&nbsp;
-                    <a href="{% url 'board_tickets_create' board_slug %}" class="button is-success is-outlined">Create Tickets</a>&nbsp;
+                    <a id="create-zendesk-tickets" href="{% url 'board_tickets_create' board_slug %}" class="button is-success is-outlined">Create Tickets</a>&nbsp;
                     <a href="{% url 'board_requesters_reset' board_slug %}" class="button is-warning is-outlined">Reset Requesters</a>&nbsp;
                     <a href="{% url 'board_reset' board_slug %}" class="button is-danger is-outlined">Reset Tickets </a>
                   </div>
@@ -183,6 +186,22 @@
       $("#modal-add-ticket").removeClass("is-active");
       $("#modal-edit-ticket").removeClass("is-active");
     });
+
+    $('.check :checkbox').click(function() {
+      const checked = $('.check :checkbox:checked')
+      const ticket_ids = checked.map(function() {
+        if (this.value !== 'on') {
+          return this.value
+        }
+      }).get()
+
+      const original_href = '{% url "board_tickets_create" board_slug %}'
+      if (ticket_ids.length > 0) {
+        $('#create-zendesk-tickets').attr('href', original_href + '?tickets=' + ticket_ids.join(','))
+      } else {
+        $('#create-zendesk-tickets').attr('href', original_href)
+      }
+    })
   });
 </script>
 <script src="{% static 'js/app.js' %}" type="text/javascript"></script>
