@@ -6,6 +6,10 @@ from agents.models import Agent
 
 
 class TicketForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TicketForm, self).__init__(*args, **kwargs)
+        self.fields['assignee'].required = True
+
     class Meta:
         model = Ticket
         fields = [
