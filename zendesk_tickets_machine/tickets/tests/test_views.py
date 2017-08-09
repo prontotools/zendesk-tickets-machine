@@ -196,7 +196,7 @@ class TicketEditViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="assignee" ' \
-            'class="form-control" id="id_assignee">' \
+            'class="form-control" required id="id_assignee">' \
             '<option value="">---------</option>' \
             f'<option value="{self.agent.id}" selected>Kan</option>'
         self.assertContains(response, expected, status_code=200)
