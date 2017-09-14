@@ -490,7 +490,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="assignee" class="form-control" ' \
-            'required id="id_assignee">' \
+            'id="id_assignee">' \
             '<option value="" selected>---------' \
             f'</option><option value="{self.agent.id}">' \
             f'{self.agent.name}</option>'
