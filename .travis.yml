@@ -10,6 +10,7 @@ python:
 
 install:
   - pip install -r requirements/local.txt
+  - pip install Fabric3
 
 before_script:
   - psql -c "CREATE DATABASE travisdb;" -U postgres

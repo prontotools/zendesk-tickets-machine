@@ -11,7 +11,6 @@ chmod 400 deploy-key
 mv deploy-key ~/.ssh/id_rsa
 
 if [ "$TRAVIS_PULL_REQUEST" == "false" -a "$TRAVIS_BRANCH" == "master" ]; then
-  pip2.7 install fabric
   fab production build
   fab production push:username=$DOCKER_USERNAME,password=$DOCKER_PASSWORD
   fab production create_project_directory
