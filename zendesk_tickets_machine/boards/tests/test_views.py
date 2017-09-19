@@ -616,7 +616,7 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
 
-        expected = '<a href="%s" class="button is-warning is-outlined"' \
+        expected = '<a href="%s" class="button is-danger is-outlined"' \
             '>Reset Requesters</a>' % reverse(
                 'board_requesters_reset',
                 kwargs={'slug': self.board.slug}
@@ -628,7 +628,7 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-        expected = '<a href="%s" class="button is-danger is-outlined">' \
+        expected = '<a href="%s" class="button is-warning is-outlined">' \
             'Reset Tickets </a>' % reverse(
                 'board_reset',
                 kwargs={'slug': self.board.slug}
