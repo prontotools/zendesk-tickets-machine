@@ -13,8 +13,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - deps1-{{ .Branch }}-{{ checksum "requirements/local.txt" }}
-          - deps1-{{ .Branch }}-
+          - py-deps-{{ .Branch }}-{{ checksum "requirements/local.txt" }}
       - run:
           name: install dependencies
           command: |
@@ -24,7 +23,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/local.txt" }}
+          key: py-deps-{{ .Branch }}-{{ checksum "requirements/local.txt" }}
       - run:
           name: run static analysis
           command: |
@@ -34,7 +33,13 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            cd zendesk_tickets_machine && python manage.py test
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
+            cd zendesk_tickets_machine && python manage.py test && cd ..
+      - add_ssh_keys:
+          fingerprints:
+            - "40:ad:f8:e2:cc:2c:e6:64:bb:e6:51:c2:5b:7a:0e:74"
+      - deploy:
+          name: deploy to production
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              bash deploy.sh
+            fi
