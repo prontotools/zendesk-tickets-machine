@@ -1,5 +1,6 @@
 -r base.txt
 
+awscli==1.11.163
 Fabric3==1.13.1.post1
 flake8==3.3.0
 flake8-print==2.0.2
