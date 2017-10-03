@@ -10,6 +10,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_DB: circle_test
     steps:
+      - setup_remote_docker
       - checkout
       - restore_cache:
           keys:
