@@ -1,5 +1,4 @@
 from datetime import datetime
-import os
 
 from fabric.api import (
     cd,
