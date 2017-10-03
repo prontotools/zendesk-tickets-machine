@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Show the output of the following commands (useful for debugging)
-set -x
-
 fab production build
 fab production push
 fab production create_project_directory
