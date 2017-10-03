@@ -75,6 +75,9 @@ def push():
 @task
 def compose_up():
     with cd(PROJECT_DIRECTORY):
+        command = 'eval $(sudo aws ecr get-login --region eu-west-1)'
+        env.run(command)
+
         env.run('docker-compose -f ' + COMPOSE_FILE + ' pull')
         env.run('docker-compose -f ' + COMPOSE_FILE + ' up -d')
 
