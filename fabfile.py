@@ -11,7 +11,7 @@ from fabric.api import (
 )
 
 
-PRODUCTION_IP = '54.154.235.243'
+PRODUCTION_IP = '52.209.17.204'
 PROJECT_DIRECTORY = '/home/ubuntu/ztm/'
 BACKUP_DIRECTORY = '/home/ubuntu/backup/'
 COMPOSE_FILE = 'compose-production.yml'
@@ -51,14 +51,25 @@ def backup():
 @task
 def build():
     command = 'docker build -t ' \
-        '133506877714.dkr.ecr.eu-west-1.amazonaws.com/ztm ' \
+        '133506877714.dkr.ecr.eu-west-1.amazonaws.com/ztm-nginx:live ' \
+        '-f ./compose/nginx/Dockerfile ./compose/nginx'
+    local(command)
+
+    command = 'docker build -t ' \
+        '133506877714.dkr.ecr.eu-west-1.amazonaws.com/ztm-app:live ' \
         '-f ./compose/django/Dockerfile .'
     local(command)
 
 
 @task
 def push():
-    local('docker push 133506877714.dkr.ecr.eu-west-1.amazonaws.com/ztm')
+    command = 'docker push 133506877714.dkr.ecr.eu-west-1.amazonaws.com/' \
+        'ztm-nginx:live'
+    local(command)
+
+    command = 'docker push 133506877714.dkr.ecr.eu-west-1.amazonaws.com/' \
+        'ztm-app:live'
+    local(command)
 
 
 @task

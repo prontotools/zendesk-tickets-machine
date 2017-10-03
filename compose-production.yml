@@ -2,7 +2,7 @@ version: '2'
 
 services:
   nginx:
-    image: prontotools/ztm-nginx
+    image: 133506877714.dkr.ecr.eu-west-1.amazonaws.com/ztm-nginx:live
     ports:
       - 80:80
     volumes:
@@ -11,7 +11,7 @@ services:
       - app
 
   app:
-    image: prontotools/ztm-app
+    image: 133506877714.dkr.ecr.eu-west-1.amazonaws.com/ztm-app:live
     volumes:
       - ./zendesk_tickets_machine/staticfiles:/app/zendesk_tickets_machine/staticfiles
     env_file:
