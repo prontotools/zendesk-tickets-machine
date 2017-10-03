@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 from fabric.api import (
     cd,
@@ -56,7 +57,9 @@ def build():
 
 
 @task
-def push(username=None, password=None):
+def push():
+    username = os.environ.get('DOCKER_USERNAME', 'docker')
+    password = os.environ.get('DOCKER_PASSWORD', 'docker')
     if username and password:
         local('docker login -u "' + username + '" -p "' + password + '"')
     else:

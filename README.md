@@ -1,6 +1,6 @@
 # Zendesk Tickets Machine
 
-[![Build Status](https://travis-ci.org/prontotools/zendesk-tickets-machine.svg?branch=develop)](https://travis-ci.org/prontotools/zendesk-tickets-machine)
+[![CircleCI](https://circleci.com/gh/prontotools/zendesk-tickets-machine.svg?style=svg)](https://circleci.com/gh/prontotools/zendesk-tickets-machine)
 
 ## Docker Public Repository
 
