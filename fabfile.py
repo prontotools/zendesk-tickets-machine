@@ -1,5 +1,4 @@
 from datetime import datetime
-import os
 
 from fabric.api import (
     cd,
@@ -51,21 +50,15 @@ def backup():
 
 @task
 def build():
-    command = 'docker build -t prontotools/ztm-app ' \
+    command = 'docker build -t ' \
+        '133506877714.dkr.ecr.eu-west-1.amazonaws.com/ztm ' \
         '-f ./compose/django/Dockerfile .'
     local(command)
 
 
 @task
 def push():
-    username = os.environ.get('DOCKER_USERNAME', 'docker')
-    password = os.environ.get('DOCKER_PASSWORD', 'docker')
-    if username and password:
-        local('docker login -u "' + username + '" -p "' + password + '"')
-    else:
-        local('docker login')
-
-    local('docker push prontotools/ztm-app')
+    local('docker push 133506877714.dkr.ecr.eu-west-1.amazonaws.com/ztm')
 
 
 @task
