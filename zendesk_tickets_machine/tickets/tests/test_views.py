@@ -53,7 +53,6 @@ class TicketEditViewTest(TestCase):
 
         messages = list(response.context['messages'])
         self.assertEqual(len(messages), 1)
-
         expected_message = 'Oops! The ticket you are looking for ' \
             'no longer exists..'
         self.assertEqual(messages[0].level, MSG.ERROR)
@@ -66,8 +65,8 @@ class TicketEditViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = '<h5 class="alert alert-danger">' \
-            '%s</h5>' % expected_message
+        expected = 'class="alert alert-danger">' \
+            '%s' % expected_message
         self.assertContains(response, expected, status_code=200)
 
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -111,8 +110,8 @@ class TicketEditViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = '<h5 class="alert alert-danger">' \
-            '%s</h5>' % expected_message
+        expected = 'class="alert alert-danger">' \
+            '%s' % expected_message
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_edit_view_should_have_back_link_to_ticket_list(self):
@@ -379,8 +378,8 @@ class TicketDeleteViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = '<h5 class="alert alert-danger">' \
-            '%s</h5>' % expected_message
+        expected = 'class="alert alert-danger">' \
+            '%s' % expected_message
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_delete_view_should_delete_then_redirect_to_its_board(self):
