@@ -39,6 +39,15 @@ Then,
 ```sh
 docker-compose up --build
 ```
+Create superuser
+```sh
+docker exec -it <container> bash
+python manage.py createsuperuser
+```
+Run web app
+```sh
+http://localhost:8090/
+```
 <!---
 ## Usage example
 
