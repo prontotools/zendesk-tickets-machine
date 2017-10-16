@@ -1,5 +1,8 @@
 from django.contrib import admin
 
+from import_export import resources
+from import_export.admin import ExportMixin
+
 from .models import (
     Ticket,
     TicketZendeskAPIUsage
@@ -27,8 +30,29 @@ class TicketAdmin(admin.ModelAdmin):
     )
 
 
+class TicketZendeskAPIUsageResource(resources.ModelResource):
+    class Meta:
+        model = TicketZendeskAPIUsage
+        fields = (
+            'id',
+            'ticket_type',
+            'priority',
+            'assignee__name',
+            'board__name',
+            'created',
+        )
+        export_order = (
+            'id',
+            'ticket_type',
+            'priority',
+            'assignee__name',
+            'board__name',
+            'created',
+        )
+
+
 @admin.register(TicketZendeskAPIUsage)
-class TicketZendeskAPIUsageAdmin(admin.ModelAdmin):
+class TicketZendeskAPIUsageAdmin(ExportMixin, admin.ModelAdmin):
     list_display = (
         'assignee',
         'ticket_type',
@@ -36,3 +60,4 @@ class TicketZendeskAPIUsageAdmin(admin.ModelAdmin):
         'board',
         'created',
     )
+    resource_class = TicketZendeskAPIUsageResource

@@ -122,3 +122,47 @@ class TicketZendeskAPIUsageAdminTest(TestCase):
 
         expected = '<div class="text"><a href="?o=5">Created</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
+
+    def test_ticket_admin_should_have_export_button(self):
+        response = self.client.get(self.url)
+
+        expected = '<a href="' + self.url + 'export/?" ' \
+            'class="export_link">Export</a>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+
+class TicketZendeskAPIUsageExportTest(TestCase):
+    def setUp(self):
+        User.objects.create_superuser('admin', 'admin@pronto.com', 'admin')
+        self.client.login(username='admin', password='admin')
+
+        self.url = '/admin/tickets/ticketzendeskapiusage/export/'
+
+    def test_access_ticket_zendesk_api_usage_admin_page(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_ticket_zendesk_api_usage_admin_should_be_able_to_export_csv(self):
+        agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
+        board = Board.objects.create(name='Pre-Production')
+        ticket_api_usage = TicketZendeskAPIUsage.objects.create(
+            assignee=agent,
+            ticket_type='question',
+            priority='high',
+            board=board
+        )
+
+        data = {
+            'file_format': '0'
+        }
+        response = self.client.post(self.url, data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.has_header('Content-Disposition'))
+        self.assertEqual(response['Content-Type'], 'text/csv')
+
+        expected = 'id,ticket_type,priority,assignee__name,board__name,created'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = f'{ticket_api_usage.id},question,high,Kan,Pre-Production'
+        self.assertContains(response, expected, count=1, status_code=200)
