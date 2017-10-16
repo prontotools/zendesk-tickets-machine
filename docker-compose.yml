@@ -3,6 +3,7 @@ version: '2'
 services:
   app:
     image: prontotools/ztm-app
+    restart: always
     volumes:
       - ./:/app
     build:
