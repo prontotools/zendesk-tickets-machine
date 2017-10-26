@@ -259,8 +259,8 @@ class BoardSingleViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = '<h5 class="alert alert-danger">' \
-            '%s</h5>' % expected_message
+        expected = 'class="alert alert-danger">' \
+            '%s' % expected_message
         self.assertContains(response, expected, status_code=200)
 
         data = {
@@ -298,8 +298,8 @@ class BoardSingleViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = '<h5 class="alert alert-danger">' \
-            '%s</h5>' % expected_message
+        expected = 'class="alert alert-danger">' \
+            '%s' % expected_message
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_title_with_board_name(self):
