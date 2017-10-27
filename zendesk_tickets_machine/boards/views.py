@@ -248,14 +248,14 @@ class BoardZendeskTicketsCreateView(View):
                 if ticket:
                     each.zendesk_ticket_id = ticket.get('id')
                 else:
-                    result_description = result.get('description')
-                    result_details = result.get('details')
-                    items = result_details.popitem()
-                    for error_item in items[1]:
-                        item_description = error_item.get('description')
-                        item_error = error_item.get('error')
-                        error_text = result_description + ': ' + item_description + ' (' + item_error + ')'
-                        messages.error(request, error_text + "\n")
+                    result_error = result.get('error')
+                    result_requester = result.get('details').get('requester')
+                    for each in result_requester:
+                        each_description = each.get('description')
+                        error_message = f'{result_error}: {each_description}'
+                        messages.error(request, error_message)
+                    continue
+
                 each.organization = organization_result['organization']['name']
                 each.save()
 

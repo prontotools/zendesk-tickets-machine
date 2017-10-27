@@ -65,8 +65,7 @@ class TicketEditViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = 'class="alert alert-danger">' \
-            '%s' % expected_message
+        expected = f'<li class="alert alert-danger">{expected_message}</li>'
         self.assertContains(response, expected, status_code=200)
 
         agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
@@ -378,8 +377,7 @@ class TicketDeleteViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = 'class="alert alert-danger">' \
-            '%s' % expected_message
+        expected = f'<li class="alert alert-danger">{expected_message}</li>'
         self.assertContains(response, expected, status_code=200)
 
     def test_ticket_delete_view_should_delete_then_redirect_to_its_board(self):
