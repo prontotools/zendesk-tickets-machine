@@ -248,11 +248,13 @@ class BoardZendeskTicketsCreateView(View):
                 if ticket:
                     each.zendesk_ticket_id = ticket.get('id')
                 else:
+                    requester_email = requester_result['users'][0]['email']
                     result_error = result.get('error')
                     result_requester = result.get('details').get('requester')
                     for each in result_requester:
                         each_description = each.get('description')
-                        error_message = f'{result_error}: {each_description}'
+                        error_message = f'{result_error}: ' \
+                            f'{each_description} ({requester_email})'
                         messages.error(request, error_message)
                     continue
 
