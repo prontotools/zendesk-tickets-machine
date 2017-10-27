@@ -259,8 +259,7 @@ class BoardSingleViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = '<h5 class="alert alert-danger">' \
-            '%s</h5>' % expected_message
+        expected = f'<li class="alert alert-danger">{expected_message}</li>'
         self.assertContains(response, expected, status_code=200)
 
         data = {
@@ -298,8 +297,7 @@ class BoardSingleViewTest(TestCase):
             target_status_code=200
         )
 
-        expected = '<h5 class="alert alert-danger">' \
-            '%s</h5>' % expected_message
+        expected = f'<li class="alert alert-danger">{expected_message}</li>'
         self.assertContains(response, expected, status_code=200)
 
     def test_board_single_view_should_have_title_with_board_name(self):
@@ -307,8 +305,8 @@ class BoardSingleViewTest(TestCase):
         response = self.client.get(
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
-        expected = '<title>%s | Pronto Zendesk Tickets Machine' \
-            '</title>' % self.board.name
+        expected = f'<title>{self.board.name} | ' \
+            'Pronto Zendesk Tickets Machine</title>'
         self.assertContains(response, expected, status_code=200)
 
     @override_settings(FIREBASE_MESSAGING_SENDER_ID='6')
@@ -1296,9 +1294,6 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             reverse('board_tickets_create', kwargs={'slug': self.board.slug})
         )
 
-        self.assertEqual(mock_ticket.return_value.create.call_count, 2)
-        self.assertEqual(mock_ticket.return_value.create_comment.call_count, 2)
-
         ticket_calls = [
             call({
                 'ticket': {
@@ -1334,6 +1329,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             }),
         ]
         mock_ticket.return_value.create.assert_has_calls(ticket_calls)
+        self.assertEqual(mock_ticket.return_value.create.call_count, 2)
 
         comment_calls = [
             call({
@@ -1356,6 +1352,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             }, 1)
         ]
         mock_ticket.return_value.create_comment.assert_has_calls(comment_calls)
+        self.assertEqual(mock_ticket.return_value.create_comment.call_count, 2)
 
     @override_settings(DEBUG=True)
     @patch('boards.views.ZendeskOrganization')
@@ -1927,3 +1924,162 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         self.assertEqual(mock.return_value.search.call_count, 0)
         self.assertIsNone(self.ticket.zendesk_ticket_id)
+
+    @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
+    @patch('boards.views.ZendeskTicket')
+    @patch('boards.views.ZendeskRequester')
+    def test_create_view_should_show_msg_and_not_create_ticket_if_get_error(
+        self,
+        mock_requester,
+        mock_ticket,
+        mock_organization,
+    ):
+        self.login()
+
+        mock_ticket.return_value.create.side_effect = [
+            {
+                'description': 'Record validation errors',
+                'details': {
+                    'requester': [
+                        {
+                            'description': 'Requester: Pronto is suspended.'
+                        }
+                    ]
+                },
+                'error': 'RecordInvalid'
+            },
+            {
+                'ticket': {
+                    'id': 99
+                }
+            }
+        ]
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '2',
+                'organization_id': 69969,
+            }]
+        }
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
+        }
+        mock_ticket.return_value.create_comment.return_value = {
+            'audit': {
+                'events': [{
+                    'public': False,
+                    'body': 'Private Comment',
+                    'author_id': '2'
+                }]
+            }
+        }
+
+        another_ticket = Ticket.objects.create(
+            subject='Ticket 2',
+            comment='Comment 2',
+            requester='client@hisotech.com',
+            created_by=self.agent,
+            assignee=self.agent,
+            group=self.agent_group,
+            ticket_type='question',
+            priority='low',
+            tags='welcome',
+            private_comment='Private comment',
+            board=self.board
+        )
+
+        response = self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug}),
+            follow=True
+        )
+
+        ticket = Ticket.objects.get(id=self.ticket.id)
+        self.assertEqual(ticket.zendesk_ticket_id, '99')
+        another_ticket = Ticket.objects.get(id=another_ticket.id)
+        self.assertIsNone(another_ticket.zendesk_ticket_id)
+
+        ticket_calls = [
+            call({
+                'ticket': {
+                    'subject': 'Ticket 2',
+                    'comment': {
+                        'body': 'Comment 2',
+                        'author_id': '123'
+                    },
+                    'requester_id': '2',
+                    'assignee_id': '123',
+                    'group_id': '123',
+                    'type': 'question',
+                    'due_at': '',
+                    'priority': 'low',
+                    'tags': ['welcome']
+                }
+            }),
+            call({
+                'ticket': {
+                    'subject': 'Ticket 1',
+                    'comment': {
+                        'body': 'Comment 1',
+                        'author_id': '123'
+                    },
+                    'requester_id': '2',
+                    'assignee_id': '123',
+                    'group_id': '123',
+                    'type': 'question',
+                    'due_at': '',
+                    'priority': 'urgent',
+                    'tags': ['welcome']
+                }
+            }),
+        ]
+        mock_ticket.return_value.create.assert_has_calls(ticket_calls)
+        self.assertEqual(mock_ticket.return_value.create.call_count, 2)
+
+        mock_ticket.return_value.create_comment.assert_called_once_with(
+            {
+                'ticket': {
+                    'comment': {
+                        'author_id': '123',
+                        'body': 'Private comment',
+                        'public': False
+                    }
+                }
+            },
+            99
+        )
+
+        search_calls = [
+            call('client@hisotech.com'),
+            call('client@hisotech.com'),
+        ]
+        mock_requester.return_value.search.assert_has_calls(search_calls)
+        self.assertEqual(mock_requester.return_value.search.call_count, 2)
+
+        organization_calls = [
+            call(69969),
+            call(69969),
+        ]
+        mock_organization.return_value.show.assert_has_calls(
+            organization_calls
+        )
+        self.assertEqual(mock_organization.return_value.show.call_count, 2)
+
+        messages = list(response.context['messages'])
+        self.assertEqual(len(messages), 1)
+
+        expected_message = 'RecordInvalid: Requester: Pronto is suspended.'
+        self.assertEqual(messages[0].level, MSG.ERROR)
+        self.assertEqual(messages[0].message, expected_message)
+
+        self.assertRedirects(
+            response,
+            reverse('board_single', kwargs={'slug': self.board.slug}),
+            status_code=302,
+            target_status_code=200
+        )
+
+        expected = f'<li class="alert alert-danger">{expected_message}</li>'
+        self.assertContains(response, expected, status_code=200)

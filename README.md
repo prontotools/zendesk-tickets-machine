@@ -1,26 +1,19 @@
 # Zendesk Tickets Machine
 
-> Machine for creating Zendesk tickets.
-
 [![CircleCI](https://circleci.com/gh/prontotools/zendesk-tickets-machine.svg?style=svg)](https://circleci.com/gh/prontotools/zendesk-tickets-machine)
 
-This project helps to create Zendesk tickets by defined templates.
+Machine that helps us create Zendesk tickets using our defined ticket templates
 
-## Docker Public Repository
+## Development Setup
 
-https://hub.docker.com/r/prontotools/ztm-app/
-
-## Installation
-
-OS X & Linux:
+Mac OS or Linux:
 
 ```sh
 touch .env
 ```
 
-This .env file keeps Zendesk configuration. If you don't want to connect to Zendesk, just keep this file empty.
+This `.env` file keeps the configuration. This file can be left empty like this.
 
-#### Example configuration in `.env`:
 ```sh
 ZENDESK_URL=xxx
 ZENDESK_API_URL=xxx
@@ -34,75 +27,18 @@ FIREBASE_PROJECT_ID=xxx
 FIREBASE_STORAGE_BUCKET=xxx
 FIREBASE_MESSAGING_SENDER_ID=xxx
 ```
-Then,
+
+To start the app, run:
 
 ```sh
 docker-compose up --build
 ```
-Create superuser
+
+To create a superuser, run:
 ```sh
-docker exec -it <container> bash
+docker exec -it zendeskticketsmachine_app_1 bash
+cd zendesk_tickets_machine
 python manage.py createsuperuser
 ```
-Run web app
-```sh
-http://localhost:8090/
-```
-<!---
-## Usage example
 
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
-
-_For more examples and usage, please refer to the [Wiki][wiki]._
-
-## Development setup
-
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
-```sh
-make install
-npm test
-```
-
-## Release History
-
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
-
-## Meta
-
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
-
-Distributed under the XYZ license. See ``LICENSE`` for more information.
-
-[https://github.com/yourname/github-link](https://github.com/dbader/)
-
-## Contributing
-
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
-
--->
-
-<!-- Markdown link & img dfn's -->
-<!--
-[npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/datadog-metrics
-[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[wiki]: https://github.com/yourname/yourproject/wiki
--->
+The app will run at http://localhost:8090/.

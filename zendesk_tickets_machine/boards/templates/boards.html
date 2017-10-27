@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 
 {% block body %}
-  {% for message in messages %}
-    {% if message.level == 40 %}
-      <h5 class="alert alert-danger">{{ message }}</h5>
-    {% endif %}
-  {% endfor %}
   {% spaceless %}
   <section class="section">
     <div class="container">
