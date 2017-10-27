@@ -1959,6 +1959,7 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             'users': [{
                 'id': '2',
                 'organization_id': 69969,
+                'email': 'kan@pronto.com',
             }]
         }
         mock_organization.return_value.show.return_value = {
@@ -2070,7 +2071,8 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
         messages = list(response.context['messages'])
         self.assertEqual(len(messages), 1)
 
-        expected_message = 'RecordInvalid: Requester: Pronto is suspended.'
+        expected_message = 'RecordInvalid: Requester: Pronto is suspended. ' \
+            '(kan@pronto.com)'
         self.assertEqual(messages[0].level, MSG.ERROR)
         self.assertEqual(messages[0].message, expected_message)
 
