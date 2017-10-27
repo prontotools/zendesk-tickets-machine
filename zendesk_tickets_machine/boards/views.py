@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import time
 
 from django.conf import settings
@@ -202,8 +203,13 @@ class BoardZendeskTicketsCreateView(View):
         tickets = tickets.exclude(zendesk_ticket_id__isnull=False)
 
         for each in tickets:
-            if each.assignee is None or each.requester == '':
+            if each.requester == '':
                 continue
+
+            if each.assignee:
+                assignee_id = each.assignee.zendesk_user_id
+            else:
+                assignee_id = os.environ.get('DEFAULT_ZENDESK_USER_ID', 0)
 
             requester_result = zendesk_user.search(each.requester)
 
@@ -212,10 +218,10 @@ class BoardZendeskTicketsCreateView(View):
             else:
                 due_at = ''
 
-            if each.created_by is None:
-                created_by = each.assignee.zendesk_user_id
-            else:
+            if each.created_by:
                 created_by = each.created_by.zendesk_user_id
+            else:
+                created_by = assignee_id
 
             try:
                 requester_id = requester_result['users'][0]['id']
@@ -227,7 +233,7 @@ class BoardZendeskTicketsCreateView(View):
                             'author_id': created_by
                         },
                         'requester_id': requester_id,
-                        'assignee_id': each.assignee.zendesk_user_id,
+                        'assignee_id': assignee_id,
                         'group_id': each.group.zendesk_group_id,
                         'type': each.ticket_type,
                         'due_at': due_at,
@@ -269,7 +275,7 @@ class BoardZendeskTicketsCreateView(View):
                 data = {
                     'ticket': {
                         'comment': {
-                            'author_id': each.assignee.zendesk_user_id,
+                            'author_id': assignee_id,
                             'body': each.private_comment,
                             'public': False
                         }

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.messages import constants as MSG
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
 
 from ..models import Board, BoardGroup
@@ -1110,7 +1110,7 @@ class BoardResetViewTest(TestCase):
             )
 
 
-class BoardZendeskTicketsCreateViewTest(TestCase):
+class BoardZendeskTicketsCreateViewTest(TransactionTestCase):
     def setUp(self):
         self.agent = Agent.objects.create(name='Kan', zendesk_user_id='123')
         self.agent_group = AgentGroup.objects.create(
@@ -1231,11 +1231,85 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
             comment,
             1
         )
-
         mock_requester.return_value.search.assert_called_once_with(
             'client@hisotech.com'
         )
+        mock_organization.return_value.show.assert_called_once_with(69969)
 
+    @override_settings(DEBUG=True)
+    @patch.dict('os.environ', {'DEFAULT_ZENDESK_USER_ID': '9909'})
+    @patch('boards.views.ZendeskOrganization')
+    @patch('boards.views.ZendeskTicket')
+    @patch('boards.views.ZendeskRequester')
+    def test_create_ticket_with_no_assignee_should_use_default_assignee(
+        self,
+        mock_requester,
+        mock_ticket,
+        mock_organization,
+    ):
+        self.login()
+        self.ticket.assignee = None
+        self.ticket.save()
+
+        mock_ticket.return_value.create.return_value = {
+            'ticket': {
+                'id': 1
+            }
+        }
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '2',
+                'organization_id': 69969,
+            }]
+        }
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
+        }
+
+        self.client.get(
+            reverse(
+                'board_tickets_create',
+                kwargs={'slug': self.board.slug}
+            )
+        )
+
+        data = {
+            'ticket': {
+                'subject': 'Ticket 1',
+                'comment': {
+                    'body': 'Comment 1',
+                    'author_id': '123'
+                },
+                'requester_id': '2',
+                'assignee_id': '9909',
+                'group_id': '123',
+                'type': 'question',
+                'due_at': '',
+                'priority': 'urgent',
+                'tags': ['welcome']
+            }
+        }
+        mock_ticket.return_value.create.assert_called_once_with(data)
+
+        comment = {
+            'ticket': {
+                'comment': {
+                    'author_id': '9909',
+                    'body': 'Private comment',
+                    'public': False
+                }
+            }
+        }
+        mock_ticket.return_value.create_comment.assert_called_once_with(
+            comment,
+            1
+        )
+        mock_requester.return_value.search.assert_called_once_with(
+            'client@hisotech.com'
+        )
         mock_organization.return_value.show.assert_called_once_with(69969)
 
     @override_settings(DEBUG=True)
@@ -1898,19 +1972,6 @@ class BoardZendeskTicketsCreateViewTest(TestCase):
 
         ticket = Ticket.objects.last()
         self.assertIsNone(ticket.zendesk_ticket_id)
-
-    @patch('boards.views.ZendeskRequester')
-    def test_create_view_should_not_create_ticket_if_no_assignee(self, mock):
-        self.login()
-        self.ticket.assignee = None
-        self.ticket.save()
-
-        self.client.get(
-            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
-        )
-
-        self.assertEqual(mock.return_value.search.call_count, 0)
-        self.assertIsNone(self.ticket.zendesk_ticket_id)
 
     @patch('boards.views.ZendeskRequester')
     def test_create_view_should_not_create_ticket_if_no_requester(self, mock):
