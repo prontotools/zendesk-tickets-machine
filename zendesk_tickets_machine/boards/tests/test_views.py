@@ -14,6 +14,7 @@ from agents.models import Agent
 from agent_groups.models import AgentGroup
 from requesters.models import Requester
 from tickets.models import Ticket
+from datetime import datetime
 
 
 class BoardViewTest(TestCase):
@@ -2194,8 +2195,8 @@ class BoardZendeskTicketsCreateViewTest(TransactionTestCase):
 
         ticket_zendesk_api_usage = TicketZendeskAPIUsage.objects.last()
         self.assertEqual(
-            ticket_zendesk_api_usage.requester,
-            'client@hisotech.com'
+            ticket_zendesk_api_usage.ticket_type,
+            'question'
         )
         self.assertEqual(ticket_zendesk_api_usage.priority, 'urgent')
         self.assertEqual(
