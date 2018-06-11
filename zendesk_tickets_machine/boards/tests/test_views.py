@@ -9,11 +9,10 @@ from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
 
 from ..models import Board, BoardGroup
-from tickets.models import TicketZendeskAPIUsage
 from agents.models import Agent
 from agent_groups.models import AgentGroup
 from requesters.models import Requester
-from tickets.models import Ticket
+from tickets.models import Ticket, TicketZendeskAPIUsage
 
 
 class BoardViewTest(TestCase):
