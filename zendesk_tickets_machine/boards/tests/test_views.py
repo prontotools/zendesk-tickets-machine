@@ -14,7 +14,6 @@ from agents.models import Agent
 from agent_groups.models import AgentGroup
 from requesters.models import Requester
 from tickets.models import Ticket
-from datetime import datetime
 
 
 class BoardViewTest(TestCase):
