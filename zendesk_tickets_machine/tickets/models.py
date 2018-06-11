@@ -70,6 +70,8 @@ def create_zendesk_api_usage(sender, instance, **kwargs):
         if not current_ticket.zendesk_ticket_id and instance.zendesk_ticket_id:
             TicketZendeskAPIUsage.objects.create(
                 ticket_type=instance.ticket_type,
+                requester=instance.requester,
+                organization=instance.organization,
                 priority=instance.priority,
                 assignee=instance.assignee,
                 board=instance.board
@@ -81,6 +83,8 @@ def create_zendesk_api_usage(sender, instance, **kwargs):
 class TicketZendeskAPIUsage(models.Model):
     ticket_type = models.CharField(max_length=50)
     priority = models.CharField(max_length=50)
+    requester = models.EmailField(max_length=300, null=True)
+    organization = models.CharField(max_length=300, null=True)
     assignee = models.ForeignKey(Agent)
     board = models.ForeignKey(Board)
     created = models.DateTimeField(auto_now_add=True)

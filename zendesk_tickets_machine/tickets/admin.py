@@ -55,6 +55,8 @@ class TicketZendeskAPIUsageResource(resources.ModelResource):
 class TicketZendeskAPIUsageAdmin(ExportMixin, admin.ModelAdmin):
     list_display = (
         'assignee',
+        'organization',
+        'requester',
         'ticket_type',
         'priority',
         'board',

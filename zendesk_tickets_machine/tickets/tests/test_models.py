@@ -145,6 +145,8 @@ class TicketZendeskAPIUsageTest(TestCase):
         usage.priority = 'normal'
         usage.assignee = agent
         usage.board = board
+        usage.requester = 'client@email.com'
+        usage.organization = 'Hiso Tech'
         usage.save()
 
         usage = TicketZendeskAPIUsage.objects.last()
@@ -153,4 +155,6 @@ class TicketZendeskAPIUsageTest(TestCase):
         self.assertEqual(usage.priority, 'normal')
         self.assertEqual(usage.assignee.name, 'Kan')
         self.assertEqual(usage.board.name, 'Pre-Production')
+        self.assertEqual(usage.requester, 'client@email.com')
+        self.assertEqual(usage.organization, 'Hiso Tech')
         self.assertTrue(usage.created)

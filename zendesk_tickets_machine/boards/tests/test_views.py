@@ -12,7 +12,7 @@ from ..models import Board, BoardGroup
 from agents.models import Agent
 from agent_groups.models import AgentGroup
 from requesters.models import Requester
-from tickets.models import Ticket
+from tickets.models import Ticket, TicketZendeskAPIUsage
 
 
 class BoardViewTest(TestCase):
@@ -1178,6 +1178,8 @@ class BoardZendeskTicketsCreateViewTest(TransactionTestCase):
         ticket.tags = 'welcome, pronto_marketing'
         ticket.save()
 
+        self.assertIsNone(ticket.zendesk_ticket_id)
+
         mock_ticket.return_value.create.return_value = {
             'ticket': {
                 'id': 1
@@ -1235,6 +1237,9 @@ class BoardZendeskTicketsCreateViewTest(TransactionTestCase):
             'client@hisotech.com'
         )
         mock_organization.return_value.show.assert_called_once_with(69969)
+
+        ticket = Ticket.objects.get(id=self.ticket.id)
+        self.assertEqual(ticket.zendesk_ticket_id, '1')
 
     @override_settings(DEBUG=True)
     @patch.dict('os.environ', {'DEFAULT_ZENDESK_USER_ID': '9909'})
@@ -2146,3 +2151,59 @@ class BoardZendeskTicketsCreateViewTest(TransactionTestCase):
 
         expected = f'<li class="alert alert-danger">{expected_message}</li>'
         self.assertContains(response, expected, status_code=200)
+
+    @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
+    @patch('boards.views.ZendeskTicket')
+    @patch('boards.views.ZendeskRequester')
+    def test_when_create_ticket_should_also_create_api_usage(
+        self,
+        mock_requester,
+        mock_ticket,
+        mock_organization,
+    ):
+        self.login()
+        ticket = Ticket.objects.get(id=self.ticket.id)
+        ticket.tags = 'welcome, pronto_marketing'
+        ticket.save()
+
+        mock_ticket.return_value.create.return_value = {
+            'ticket': {
+                'id': 1
+            }
+        }
+
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '2',
+                'organization_id': 69969,
+            }]
+        }
+
+        mock_organization.return_value.show.return_value = {
+            'organization': {
+                'id': 69969,
+                'name': 'Pronto Tools',
+            }
+        }
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
+
+        ticket_zendesk_api_usage = TicketZendeskAPIUsage.objects.last()
+        self.assertEqual(
+            ticket_zendesk_api_usage.ticket_type,
+            'question'
+        )
+        self.assertEqual(ticket_zendesk_api_usage.priority, 'urgent')
+        self.assertEqual(
+            ticket_zendesk_api_usage.requester,
+            'client@hisotech.com'
+        )
+        self.assertEqual(
+            ticket_zendesk_api_usage.organization,
+            'Pronto Tools'
+        )
+        self.assertEqual(ticket_zendesk_api_usage.assignee, self.agent)
+        self.assertEqual(ticket_zendesk_api_usage.board, self.board)
