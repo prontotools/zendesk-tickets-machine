@@ -1955,8 +1955,8 @@ class BoardZendeskTicketsCreateViewTest(TransactionTestCase):
 
         mock_organization.return_value.show.return_value = {
             'error': {
-            'message': 'You passed an invalid value for the id attribute. Invalid parameter: id must be an integer',
-            'title': 'Invalid attribute'
+                'message': 'Invalid parameter: id must be an integer',
+                'title': 'Invalid attribute'
             }
         }
 
