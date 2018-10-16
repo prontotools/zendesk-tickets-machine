@@ -147,7 +147,6 @@ class BoardSingleView(TemplateView):
         edit_requester = self.POST.get('edit_requester')
 
         ticketServices = TicketServices()
-
         ticketServices.edit_ticket_once(
             id_list,
             edit_tags,
