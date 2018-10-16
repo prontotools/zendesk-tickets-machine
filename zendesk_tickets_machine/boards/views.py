@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import time
 
@@ -265,12 +265,13 @@ class BoardZendeskTicketsCreateView(View):
                     continue
 
                 try:
-                    each.organization = organization_result['organization']['name']
-                    each.save()
+                    each.organization = organization_result['organization'][
+                        'name'
+                    ]
                 except KeyError:
                     each.organization = '---'
-                    each.save()
 
+                each.save()
 
                 Requester.objects.get_or_create(
                     email=each.requester,
