@@ -147,7 +147,6 @@ class BoardSingleView(TemplateView):
         edit_requester = self.POST.get('edit_requester')
 
         ticketServices = TicketServices()
-
         ticketServices.edit_ticket_once(
             id_list,
             edit_tags,
@@ -264,7 +263,13 @@ class BoardZendeskTicketsCreateView(View):
                         messages.error(request, error_message)
                     continue
 
-                each.organization = organization_result['organization']['name']
+                try:
+                    each.organization = organization_result['organization'][
+                        'name'
+                    ]
+                except KeyError:
+                    each.organization = '---'
+
                 each.save()
 
                 Requester.objects.get_or_create(

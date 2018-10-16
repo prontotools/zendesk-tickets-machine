@@ -1908,6 +1908,70 @@ class BoardZendeskTicketsCreateViewTest(TransactionTestCase):
         ticket = Ticket.objects.get(id=self.ticket.id)
         self.assertEqual(ticket.organization, 'Pronto Tools')
 
+    @override_settings(DEBUG=True)
+    @patch('boards.views.ZendeskOrganization')
+    @patch('boards.views.ZendeskTicket')
+    @patch('boards.views.ZendeskRequester')
+    def test_ticket_create_view_should_set_organization_as_dash_if_no_org_id(
+        self,
+        mock_requester,
+        mock_ticket,
+        mock_organization,
+    ):
+        self.login()
+        self.assertIsNone(self.ticket.zendesk_ticket_id)
+
+        ticket_url = 'https://pronto1445242156.zendesk.com/api/v2/' \
+            'tickets/16.json'
+        result = {
+            'ticket': {
+                'subject': 'Hello',
+                'submitter_id': 1095195473,
+                'priority': None,
+                'raw_subject': 'Hello',
+                'id': 16,
+                'url': ticket_url,
+                'group_id': 23338833,
+                'tags': ['welcome'],
+                'assignee_id': 1095195243,
+                'via': {
+                    'channel': 'api',
+                    'source': {
+                        'from': {}, 'to': {}, 'rel': None
+                    }
+                },
+                'ticket_form_id': None,
+                'updated_at': '2016-12-11T13:27:12Z',
+                'created_at': '2016-12-11T13:27:12Z',
+                'description': 'yeah..',
+                'status': 'open',
+                'requester_id': 1095195473,
+                'forum_topic_id': None
+            }
+        }
+        mock_ticket.return_value.create.return_value = result
+
+        mock_requester.return_value.search.return_value = {
+            'users': [{
+                'id': '1095195473',
+                'organization_id': None,
+            }]
+        }
+
+        mock_organization.return_value.show.return_value = {
+            'error': {
+                'message': 'Invalid parameter: id must be an integer',
+                'title': 'Invalid attribute'
+            }
+        }
+
+        self.client.get(
+            reverse('board_tickets_create', kwargs={'slug': self.board.slug})
+        )
+
+        ticket = Ticket.objects.get(id=self.ticket.id)
+        self.assertEqual(ticket.organization, '---')
+
     @patch('boards.views.ZendeskTicket')
     def test_create_view_should_not_create_if_zendesk_ticket_id_not_empty(
         self,
