@@ -18,7 +18,12 @@ class Board(models.Model):
         editable=False,
         unique=True
     )
-    board_group = models.ForeignKey(BoardGroup, null=True, blank=True)
+    board_group = models.ForeignKey(
+        BoardGroup,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
 
     def __str__(self):
         return self.name

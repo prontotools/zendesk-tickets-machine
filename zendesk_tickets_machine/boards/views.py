@@ -3,10 +3,10 @@ import os
 import time
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import TemplateView, View
 
 from django_tables2 import RequestConfig

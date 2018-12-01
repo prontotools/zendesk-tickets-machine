@@ -35,20 +35,27 @@ class Ticket(models.Model):
         Agent,
         null=True,
         blank=True,
-        related_name='created_by'
+        related_name='created_by',
+        on_delete=models.SET_NULL,
     )
     assignee = models.ForeignKey(
         Agent,
         null=True,
         blank=True,
-        related_name='assignee'
+        related_name='assignee',
+        on_delete=models.SET_NULL,
     )
-    group = models.ForeignKey(AgentGroup)
+    group = models.ForeignKey(
+        AgentGroup,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
     ticket_type = models.CharField(
         max_length=50,
         choices=TICKET_TYPE_CHOICES,
         null=True,
-        blank=True
+        blank=True,
     )
     due_at = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=50, choices=PRIORITY_TYPE_CHOICES)
@@ -59,7 +66,12 @@ class Ticket(models.Model):
         null=True,
         blank=True
     )
-    board = models.ForeignKey(Board)
+    board = models.ForeignKey(
+        Board,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
     is_active = models.BooleanField(default=True)
 
 
@@ -85,6 +97,16 @@ class TicketZendeskAPIUsage(models.Model):
     priority = models.CharField(max_length=50)
     requester = models.EmailField(max_length=300, null=True)
     organization = models.CharField(max_length=300, null=True)
-    assignee = models.ForeignKey(Agent)
-    board = models.ForeignKey(Board)
+    assignee = models.ForeignKey(
+        Agent,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    board = models.ForeignKey(
+        Board,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
     created = models.DateTimeField(auto_now_add=True)
