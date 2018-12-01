@@ -47,7 +47,7 @@ class LoginViewTest(TestCase):
         expected = '<form class="form-signin" method="post" action="/login/">'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<input type=\'hidden\' name=\'csrfmiddlewaretoken\''
+        expected = '<input type="hidden" name="csrfmiddlewaretoken"'
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<div class="form-signin-heading">' \
@@ -70,7 +70,7 @@ class LoginViewTest(TestCase):
         self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<input type="hidden" name="next" ' \
-            'value="/" />'
+            'value="" />'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_login_fail_should_have_login_error_message(self):
