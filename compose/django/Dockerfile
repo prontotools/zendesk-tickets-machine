@@ -5,8 +5,8 @@ RUN pip install Django==1.11a1 \
     django-tables2==1.3.0 \
     psycopg2==2.7.1 \
     raven==5.32.0 \
-    requests==2.12.3 \
-    uWSGI==2.0.14
+    requests==2.20.1 \
+    uWSGI==2.0.17.1
 
 ENV APPLICATION_ROOT /app/
 
