@@ -4,7 +4,7 @@ from unittest.mock import call, patch
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.messages import constants as MSG
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
 
@@ -460,16 +460,16 @@ class BoardSingleViewTest(TestCase):
         expected = '<form method="post">'
         self.assertContains(response, expected, status_code=200)
 
-        expected = "<input type='hidden' name='csrfmiddlewaretoken'"
-        self.assertContains(response, expected, status_code=200)
+        expected = '<input type="hidden" name="csrfmiddlewaretoken"'
+        self.assertContains(response, expected, count=1, status_code=200)
 
         expected = '<input type="text" name="subject" placeholder="Subject" ' \
-            'class="form-control" maxlength="300" required id="id_subject" />'
+            'class="form-control" maxlength="300" required id="id_subject">'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input type="text" name="requester" ' \
             'placeholder="Requester" class="form-control" maxlength="100" ' \
-            'required id="id_requester" />'
+            'required id="id_requester">'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="created_by" class="form-control" ' \
@@ -484,7 +484,7 @@ class BoardSingleViewTest(TestCase):
         self.assertContains(response, expected, status_code=200)
 
         expected = '<input type="text" name="tags" placeholder="Tags" ' \
-            'class="form-control" maxlength="300" id="id_tags" />'
+            'class="form-control" maxlength="300" id="id_tags">'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="assignee" class="form-control" ' \
@@ -494,8 +494,7 @@ class BoardSingleViewTest(TestCase):
             f'{self.agent.name}</option>'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<select name="group" class="form-control" ' \
-            'required id="id_group">'
+        expected = '<select name="group" class="form-control" id="id_group">'
         self.assertContains(response, expected, status_code=200)
 
         expected = f'<option value="{self.agent_group.id}">' \
@@ -517,7 +516,7 @@ class BoardSingleViewTest(TestCase):
         expected = '<div class="form-group" id="due_at" style="display:none">'
         self.assertContains(response, expected, status_code=200)
         expected = '<input type="text" name="due_at" class="form-control" ' \
-            'size="10" id="datepicker" />'
+            'size="10" id="datepicker">'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<select name="priority" class="form-control" ' \
@@ -537,8 +536,8 @@ class BoardSingleViewTest(TestCase):
             'id="id_private_comment">'
         self.assertContains(response, expected, status_code=200)
 
-        expected = '<input type="hidden" name="board" value="%s" ' \
-            'id="id_board" />' % self.board.id
+        expected = '<input type="hidden" name="board" ' \
+            f'value="{self.board.id}" id="id_board">'
         self.assertContains(response, expected, status_code=200)
         expected = '<button type="submit" class="btn btn-default ' \
             'button is-success">Add New Ticket</button>'
