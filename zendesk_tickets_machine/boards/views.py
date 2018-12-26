@@ -51,6 +51,29 @@ class BoardView(TemplateView):
 class BoardSingleView(TemplateView):
     template_name = 'board_single.html'
 
+    def get_context_to_render(self,
+                              board_name,
+                              board_slug,
+                              form,
+                              ticket_update_once_form,
+                              tickets,
+                              zendesk_ticket_url,
+                              firebase_messaging_sender_id):
+        return {
+            'board_name': board_name,
+            'board_slug': board_slug,
+            'form': form,
+            'ticket_update_once_form': ticket_update_once_form,
+            'tickets': tickets,
+            'zendesk_ticket_url': zendesk_ticket_url,
+            'firebase_api_key': settings.FIREBASE_API_KEY,
+            'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
+            'firebase_database_url': settings.FIREBASE_DATABASE_URL,
+            'firebase_project_id': settings.FIREBASE_PROJECT_ID,
+            'firebase_storage_bucket': settings.FIREBASE_STORAGE_BUCKET,
+            'firebase_messaging_sender_id': firebase_messaging_sender_id
+        }
+
     def get(self, request, slug):
         try:
             board = Board.objects.get(slug=slug)
@@ -77,23 +100,20 @@ class BoardSingleView(TemplateView):
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
         firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
 
+        context = self.get_context_to_render(
+            board.name,
+            board.slug,
+            form,
+            ticket_update_once_form,
+            tickets,
+            zendesk_ticket_url,
+            firebase_messaging_sender_id
+        )
+
         return render(
             request,
             self.template_name,
-            {
-                'board_name': board.name,
-                'board_slug': board.slug,
-                'form': form,
-                'ticket_update_once_form': ticket_update_once_form,
-                'tickets': tickets,
-                'zendesk_ticket_url': zendesk_ticket_url,
-                'firebase_api_key': settings.FIREBASE_API_KEY,
-                'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
-                'firebase_database_url': settings.FIREBASE_DATABASE_URL,
-                'firebase_project_id': settings.FIREBASE_PROJECT_ID,
-                'firebase_storage_bucket': settings.FIREBASE_STORAGE_BUCKET,
-                'firebase_messaging_sender_id': firebase_messaging_sender_id
-            }
+            context
         )
 
     def post(self, request, slug):
@@ -119,23 +139,20 @@ class BoardSingleView(TemplateView):
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
         firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
 
+        context = self.get_context_to_render(
+            board.name,
+            board.slug,
+            form,
+            ticket_update_once_form,
+            tickets,
+            zendesk_ticket_url,
+            firebase_messaging_sender_id
+        )
+
         return render(
             request,
             self.template_name,
-            {
-                'board_name': board.name,
-                'board_slug': board.slug,
-                'form': form,
-                'ticket_update_once_form': ticket_update_once_form,
-                'tickets': tickets,
-                'zendesk_ticket_url': zendesk_ticket_url,
-                'firebase_api_key': settings.FIREBASE_API_KEY,
-                'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
-                'firebase_database_url': settings.FIREBASE_DATABASE_URL,
-                'firebase_project_id': settings.FIREBASE_PROJECT_ID,
-                'firebase_storage_bucket': settings.FIREBASE_STORAGE_BUCKET,
-                'firebase_messaging_sender_id': firebase_messaging_sender_id
-            }
+            context
         )
 
     def edit_once(self):

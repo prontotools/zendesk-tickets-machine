@@ -20,4 +20,4 @@ class RequesterTest(TestCase):
             email='customer@example.com',
             zendesk_user_id='1095195473'
         )
-        self.assertEquals(requester.__str__(), 'customer@example.com')
+        self.assertEqual(requester.__str__(), 'customer@example.com')

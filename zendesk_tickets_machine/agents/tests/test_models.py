@@ -20,4 +20,4 @@ class AgentTest(TestCase):
             name='Kan Ouivirach',
             zendesk_user_id='403620641'
         )
-        self.assertEquals(agent.__str__(), 'Kan Ouivirach')
+        self.assertEqual(agent.__str__(), 'Kan Ouivirach')
