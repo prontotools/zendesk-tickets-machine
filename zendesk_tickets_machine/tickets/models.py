@@ -88,7 +88,7 @@ def create_zendesk_api_usage(sender, instance, **kwargs):
                 assignee=instance.assignee,
                 board=instance.board
             )
-    except:
+    except Ticket.DoesNotExist:
         pass
 
 
