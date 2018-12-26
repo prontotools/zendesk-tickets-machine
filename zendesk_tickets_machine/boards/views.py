@@ -27,14 +27,17 @@ from zendesk.api import (
 class BoardView(TemplateView):
     template_name = 'boards.html'
 
-    def get(self, request):
-        board_group_id = request.GET.get('board_group')
+    def get_boards_by_board_group(self, board_group_id):
         if board_group_id:
-            board_group_id = int(board_group_id)
             boards = Board.objects.filter(board_group=board_group_id)
         else:
             boards = Board.objects.all()
 
+        return boards
+
+    def get(self, request):
+        board_group_id = int(request.GET.get('board_group') or '0')
+        boards = self.get_boards_by_board_group(board_group_id)
         board_groups = BoardGroup.objects.all()
 
         return render(
