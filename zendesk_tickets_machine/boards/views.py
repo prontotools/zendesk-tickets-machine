@@ -51,14 +51,16 @@ class BoardView(TemplateView):
 class BoardSingleView(TemplateView):
     template_name = 'board_single.html'
 
-    def get_context_to_render(self,
-                              board_name,
-                              board_slug,
-                              form,
-                              ticket_update_once_form,
-                              tickets,
-                              zendesk_ticket_url,
-                              firebase_messaging_sender_id):
+    def get_context_to_render(
+        self,
+        board_name,
+        board_slug,
+        form,
+        ticket_update_once_form,
+        tickets,
+        zendesk_ticket_url,
+        firebase_messaging_sender_id
+    ):
         return {
             'board_name': board_name,
             'board_slug': board_slug,
