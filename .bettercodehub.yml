@@ -3,3 +3,4 @@ languages:
 
 exclude:
   - .*/migrations/.*
+  - .*/settings/.*
