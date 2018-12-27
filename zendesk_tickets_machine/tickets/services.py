@@ -6,15 +6,14 @@ from .models import Ticket
 
 
 class TicketServices():
-    def edit_ticket_once(
-        self,
-        id_list,
-        edit_tags,
-        edit_requester,
-        edit_subject,
-        edit_due_at,
-        edit_assignee
-    ):
+    def edit_ticket_once(self, **kwargs):
+        id_list = kwargs.get('id_list')
+        edit_tags = kwargs.get('edit_tags')
+        edit_requester = kwargs.get('edit_requester')
+        edit_subject = kwargs.get('edit_subject')
+        edit_due_at = kwargs.get('edit_due_at')
+        edit_assignee = kwargs.get('edit_assignee')
+
         if edit_tags:
             Ticket.objects.filter(
                 pk__in=id_list

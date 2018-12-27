@@ -165,12 +165,12 @@ class BoardSingleView(TemplateView):
 
         ticketServices = TicketServices()
         ticketServices.edit_ticket_once(
-            id_list,
-            edit_tags,
-            edit_requester,
-            edit_subject,
-            edit_due_at,
-            edit_assignee
+            id_list=id_list,
+            edit_tags=edit_tags,
+            edit_requester=edit_requester,
+            edit_subject=edit_subject,
+            edit_due_at=edit_due_at,
+            edit_assignee=edit_assignee
         )
 
         return HttpResponse(content_type="application/json")
