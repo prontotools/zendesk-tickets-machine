@@ -20,4 +20,4 @@ class AgentGroupTest(TestCase):
             name='Development',
             zendesk_group_id='25050306'
         )
-        self.assertEquals(agent_group.__str__(), 'Development')
+        self.assertEqual(agent_group.__str__(), 'Development')
