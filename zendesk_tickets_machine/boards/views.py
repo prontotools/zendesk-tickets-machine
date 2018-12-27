@@ -55,17 +55,15 @@ class BoardSingleView(TemplateView):
     template_name = 'board_single.html'
 
     def get_context_to_render(self, **kwargs):
-        firebase_messaging_sender_id = kwargs.get(
-            'firebase_messaging_sender_id'
-        )
-
+        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
+        firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
         return {
             'board_name': kwargs.get('board_name'),
             'board_slug': kwargs.get('board_slug'),
             'form': kwargs.get('form'),
             'ticket_update_once_form': kwargs.get('ticket_update_once_form'),
             'tickets': kwargs.get('tickets'),
-            'zendesk_ticket_url': kwargs.get('zendesk_ticket_url'),
+            'zendesk_ticket_url': zendesk_ticket_url,
             'firebase_api_key': settings.FIREBASE_API_KEY,
             'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
             'firebase_database_url': settings.FIREBASE_DATABASE_URL,
@@ -96,24 +94,16 @@ class BoardSingleView(TemplateView):
             'board': board.id
         }
         form = TicketForm(initial=initial)
-
         ticket_update_once_form = TicketUpdateOnceForm()
-
         tickets = self.get_tickets(slug)
-
         RequestConfig(request).configure(tickets)
-
-        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
-        firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
 
         context = self.get_context_to_render(
             board_name=board.name,
             board_slug=board.slug,
             form=form,
             ticket_update_once_form=ticket_update_once_form,
-            tickets=tickets,
-            zendesk_ticket_url=zendesk_ticket_url,
-            firebase_messaging_sender_id=firebase_messaging_sender_id
+            tickets=tickets
         )
 
         return render(
@@ -134,22 +124,15 @@ class BoardSingleView(TemplateView):
 
         form = TicketForm(request.POST)
         form.save()
-
         ticket_update_once_form = TicketUpdateOnceForm()
-
         tickets = self.get_tickets(slug)
-
-        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
-        firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
 
         context = self.get_context_to_render(
             board_name=board.name,
             board_slug=board.slug,
             form=form,
             ticket_update_once_form=ticket_update_once_form,
-            tickets=tickets,
-            zendesk_ticket_url=zendesk_ticket_url,
-            firebase_messaging_sender_id=firebase_messaging_sender_id
+            tickets=tickets
         )
 
         return render(

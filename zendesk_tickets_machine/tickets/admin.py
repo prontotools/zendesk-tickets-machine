@@ -41,14 +41,7 @@ class TicketZendeskAPIUsageResource(resources.ModelResource):
             'board__name',
             'created',
         )
-        export_order = (
-            'id',
-            'ticket_type',
-            'priority',
-            'assignee__name',
-            'board__name',
-            'created',
-        )
+        export_order = fields
 
 
 @admin.register(TicketZendeskAPIUsage)
