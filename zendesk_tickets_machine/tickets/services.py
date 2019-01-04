@@ -15,26 +15,20 @@ class TicketServices():
         edit_assignee = kwargs.get('edit_assignee')
 
         if edit_tags:
-            Ticket.objects.filter(
-                pk__in=id_list
-            ).update(tags=edit_tags)
+            Ticket.objects.filter(pk__in=id_list).update(tags=edit_tags)
         if edit_subject:
-            Ticket.objects.filter(
-                pk__in=id_list
-            ).update(subject=edit_subject)
+            Ticket.objects.filter(pk__in=id_list).update(subject=edit_subject)
         if edit_requester:
-            Ticket.objects.filter(
-                pk__in=id_list
-            ).update(requester=edit_requester)
+            Ticket.objects.filter(pk__in=id_list).update(
+                requester=edit_requester
+            )
         if edit_due_at:
-            Ticket.objects.filter(
-                pk__in=id_list
-            ).update(
+            Ticket.objects.filter(pk__in=id_list).update(
                 due_at=datetime.datetime.strptime(
-                    edit_due_at, "%m/%d/%Y"
+                    edit_due_at, '%m/%d/%Y'
                 ).replace(tzinfo=utc)
             )
         if edit_assignee:
-            Ticket.objects.filter(
-                pk__in=id_list
-            ).update(assignee=edit_assignee)
+            Ticket.objects.filter(pk__in=id_list).update(
+                assignee=edit_assignee
+            )
