@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_admin_env_notice',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -73,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django_admin_env_notice.context_processors.from_settings',
             ],
         },
     },
@@ -127,6 +129,13 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+########## VISUALLY DISTINGUISH ENVIRONMENTS
+
+ENVIRONMENT_NAME = 'development'
+ENVIRONMENT_COLOR = '#33cc33'
+
+########## END VISUALLY DISTINGUISH ENVIRONMENTS
 
 
 # Static files (CSS, JavaScript, Images)

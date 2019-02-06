@@ -1,6 +1,7 @@
 FROM python:3.6.0
 
 RUN pip install Django==2.1.3 \
+    django-admin-env-notice==0.1.5 \
     dj-database-url==0.4.2 \
     django-tables2==1.3.0 \
     psycopg2==2.7.1 \

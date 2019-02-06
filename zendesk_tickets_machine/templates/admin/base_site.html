@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+{% load admin_static %}
+
+{# Additional CSS includes #}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/admin.css' %}" media="all">
+<style type="text/css">
+    body:before {
+        display: block;
+        line-height: 35px;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: white;
+        content: '{{ ENVIRONMENT_NAME }}';
+        background-color: {{ ENVIRONMENT_COLOR }};
+    }
+</style>
+{% endblock %}
+{# Footer links (left side) #}
+{% block footer_links %}
+{% endblock %}
+{# Footer branding name (center) #}
+{% block footer_branding %}
+{% endblock %}
+{# Footer copyright (right side) #}
+{% block copyright %}
+{% endblock %}
