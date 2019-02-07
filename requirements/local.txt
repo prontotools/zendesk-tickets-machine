@@ -5,3 +5,4 @@ Fabric3==1.13.1.post1
 flake8==3.3.0
 flake8-print==2.0.2
 pytest-django==3.4.3
+pytest-cov==2.6.0

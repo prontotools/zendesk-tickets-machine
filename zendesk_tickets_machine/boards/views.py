@@ -27,14 +27,17 @@ from zendesk.api import (
 class BoardView(TemplateView):
     template_name = 'boards.html'
 
-    def get(self, request):
-        board_group_id = request.GET.get('board_group')
+    def get_boards_by_board_group(self, board_group_id):
         if board_group_id:
-            board_group_id = int(board_group_id)
             boards = Board.objects.filter(board_group=board_group_id)
         else:
             boards = Board.objects.all()
 
+        return boards
+
+    def get(self, request):
+        board_group_id = int(request.GET.get('board_group') or '0')
+        boards = self.get_boards_by_board_group(board_group_id)
         board_groups = BoardGroup.objects.all()
 
         return render(
@@ -51,6 +54,32 @@ class BoardView(TemplateView):
 class BoardSingleView(TemplateView):
     template_name = 'board_single.html'
 
+    def get_context_to_render(self, **kwargs):
+        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
+        firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
+        return {
+            'board_name': kwargs.get('board_name'),
+            'board_slug': kwargs.get('board_slug'),
+            'form': kwargs.get('form'),
+            'ticket_update_once_form': kwargs.get('ticket_update_once_form'),
+            'tickets': kwargs.get('tickets'),
+            'zendesk_ticket_url': zendesk_ticket_url,
+            'firebase_api_key': settings.FIREBASE_API_KEY,
+            'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
+            'firebase_database_url': settings.FIREBASE_DATABASE_URL,
+            'firebase_project_id': settings.FIREBASE_PROJECT_ID,
+            'firebase_storage_bucket': settings.FIREBASE_STORAGE_BUCKET,
+            'firebase_messaging_sender_id': firebase_messaging_sender_id
+        }
+
+    def get_tickets(self, slug):
+        tickets = TicketTable(
+            Ticket.objects.filter(
+                board__slug=slug, is_active=True
+            ).order_by('id')
+        )
+        return tickets
+
     def get(self, request, slug):
         try:
             board = Board.objects.get(slug=slug)
@@ -66,34 +95,21 @@ class BoardSingleView(TemplateView):
         }
         form = TicketForm(initial=initial)
         ticket_update_once_form = TicketUpdateOnceForm()
-
-        tickets = TicketTable(
-            Ticket.objects.filter(
-                board__slug=slug, is_active=True
-            ).order_by('id')
-        )
+        tickets = self.get_tickets(slug)
         RequestConfig(request).configure(tickets)
 
-        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
-        firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
+        context = self.get_context_to_render(
+            board_name=board.name,
+            board_slug=board.slug,
+            form=form,
+            ticket_update_once_form=ticket_update_once_form,
+            tickets=tickets
+        )
 
         return render(
             request,
             self.template_name,
-            {
-                'board_name': board.name,
-                'board_slug': board.slug,
-                'form': form,
-                'ticket_update_once_form': ticket_update_once_form,
-                'tickets': tickets,
-                'zendesk_ticket_url': zendesk_ticket_url,
-                'firebase_api_key': settings.FIREBASE_API_KEY,
-                'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
-                'firebase_database_url': settings.FIREBASE_DATABASE_URL,
-                'firebase_project_id': settings.FIREBASE_PROJECT_ID,
-                'firebase_storage_bucket': settings.FIREBASE_STORAGE_BUCKET,
-                'firebase_messaging_sender_id': firebase_messaging_sender_id
-            }
+            context
         )
 
     def post(self, request, slug):
@@ -108,34 +124,21 @@ class BoardSingleView(TemplateView):
 
         form = TicketForm(request.POST)
         form.save()
-
         ticket_update_once_form = TicketUpdateOnceForm()
+        tickets = self.get_tickets(slug)
 
-        tickets = TicketTable(
-            Ticket.objects.filter(
-                board__slug=slug, is_active=True
-            ).order_by('id')
+        context = self.get_context_to_render(
+            board_name=board.name,
+            board_slug=board.slug,
+            form=form,
+            ticket_update_once_form=ticket_update_once_form,
+            tickets=tickets
         )
-        zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
-        firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
 
         return render(
             request,
             self.template_name,
-            {
-                'board_name': board.name,
-                'board_slug': board.slug,
-                'form': form,
-                'ticket_update_once_form': ticket_update_once_form,
-                'tickets': tickets,
-                'zendesk_ticket_url': zendesk_ticket_url,
-                'firebase_api_key': settings.FIREBASE_API_KEY,
-                'firebase_auth_domain': settings.FIREBASE_AUTH_DOMAIN,
-                'firebase_database_url': settings.FIREBASE_DATABASE_URL,
-                'firebase_project_id': settings.FIREBASE_PROJECT_ID,
-                'firebase_storage_bucket': settings.FIREBASE_STORAGE_BUCKET,
-                'firebase_messaging_sender_id': firebase_messaging_sender_id
-            }
+            context
         )
 
     def edit_once(self):
@@ -148,12 +151,12 @@ class BoardSingleView(TemplateView):
 
         ticketServices = TicketServices()
         ticketServices.edit_ticket_once(
-            id_list,
-            edit_tags,
-            edit_requester,
-            edit_subject,
-            edit_due_at,
-            edit_assignee
+            id_list=id_list,
+            edit_tags=edit_tags,
+            edit_requester=edit_requester,
+            edit_subject=edit_subject,
+            edit_due_at=edit_due_at,
+            edit_assignee=edit_assignee
         )
 
         return HttpResponse(content_type="application/json")

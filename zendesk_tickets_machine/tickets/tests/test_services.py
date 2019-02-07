@@ -54,12 +54,13 @@ class TicketServicesTest(TestCase):
         )
         ticketServices = TicketServices()
         ticketServices.edit_ticket_once(
-            [self.first_ticket.id, self.second_ticket.id],
-            'aa bb',
-            requester.email,
-            'New Subject',
-            '01/31/2017',
-            agent)
+            id_list=[self.first_ticket.id, self.second_ticket.id],
+            edit_tags='aa bb',
+            edit_requester=requester.email,
+            edit_subject='New Subject',
+            edit_due_at='01/31/2017',
+            edit_assignee=agent
+        )
 
         self.assertEqual(
             Ticket.objects.get(id=self.first_ticket.id).tags,
@@ -111,12 +112,13 @@ class TicketServicesTest(TestCase):
         )
         ticketServices = TicketServices()
         ticketServices.edit_ticket_once(
-            [self.first_ticket.id],
-            'aa bb',
-            requester.email,
-            'New Subject',
-            '01/31/2017',
-            agent)
+            id_list=[self.first_ticket.id],
+            edit_tags='aa bb',
+            edit_requester=requester.email,
+            edit_subject='New Subject',
+            edit_due_at='01/31/2017',
+            edit_assignee=agent
+        )
 
         self.assertEqual(
             Ticket.objects.get(id=self.first_ticket.id).tags,
