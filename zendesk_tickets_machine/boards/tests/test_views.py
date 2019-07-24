@@ -810,7 +810,7 @@ class BoardSingleViewTest(TestCase):
         self.assertEqual(ticket.cycle, 'jan')
 
         expected = f'<h4 class="title is-4"><a href="{url}">' \
-                f'{self.board.name}</a></h4>'
+            f'{self.board.name}</a></h4>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<td class="check">' \
