@@ -43,6 +43,7 @@ class TicketTable(tables.Table):
     tags = tables.Column(default='-', orderable=False)
     private_comment = tables.Column(default='-', orderable=False)
     zendesk_ticket_id = tables.Column(default='-', orderable=False)
+    cycle = tables.Column(default='-', orderable=False)
     manage = tables.TemplateColumn(TEMPLATE, orderable=False)
 
     class Meta:
@@ -54,4 +55,8 @@ class TicketTable(tables.Table):
     def render_zendesk_ticket_id(self, value):
         url = '<a href="%s/agent/tickets/%s" target="_blank">%s</a>' \
             % (settings.ZENDESK_URL, value, value)
+        return mark_safe(url)
+
+    def render_cycle(self, value):
+        url = f'<a href="?cycle={value}">{value}</a>'
         return mark_safe(url)
