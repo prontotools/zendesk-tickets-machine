@@ -153,6 +153,7 @@ class TicketEditViewTest(TestCase):
             '<th class="tags">Tags</th>' \
             '<th class="private_comment">Private Comment</th>' \
             '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>' \
+            '<th class="cycle">Cycle</th>' \
             '<th class="manage">Manage</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
