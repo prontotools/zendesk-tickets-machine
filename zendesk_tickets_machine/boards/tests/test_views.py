@@ -200,6 +200,7 @@ class BoardSingleViewTest(TestCase):
             tags='welcome',
             private_comment='Private comment',
             zendesk_ticket_id='24328',
+            cycle='jan',
             board=self.board
         )
         self.deleted_ticket = Ticket.objects.create(
@@ -568,6 +569,7 @@ class BoardSingleViewTest(TestCase):
             '<th class="tags">Tags</th>' \
             '<th class="private_comment">Private Comment</th>' \
             '<th class="zendesk_ticket_id">Zendesk Ticket Id</th>' \
+            '<th class="cycle">Cycle</th>' \
             '<th class="manage">Manage</th>'
         self.assertContains(response, expected, count=1, status_code=200)
 
@@ -626,7 +628,7 @@ class BoardSingleViewTest(TestCase):
             reverse('board_single', kwargs={'slug': self.board.slug})
         )
         expected = '<a href="%s" class="button is-warning is-outlined">' \
-            'Reset Tickets </a>' % reverse(
+            'Reset Tickets</a>' % reverse(
                 'board_reset',
                 kwargs={'slug': self.board.slug}
             )
@@ -660,6 +662,7 @@ class BoardSingleViewTest(TestCase):
             '<td class="private_comment">Private comment</td>' \
             '<td class="zendesk_ticket_id">' \
             '<a href="%s" target="_blank">24328</a></td>' \
+            '<td class="cycle"><a href="?cycle=jan">jan</a></td>' \
             '<td class="manage"><a href="%s" class="tbl_icon edit">' \
             '<i class="fa fa-pencil modal-button" ' \
             'data-target="#modal-edit-ticket"></i></a>&nbsp;' \
@@ -694,7 +697,8 @@ class BoardSingleViewTest(TestCase):
             '<td class="priority">urgent</td>' \
             '<td class="tags">welcome internal</td>' \
             '<td class="private_comment">Private comment</td>' \
-            '<td class="zendesk_ticket_id">-</td>' % (
+            '<td class="zendesk_ticket_id">-</td>' \
+            '<td class="cycle">-</td>' % (
                 self.second_ticket.id,
                 self.second_ticket.id
             )
@@ -728,6 +732,7 @@ class BoardSingleViewTest(TestCase):
             '<td class="private_comment">Private comment</td>' \
             '<td class="zendesk_ticket_id">' \
             '<a href="%s" target="_blank">24328</a></td>' \
+            '<td class="cycle"><a href="?cycle=jan">jan</a></td>' \
             '<td class="manage"><a href="%s" class="tbl_icon edit">' \
             '<i class="fa fa-pencil modal-button" '\
             'data-target="#modal-edit-ticket">' \
@@ -761,7 +766,8 @@ class BoardSingleViewTest(TestCase):
             '<td class="priority">urgent</td>' \
             '<td class="tags">welcome internal</td>' \
             '<td class="private_comment">Private comment</td>' \
-            '<td class="zendesk_ticket_id">-</td>' % (
+            '<td class="zendesk_ticket_id">-</td>' \
+            '<td class="cycle">-</td>' % (
                 self.second_ticket.id,
                 self.second_ticket.id
             )
@@ -781,13 +787,12 @@ class BoardSingleViewTest(TestCase):
             'tags': 'welcome',
             'private_comment': 'Private comment',
             'zendesk_ticket_id': '24328',
+            'cycle': 'jan',
             'board': self.board.id
         }
 
-        response = self.client.post(
-            reverse('board_single', kwargs={'slug': self.board.slug}),
-            data=data
-        )
+        url = reverse('board_single', kwargs={'slug': self.board.slug})
+        response = self.client.post(url, data=data)
 
         ticket = Ticket.objects.last()
 
@@ -802,8 +807,10 @@ class BoardSingleViewTest(TestCase):
         self.assertEqual(ticket.tags, 'welcome')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
+        self.assertEqual(ticket.cycle, 'jan')
 
-        expected = '<h4 class="title is-4">%s</h4>' % self.board.name
+        expected = f'<h4 class="title is-4"><a href="{url}">' \
+                f'{self.board.name}</a></h4>'
         self.assertContains(response, expected, status_code=200)
 
         expected = '<td class="check">' \
@@ -823,6 +830,7 @@ class BoardSingleViewTest(TestCase):
             '<td class="private_comment">Private comment</td>' \
             '<td class="zendesk_ticket_id">' \
             '<a href="%s" target="_blank">24328</a></td>' \
+            '<td class="cycle"><a href="?cycle=jan">jan</a></td>' \
             '<td class="manage"><a href="%s" class="tbl_icon edit">' \
             '<i class="fa fa-pencil modal-button" ' \
             'data-target="#modal-edit-ticket">' \
@@ -857,6 +865,7 @@ class BoardSingleViewTest(TestCase):
             '<td class="private_comment">Private comment</td>' \
             '<td class="zendesk_ticket_id">' \
             '<a href="%s" target="_blank">24328</a></td>' \
+            '<td class="cycle"><a href="?cycle=jan">jan</a></td>' \
             '<td class="manage"><a href="%s" class="tbl_icon edit">' \
             '<i class="fa fa-pencil modal-button" ' \
             'data-target="#modal-edit-ticket"></i></a>&nbsp;' \
