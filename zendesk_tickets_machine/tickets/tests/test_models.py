@@ -38,6 +38,7 @@ class TicketTest(TestCase):
         ticket.tags = 'welcome'
         ticket.private_comment = 'Private comment'
         ticket.zendesk_ticket_id = '24328'
+        ticket.cycle = 'march'
         ticket.board = board
         ticket.save()
 
@@ -56,6 +57,7 @@ class TicketTest(TestCase):
         self.assertEqual(ticket.tags, 'welcome')
         self.assertEqual(ticket.private_comment, 'Private comment')
         self.assertEqual(ticket.zendesk_ticket_id, '24328')
+        self.assertEqual(ticket.cycle, 'march')
         self.assertEqual(ticket.board.name, 'Pre-Production')
         self.assertTrue(ticket.is_active)
 

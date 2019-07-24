@@ -60,10 +60,13 @@ class TicketAdminTest(TestCase):
         expected = '<div class="text"><a href="?o=9">Tags</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=10">Board</a></div>'
+        expected = '<div class="text"><a href="?o=10">Cycle</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
-        expected = '<div class="text"><a href="?o=11">Is active</a></div>'
+        expected = '<div class="text"><a href="?o=11">Board</a></div>'
+        self.assertContains(response, expected, count=1, status_code=200)
+
+        expected = '<div class="text"><a href="?o=12">Is active</a></div>'
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_access_ticket_admin_should_have_board_filter(self):

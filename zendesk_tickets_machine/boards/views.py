@@ -57,7 +57,7 @@ class BoardSingleView(TemplateView):
     def get_context_to_render(self, **kwargs):
         zendesk_ticket_url = settings.ZENDESK_URL + '/agent/tickets/'
         firebase_messaging_sender_id = settings.FIREBASE_MESSAGING_SENDER_ID
-        return {
+        context = {
             'board_name': kwargs.get('board_name'),
             'board_slug': kwargs.get('board_slug'),
             'form': kwargs.get('form'),
@@ -72,12 +72,29 @@ class BoardSingleView(TemplateView):
             'firebase_messaging_sender_id': firebase_messaging_sender_id
         }
 
-    def get_tickets(self, slug):
-        tickets = TicketTable(
-            Ticket.objects.filter(
-                board__slug=slug, is_active=True
-            ).order_by('id')
-        )
+        cycle = kwargs.get('cycle')
+        if cycle:
+            context['cycle'] = cycle
+
+        return context
+
+    def get_tickets(self, slug, cycle):
+        if cycle:
+            tickets = TicketTable(
+                Ticket.objects.filter(
+                    board__slug=slug,
+                    cycle=cycle,
+                    is_active=True
+                ).order_by('id')
+            )
+        else:
+            tickets = TicketTable(
+                Ticket.objects.filter(
+                    board__slug=slug,
+                    is_active=True
+                ).order_by('id')
+            )
+
         return tickets
 
     def get(self, request, slug):
@@ -95,7 +112,8 @@ class BoardSingleView(TemplateView):
         }
         form = TicketForm(initial=initial)
         ticket_update_once_form = TicketUpdateOnceForm()
-        tickets = self.get_tickets(slug)
+        cycle = request.GET.get('cycle')
+        tickets = self.get_tickets(slug, cycle)
         RequestConfig(request).configure(tickets)
 
         context = self.get_context_to_render(
@@ -103,7 +121,8 @@ class BoardSingleView(TemplateView):
             board_slug=board.slug,
             form=form,
             ticket_update_once_form=ticket_update_once_form,
-            tickets=tickets
+            tickets=tickets,
+            cycle=cycle
         )
 
         return render(
@@ -125,7 +144,8 @@ class BoardSingleView(TemplateView):
         form = TicketForm(request.POST)
         form.save()
         ticket_update_once_form = TicketUpdateOnceForm()
-        tickets = self.get_tickets(slug)
+        cycle = request.GET.get('cycle')
+        tickets = self.get_tickets(slug, cycle)
 
         context = self.get_context_to_render(
             board_name=board.name,
@@ -189,6 +209,8 @@ class BoardZendeskTicketsCreateView(View):
         zendesk_user = ZendeskRequester()
         zendesk_organization = ZendeskOrganization()
 
+        cycle = request.GET.get('cycle')
+
         selected_tickets = request.GET.get('tickets')
         if selected_tickets:
             tickets = Ticket.objects.filter(
@@ -197,10 +219,17 @@ class BoardZendeskTicketsCreateView(View):
                 is_active=True
             )
         else:
-            tickets = Ticket.objects.filter(
-                board__slug=slug,
-                is_active=True
-            )
+            if cycle:
+                tickets = Ticket.objects.filter(
+                    board__slug=slug,
+                    cycle=cycle,
+                    is_active=True
+                )
+            else:
+                tickets = Ticket.objects.filter(
+                    board__slug=slug,
+                    is_active=True
+                )
 
         tickets = tickets.exclude(zendesk_ticket_id__isnull=False)
 
@@ -299,6 +328,11 @@ class BoardZendeskTicketsCreateView(View):
             if not settings.DEBUG:
                 time.sleep(1)
 
-        return HttpResponseRedirect(
-            reverse('board_single', kwargs={'slug': slug})
+        redirect_url = reverse(
+            'board_single',
+            kwargs={'slug': slug}
         )
+        if cycle:
+            redirect_url = redirect_url + f'?cycle={cycle}'
+
+        return HttpResponseRedirect(redirect_url)
