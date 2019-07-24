@@ -66,6 +66,7 @@ class Ticket(models.Model):
         null=True,
         blank=True
     )
+    cycle = models.CharField(max_length=300, null=True, blank=True)
     board = models.ForeignKey(
         Board,
         null=True,
