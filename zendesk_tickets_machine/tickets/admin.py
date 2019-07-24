@@ -21,11 +21,13 @@ class TicketAdmin(admin.ModelAdmin):
         'due_at',
         'priority',
         'tags',
+        'cycle',
         'board',
         'is_active',
     )
     list_filter = (
         'board__name',
+        'cycle',
         'is_active',
     )
 

@@ -24,6 +24,7 @@ class TicketForm(forms.ModelForm):
             'tags',
             'private_comment',
             'zendesk_ticket_id',
+            'cycle',
             'board',
         ]
         widgets = {
@@ -75,6 +76,12 @@ class TicketForm(forms.ModelForm):
             ),
             'priority': forms.Select(
                 attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'cycle': forms.TextInput(
+                attrs={
+                    'placeholder': 'Cycle',
                     'class': 'form-control'
                 }
             ),

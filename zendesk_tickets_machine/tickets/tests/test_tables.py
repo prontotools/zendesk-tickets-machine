@@ -33,6 +33,7 @@ class TicketTableTest(TestCase):
         ticket.tags = 'welcome'
         ticket.private_comment = 'Private comment'
         ticket.zendesk_ticket_id = '24328'
+        ticket.cycle = 'jan'
         ticket.board = board
         ticket.save()
 
@@ -52,13 +53,14 @@ class TicketTableTest(TestCase):
             'Tags',
             'Private Comment',
             'Zendesk Ticket Id',
+            'Cycle',
             'Manage',
         ]
 
         for each in expected_fields:
             self.assertTrue(each in ticketTable.as_values()[0])
 
-        self.assertEqual(len(ticketTable.as_values()[0]), 15)
+        self.assertEqual(len(ticketTable.as_values()[0]), 16)
 
     def test_ticket_table_should_show_dash_if_empty_and_set_default(self):
         agent_group = AgentGroup.objects.create(name='Development')
@@ -75,6 +77,7 @@ class TicketTableTest(TestCase):
         ticket.priority = 'urgent'
         ticket.private_comment = 'Private comment'
         ticket.zendesk_ticket_id = '24328'
+        ticket.cycle = 'jan'
         ticket.board = board
         ticket.save()
 
@@ -98,11 +101,13 @@ class TicketTableTest(TestCase):
             'Private comment',
             '24328',
             '-',
+            'jan',
+            '-',
         ]
         for each in expected_fields:
             self.assertTrue(each in ticketTable.as_values()[1])
 
-        self.assertEqual(len(ticketTable.as_values()[1]), 15)
+        self.assertEqual(len(ticketTable.as_values()[1]), 16)
 
     def test_ticket_table_render_zendesk_id_should_return_correctly(self):
         ticketTable = TicketTable({'test': 'test'})
@@ -112,3 +117,9 @@ class TicketTableTest(TestCase):
             '<a href="%s/agent/tickets/1234" target="_blank">1234</a>'
             % settings.ZENDESK_URL
         )
+
+    def test_ticket_table_render_cycle_should_return_correctly(self):
+        ticketTable = TicketTable({'test': 'test'})
+        cycle = ticketTable.render_cycle('january')
+        expected = f'<a href="?cycle=january">january</a>'
+        self.assertEqual(cycle, expected)
