@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/prontotools/zendesk-tickets-machine.svg?style=svg)](https://circleci.com/gh/prontotools/zendesk-tickets-machine)
 [![BCH compliance](https://bettercodehub.com/edge/badge/prontotools/zendesk-tickets-machine?branch=develop)](https://bettercodehub.com/)
 
-Machine that helps us create Zendesk tickets using our defined ticket templates
+Machine that helps us fire Zendesk tickets using our defined ticket templates
 
 ## Development Setup
 
